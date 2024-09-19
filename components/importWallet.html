@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Import Wallet</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+    }
+    input {
+      padding: 8px;
+      width: 300px;
+    }
+    button {
+      padding: 10px 15px;
+      margin-top: 20px;
+    }
+  </style>
+</head>
+<body>
+  <h1>Import Wallet</h1>
+
+  <label for="mnemonic">Enter Mnemonic:</label>
+  <input type="text" id="mnemonic" placeholder="Enter your mnemonic" />
+
+  <button id="import-wallet-btn">Import Wallet</button>
+
+  <!-- Link to external script -->
+  <script src="importwallet.bundle.js"></script>
+</body>
+</html>

@@ -1,0 +1,1 @@
+document.getElementById("get-started-btn").addEventListener("click",(function(){const t=localStorage.getItem("password");window.location.href=t?"onboarding.html":"password.html"})),window.onload=function(){localStorage.clear()};
