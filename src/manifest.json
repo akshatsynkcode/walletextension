@@ -1,19 +1,22 @@
 {
   "manifest_version": 3,
   "name": "Dubai Customs Wallet Extension",
-  "version": "1.0",
+  "description": "A Chrome extension for connecting with Dubai Customs Blockchain",
+  "version": "1.1",
   "permissions": [
     "storage",
     "activeTab",
-    "scripting",
-    "tabs",
-    "webNavigation"
+    "tabs"
   ],
   "host_permissions": [
-    "*://*/*"
+    "https://log-iam.finloge.com/*",
+    "https://polkadot.js.org/*",
+    "https://*.polkadot.io/*",
+    "wss://contract-node.finloge.com/*",
+    "https://*.dubaicustoms.net/*"
   ],
   "action": {
-    "default_popup": "popup.html",
+    "default_popup": "popup-login.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -31,17 +34,28 @@
   "content_scripts": [
     {
       "matches": [
-        "*://*/*"
+        "https://polkadot.js.org/apps/*",
+        "https://*.polkadot.io/*",
+        "https://*.dubaicustoms.net/*"
       ],
       "js": ["content.bundle.js"]
     }
   ],
+  "web_accessible_resources": [
+    {
+      "resources": ["scripts/polkadot-api.min.js"],
+      "matches": ["<all_urls>"]
+    }
+  ],
   "externally_connectable": {
     "matches": [
-      "*://*/*"
+      "https://log-iam.finloge.com/*",
+      "https://polkadot.js.org/*",
+      "https://*.polkadot.io/*",
+      "https://*.dubaicustoms.net/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam.finloge.com wss://contract-node.finloge.com https://polkadot.js.org"
   }
 }

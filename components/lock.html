@@ -3,15 +3,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Unlock Wallet</title>
+  <title>Lock Wallet</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
-    }
-    input {
-      padding: 8px;
-      width: 300px;
     }
     button {
       padding: 10px 15px;
@@ -21,14 +17,9 @@
 </head>
 <body>
   <h1>Wallet Locked</h1>
-
-  <p>Enter your password to unlock the wallet or create a new wallet.</p>
-
-  <label for="password">Password:</label>
-  <input type="password" id="password" placeholder="Enter your password" />
-
-  <button id="unlock-wallet-btn">Unlock Wallet</button>
-  <button id="create-new-wallet-btn">Create New Wallet</button>
+  <p>Are you sure you want to lock your wallet? You will need to log in again.</p>
+  <button id="confirm-lock-btn">Yes, Lock it</button>
+  <button id="cancel-lock-btn">No, Cancel</button>
 
   <!-- Link to external script -->
   <script src="lock.bundle.js"></script>

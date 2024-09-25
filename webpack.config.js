@@ -8,27 +8,29 @@ module.exports = {
     background: './src/background.js',
     content: './src/content.js',
     welcome: './scripts/welcome.js',
-    onboarding: './scripts/onboarding.js',
-    createwallet: './scripts/createwallet.js',
-    importwallet: './scripts/importwallet.js',
-    password: './scripts/password.js',
+    login: './scripts/login.js',
     lock: './scripts/lock.js',
     popup: './scripts/popup.js',
-    connectWalletPopup: './scripts/connectWalletPopup.js',
-    resetpassword: './scripts/resetpassword.js',
-    profile: './scripts/profile.js'
+    profile: './scripts/profile.js',
+    popupLogin: './scripts/popup-login.js' // Added the popup login script entry
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    filename: '[name].bundle.js',
-    publicPath: '/dist/',
+    filename: '[name].bundle.js'
   },
-  watch: true,
+  resolve: {
+    extensions: ['.js'],
+  },
   module: {
     rules: [
       {
         test: /\.css$/,
         use: ['style-loader', 'css-loader']
+      },
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        use: 'babel-loader'
       }
     ]
   },
@@ -39,24 +41,9 @@ module.exports = {
       chunks: ['welcome']
     }),
     new HtmlWebpackPlugin({
-      template: './components/onboarding.html',
-      filename: 'onboarding.html',
-      chunks: ['onboarding']
-    }),
-    new HtmlWebpackPlugin({
-      template: './components/createWallet.html',
-      filename: 'createWallet.html',
-      chunks: ['createwallet']
-    }),
-    new HtmlWebpackPlugin({
-      template: './components/importWallet.html',
-      filename: 'importWallet.html',
-      chunks: ['importwallet']
-    }),
-    new HtmlWebpackPlugin({
-      template: './components/password.html',
-      filename: 'password.html',
-      chunks: ['password']
+      template: './components/login.html',
+      filename: 'login.html',
+      chunks: ['login']
     }),
     new HtmlWebpackPlugin({
       template: './components/lock.html',
@@ -69,19 +56,14 @@ module.exports = {
       chunks: ['popup']
     }),
     new HtmlWebpackPlugin({
-      template: './components/connectWalletPopup.html',
-      filename: 'connectWalletPopup.html',
-      chunks: ['connectWalletPopup']
-    }),
-    new HtmlWebpackPlugin({
-      template: './components/resetpassword.html',
-      filename: 'resetpassword.html',
-      chunks: ['resetpassword']
-    }),
-    new HtmlWebpackPlugin({
       template: './components/profile.html',
       filename: 'profile.html',
       chunks: ['profile']
+    }),
+    new HtmlWebpackPlugin({
+      template: './components/popup-login.html', // Added popup-login.html
+      filename: 'popup-login.html',
+      chunks: ['popupLogin']
     }),
     new CopyWebpackPlugin({
       patterns: [

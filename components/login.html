@@ -3,20 +3,23 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile</title>
+  <title>Login</title>
   <style>
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
     }
+
     h2 {
       font-size: 18px;
       margin-bottom: 10px;
     }
-    p {
-      font-size: 16px;
-      margin-bottom: 5px;
+
+    label, input {
+      display: block;
+      margin-bottom: 10px;
     }
+
     button {
       padding: 10px 15px;
       background-color: #007bff;
@@ -25,21 +28,30 @@
       border-radius: 5px;
       cursor: pointer;
     }
+
     button:hover {
       background-color: #0056b3;
+    }
+
+    .error {
+      color: red;
+      margin-top: 10px;
     }
   </style>
 </head>
 <body>
-  <h2>Your Wallet Profile</h2>
-  <p><strong>Username:</strong> <span id="username">N/A</span></p>
-  <p><strong>Account Address:</strong> <span id="wallet-address">N/A</span></p>
-  <p><strong>Balance:</strong> <span id="balance">N/A</span></p>
+  <h2>Login to Your Wallet</h2>
 
-  <!-- Include Polkadot.js API -->
-  <script src="https://polkadot.js.org/api/polkadot-api.min.js"></script>
+  <label for="email">Email:</label>
+  <input type="email" id="email" placeholder="Enter your email" required>
 
-  <!-- Include your custom profile script -->
-  <script src="profile.bundle.js"></script>
+  <label for="password">Password:</label>
+  <input type="password" id="password" placeholder="Enter your password" required>
+
+  <button id="login-btn">Login</button>
+
+  <p id="error-message" class="error"></p>
+
+  <script src="login.bundle.js"></script>
 </body>
 </html>

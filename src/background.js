@@ -1,71 +1,29 @@
-console.log("Background script running...");
+// Store the ID of the fullscreen tab
 let fullscreenTabId = null;
 let pendingRequests = [];
 let connectedSites = [];
-let walletData = {};
-
-
-// Load connected sites from storage when extension starts
-chrome.storage.local.get(['connectedSites'], (result) => {
-    connectedSites = result.connectedSites || [];
-});
-
-// Save connected sites to local storage
-function saveConnectedSites() {
-    chrome.storage.local.set({ connectedSites });
-}
 
 // Listener for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Message received:", message);
-    switch (message.action) {
-        case 'check_extension':
-            sendResponse({ status: 'installed' });
-            return true;
-        case 'connect_wallet':
-            //check all data which are stored in local storage
-            
-            chrome.storage.local.get(['password'], function(result) {
-                const walletData = result;
-                console.log("Result:", walletData);
-            });
-            
-            // chrome.storage.local.get(['walletData'], function(result) {
-            //     const walletData = result.walletData;
-    
-            //     if (walletData && walletData.address) {
-            //         // Find the active tab and send wallet data to it
-            //         chrome.tabs.query({ active: true, currentWindow: true }, function(tabs) {
-            //             if (tabs.length > 0) {
-            //                 chrome.tabs.sendMessage(tabs[0].id, { action: 'wallet_data', address: walletData.address, balance: walletData.balance });
-            //             }
-            //         });
-            //         sendResponse({ success: true, address: walletData.address, balance: walletData.balance });
-            //     } else {
-            //         // Open the popup to allow user to connect their wallet
-            //         chrome.windows.create({
-            //             url: chrome.runtime.getURL('connectWalletPopup.html'),
-            //             type: 'popup',
-            //             width: 400,
-            //             height: 600
-            //         });
-            //         sendResponse({ success: false, message: 'Please connect the wallet' });
-            //     }
-            // });
-            return true;
-            
+    console.log("Message received:", message); // Debugging log
 
+    switch (message.action) {
         case 'lock_wallet':
-            chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                if (tabs.length > 0) {
-                    fullscreenTabId = tabs[0].id;
-                    chrome.tabs.remove(fullscreenTabId);
-                    sendResponse({ success: true });
-                } else {
-                    sendResponse({ success: false });
-                }
-            });
-            return true;
+            // Close the full-screen tab if open
+            if (fullscreenTabId !== null) {
+                chrome.tabs.remove(fullscreenTabId, () => {
+                    if (chrome.runtime.lastError) {
+                        console.log('Error closing tab:', chrome.runtime.lastError);
+                        sendResponse({ success: false });
+                    } else {
+                        fullscreenTabId = null; // Reset the fullscreenTabId
+                        sendResponse({ success: true });
+                    }
+                });
+            } else {
+                sendResponse({ success: true }); // No tab to close, but lock successful
+            }
+            return true; // Indicate that the response is asynchronous
 
         case 'unlock_wallet':
             if (fullscreenTabId !== null) {
@@ -74,12 +32,13 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     active: true
                 }, (tab) => {
                     fullscreenTabId = tab.id;
-                    console.log("Tab opened:", tab);
+                    console.log("Tab opened:", tab); // Debugging log
                 });
             }
             break;
 
         case 'request_connection':
+            // Handle connection requests from dApps
             const request = {
                 tabId: sender.tab.id,
                 url: sender.tab.url,
@@ -87,13 +46,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             };
             pendingRequests.push(request);
             chrome.runtime.sendMessage({ action: 'show_connection_request', request });
-            return true;
+            return true; // Indicate async response
 
         case 'approve_connection':
             const approveRequest = pendingRequests.find(req => req.tabId === message.requestId);
             if (approveRequest) {
                 connectedSites.push(approveRequest.url);
-                saveConnectedSites();  // Save connected sites to local storage
                 chrome.tabs.sendMessage(approveRequest.tabId, { action: 'connection_approved' });
                 pendingRequests = pendingRequests.filter(req => req.tabId !== message.requestId);
                 approveRequest.responseCallback({ success: true });
@@ -111,49 +69,21 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         case 'get_connected_sites':
             sendResponse({ sites: connectedSites });
-            return true;
-
-        case 'request_transaction':
-            const transactionRequest = {
-                tabId: sender.tab.id,
-                details: message.details,
-                responseCallback: sendResponse
-            };
-            pendingRequests.push(transactionRequest);
-            chrome.runtime.sendMessage({ action: 'show_transaction_request', transactionRequest });
-            return true;
-
-        case 'approve_transaction':
-            const approvedTransaction = pendingRequests.find(req => req.tabId === message.requestId);
-            if (approvedTransaction) {
-                // Process the transaction and send it
-                chrome.tabs.sendMessage(approvedTransaction.tabId, { action: 'transaction_approved', details: approvedTransaction.details });
-                pendingRequests = pendingRequests.filter(req => req.tabId !== message.requestId);
-                approvedTransaction.responseCallback({ success: true });
-            }
-            break;
-
-        case 'reject_transaction':
-            const rejectedTransaction = pendingRequests.find(req => req.tabId === message.requestId);
-            if (rejectedTransaction) {
-                chrome.tabs.sendMessage(rejectedTransaction.tabId, { action: 'transaction_rejected' });
-                pendingRequests = pendingRequests.filter(req => req.tabId !== message.requestId);
-                rejectedTransaction.responseCallback({ success: false });
-            }
-            break;
+            return true; // Indicate async response
     }
 });
 
 // Listener for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
-    console.log("Extension installed:", details);
+    console.log("Extension installed:", details); // Debugging log
     if (details.reason === 'install') {
+        // Open a new tab on extension installation
         chrome.tabs.create({
             url: chrome.runtime.getURL('welcome.html'),
             active: true
         }, (tab) => {
             fullscreenTabId = tab.id;
-            console.log("New tab created:", tab);
+            console.log("New tab created:", tab); // Debugging log
         });
     }
 });

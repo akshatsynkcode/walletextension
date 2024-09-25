@@ -1,18 +1,17 @@
 {
-  "name": "polka",
+  "name": "Dubai Customs Wallet",
   "version": "1.0.0",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack",
-    "watch": "webpack --watch"
+    "build": "webpack --config webpack.config.js"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@polkadot/api": "^13.0.1",
+    "@polkadot/api": "^13.2.1",
     "@polkadot/keyring": "^13.0.2",
     "@polkadot/util-crypto": "^13.0.2",
     "body-parser": "^1.20.3",
@@ -20,11 +19,15 @@
     "express": "^4.21.0"
   },
   "devDependencies": {
+    "@babel/core": "^7.25.2",
+    "@babel/preset-env": "^7.25.4",
+    "babel-loader": "^9.2.1",
     "copy-webpack-plugin": "^12.0.2",
     "css-loader": "^7.1.2",
     "html-webpack-plugin": "^5.6.0",
     "style-loader": "^4.0.0",
     "webpack": "^5.94.0",
+    "webpack-bundle-analyzer": "^4.10.2",
     "webpack-cli": "^5.1.4"
   }
 }

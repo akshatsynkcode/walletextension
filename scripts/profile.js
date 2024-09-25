@@ -1,90 +1,88 @@
-window.onload = async function () {
-    // Retrieve wallet data from localStorage
-    const walletDataRaw = localStorage.getItem('walletData');
-    
-    if (!walletDataRaw) {
-        document.body.innerHTML = '<p>Please create or import a wallet first.</p>';
-        return;
-    }
+// Import necessary modules from polkadot/api
+import { ApiPromise, WsProvider } from '@polkadot/api';
 
-    // Parse the wallet data
-    const walletData = JSON.parse(walletDataRaw);
-    
-    // Ensure walletData is available
-    if (!walletData) {
-        document.body.innerHTML = '<p>Please create or import a wallet first.</p>';
-        return;
-    }
+// Initialize Polkadot API connection
+async function getPolkadotApi() {
+    const provider = new WsProvider('wss://contract-node.finloge.com');
+    const api = await ApiPromise.create({ provider });
+    return api;
+}
 
-    // Display username and address
-    const username = localStorage.getItem('username');
-    document.getElementById('username').textContent = username;
-    document.getElementById('address').textContent = walletData.address;
-    document.getElementById('balance').textContent = walletData.balance || 'N/A';
-
-    // Fetch and update balance
-    await fetchAndUpdateBalance(walletData.address);
-
-    // Event listeners for Send Funds and Lock Wallet buttons
-    document.getElementById('send-funds-btn').addEventListener('click', sendFunds);
-    document.getElementById('lock-wallet-btn').addEventListener('click', lockWallet);
-
-    // Poll balance every 5 seconds
-    setInterval(async () => {
-        await fetchAndUpdateBalance(walletData.address);
-    }, 5000); 
-};
-
+// Fetch and update balance
 async function fetchAndUpdateBalance(address) {
     try {
-        const response = await fetch(`http://13.233.172.115:3000/check-balance/${address}`);
-        const data = await response.json();
-
-        if (data.error) {
-            document.getElementById('balance').textContent = 'Error fetching balance';
-        } else {
-            document.getElementById('balance').textContent = data.balance;
-        }
+        const api = await getPolkadotApi();
+        const { data: { free: balance } } = await api.query.system.account(address);
+        const decimals = api.registry.chainDecimals[0]; // Fetch decimals
+        const humanBalance = balance / Math.pow(10, decimals);
+        document.getElementById('balance').textContent = `AED ${humanBalance.toFixed(3)}`;
     } catch (error) {
-        document.getElementById('balance').textContent = 'Failed to fetch balance';
         console.error('Error fetching balance:', error);
     }
 }
 
-async function sendFunds() {
-    const walletData = JSON.parse(localStorage.getItem('walletData'));
-    const mnemonic = walletData.mnemonic;
-    const recipientAddress = document.getElementById('recipient-address').value;
-    const amount = document.getElementById('send-amount').value;
-
-    if (!mnemonic || !recipientAddress || !amount) {
-        alert('Please fill in all fields');
-        return;
-    }
-
+// Fetch updated username from the API
+async function fetchUpdatedUserProfile(token) {
     try {
-        const response = await fetch('http://13.233.172.115:3000/send-funds', {
-            method: 'POST',
+        const response = await fetch('https://log-iam.finloge.com/api/user-profile/', {
+            method: 'GET',
             headers: {
+                'Authorization': `token ${token}`,
                 'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({ mnemonic, recipientAddress, amount }),
+            }
         });
 
-        const data = await response.json();
+        console.log('Profile fetch response:', response);
 
-        if (data.error) {
-            document.getElementById('send-status').textContent = 'Error: ' + data.error;
+        if (response.ok) {
+            const data = await response.json();
+            console.log('Profile data:', data);
+            return data; // Assuming the response contains updated user data
         } else {
-            document.getElementById('send-status').textContent = 'Funds sent successfully!';
-            await fetchAndUpdateBalance(walletData.address); // Update balance after sending
+            console.error('Failed to fetch user profile:', response.statusText);
         }
     } catch (error) {
-        document.getElementById('send-status').textContent = 'Failed to send funds';
-        console.error('Error:', error);
+        console.error('Error fetching user profile:', error);
     }
 }
 
-function lockWallet() {
-    window.location.href = 'lock.html';
-}
+window.onload = async function () {
+    chrome.storage.local.get(['userInfo', 'authToken'], async function (result) {
+        const userInfo = result.userInfo;
+        const authToken = result.authToken;
+
+        console.log('UserInfo from storage:', userInfo);
+        console.log('AuthToken:', authToken);
+
+        if (!userInfo) {
+            document.body.textContent = 'Please log in first.';
+            return;
+        }
+
+        const usernameElement = document.getElementById('username');
+        const walletAddressElement = document.getElementById('wallet-address');
+        const balanceElement = document.getElementById('balance');
+
+        if (usernameElement && walletAddressElement && balanceElement) {
+            if (authToken) {
+                const updatedProfile = await fetchUpdatedUserProfile(authToken);
+                if (updatedProfile && updatedProfile.username) {
+                    const updatedUserInfo = { ...userInfo, name: updatedProfile.username };
+                    chrome.storage.local.set({ userInfo: updatedUserInfo });
+                    usernameElement.textContent = updatedUserInfo.name;
+                } else {
+                    usernameElement.textContent = userInfo.name || 'N/A';
+                }
+            } else {
+                usernameElement.textContent = userInfo.name || 'N/A';
+            }
+
+            walletAddressElement.textContent = userInfo.address || 'N/A';
+
+            await fetchAndUpdateBalance(userInfo.address); // Initial fetch
+            setInterval(() => fetchAndUpdateBalance(userInfo.address), 4000); // Continuous fetch
+        } else {
+            console.error('One or more profile elements are missing in the DOM');
+        }
+    });
+};

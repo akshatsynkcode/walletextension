@@ -73,7 +73,7 @@
 
     async function createWallet() {
       try {
-        const response = await fetch('http://13.233.172.115:3000/create-wallet', {
+        const response = await fetch('http://127.0.0.1:3000/create-wallet', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -105,7 +105,7 @@
       }
 
       try {
-        const response = await fetch('http://13.233.172.115:3000/import-wallet', {
+        const response = await fetch('http://127.0.0.1:3000/import-wallet', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
@@ -139,7 +139,7 @@
       }
 
       try {
-        const response = await fetch(`http://13.233.172.115:3000/check-balance/${address}`);
+        const response = await fetch(`http://127.0.0.1:3000/check-balance/${address}`);
         const data = await response.json();
 
         if (data.error) {
@@ -166,7 +166,7 @@
       }
 
       try {
-        const response = await fetch('http://13.233.172.115:3000/send-funds', {
+        const response = await fetch('http://127.0.0.1:3000/send-funds', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',
