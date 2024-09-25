@@ -4,37 +4,100 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
+      background: linear-gradient(108deg, #010179 -0.79%, #008bb2 100%);
       font-family: Arial, sans-serif;
-      margin: 20px;
+      height: 100vh;
+      margin: 0;
+      color: #0a0a68;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
+
+    .profile-container {
+      background: white;
+      color: #0a0a68;
+      padding: 50px;
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      width: 80%; /* Extend to 80% of the viewport width */
+      max-width: 1200px; /* Maximum width limit */
+      text-align: center;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
     h2 {
-      font-size: 18px;
-      margin-bottom: 10px;
+      font-size: 36px; /* Larger font size for header */
+      margin-bottom: 30px;
+      color: #0a0a68;
     }
+
     p {
-      font-size: 16px;
-      margin-bottom: 5px;
+      font-size: 20px; /* Larger font size for text */
+      margin-bottom: 20px;
+      word-wrap: break-word; /* Allow wallet address to wrap if too long */
     }
+
+    strong {
+      color: #0056b3;
+    }
+
     button {
-      padding: 10px 15px;
-      background-color: #007bff;
+      padding: 15px 30px;
+      font-size: 20px;
+      background-color: #011427;
       color: white;
       border: none;
-      border-radius: 5px;
+      border-radius: 8px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+      margin-top: 30px;
     }
+
     button:hover {
       background-color: #0056b3;
+    }
+
+    .wallet-info {
+      display: flex;
+      justify-content: space-between;
+      width: 100%;
+      max-width: 1000px;
+      flex-wrap: wrap;
+      text-align: left;
+    }
+
+    .wallet-info p {
+      width: 48%; /* Take 48% width to create two-column layout */
+    }
+
+    .balance {
+      color: green;
+      font-weight: bold;
     }
   </style>
 </head>
 <body>
-  <h2>Your Wallet Profile</h2>
-  <p><strong>Username:</strong> <span id="username">N/A</span></p>
-  <p><strong>Account Address:</strong> <span id="wallet-address">N/A</span></p>
-  <p><strong>Balance:</strong> <span id="balance">N/A</span></p>
+  <div class="profile-container">
+    <h2>Your Wallet Profile</h2>
+
+    <div class="wallet-info">
+      <p><strong>Username:</strong> <span id="username">N/A</span></p>
+      <p><strong>Account Address:</strong> <span id="wallet-address">N/A</span></p>
+      <p class="balance"><strong>Balance:</strong> <span id="balance">N/A</span></p>
+    </div>
+
+    <button id="refresh-balance">Refresh Balance</button>
+  </div>
+
+  <!-- Include Polkadot.js API -->
+  <script src="https://polkadot.js.org/api/polkadot-api.min.js"></script>
 
   <!-- Include your custom profile script -->
   <script src="profile.bundle.js"></script>
