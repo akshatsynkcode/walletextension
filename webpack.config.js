@@ -12,7 +12,7 @@ module.exports = {
     lock: './scripts/lock.js',
     popup: './scripts/popup.js',
     profile: './scripts/profile.js',
-    popupLogin: './scripts/popup-login.js' // Added the popup login script entry
+    popupLogin: './scripts/popup-login.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -61,7 +61,7 @@ module.exports = {
       chunks: ['profile']
     }),
     new HtmlWebpackPlugin({
-      template: './components/popup-login.html', // Added popup-login.html
+      template: './components/popup-login.html',
       filename: 'popup-login.html',
       chunks: ['popupLogin']
     }),

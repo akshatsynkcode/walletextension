@@ -3,6 +3,9 @@ let fullscreenTabId = null;
 let pendingRequests = [];
 let connectedSites = [];
 
+// Flag to indicate login status
+let isLoggedIn = false;
+
 // Listener for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     console.log("Message received:", message); // Debugging log
@@ -70,6 +73,18 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'get_connected_sites':
             sendResponse({ sites: connectedSites });
             return true; // Indicate async response
+
+        case 'check_login_status':
+            sendResponse({ loggedIn: isLoggedIn });
+            return true; // Indicate async response
+
+        case 'login_complete':
+            isLoggedIn = true;
+            if (pendingRequests.length > 0) {
+                pendingRequests.forEach(callback => callback());
+                pendingRequests = [];
+            }
+            break;
     }
 });
 
@@ -86,4 +101,37 @@ chrome.runtime.onInstalled.addListener((details) => {
             console.log("New tab created:", tab); // Debugging log
         });
     }
+});
+
+// Handle action button click
+chrome.action.onClicked.addListener((tab) => {
+    chrome.storage.local.get(['userInfo'], (result) => {
+        if (result.userInfo) {
+            if (isLoggedIn) {
+                // User is logged in; open the popup.html
+                chrome.windows.create({
+                    url: chrome.runtime.getURL('popup.html'),
+                    type: 'popup',
+                    width: 400,
+                    height: 600
+                });
+            } else {
+                // User is not logged in; show a notification instead
+                chrome.notifications.create({
+                    type: 'basic',
+                    iconUrl: 'icons/icon48.png',
+                    title: 'Login Required',
+                    message: 'Please complete the full-screen login before accessing the wallet.'
+                });
+            }
+        } else {
+            // No user info; show notification
+            chrome.notifications.create({
+                type: 'basic',
+                iconUrl: 'icons/icon48.png',
+                title: 'Login Required',
+                message: 'Please complete the full-screen login before accessing the wallet.'
+            });
+        }
+    });
 });

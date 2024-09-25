@@ -55,8 +55,9 @@ document.getElementById('lock-wallet-btn').addEventListener('click', () => {
 
 // Fetch user info and update the UI on load
 window.onload = async function () {
-    chrome.storage.local.get(['userInfo'], async function (result) {
+    chrome.storage.local.get(['userInfo', 'authToken'], async function (result) {
         const userInfo = result.userInfo;
+        const authToken = result.authToken;
 
         if (!userInfo) {
             document.body.innerHTML = '<p>Please log in first.</p>';
@@ -68,23 +69,49 @@ window.onload = async function () {
         document.getElementById('address').textContent = userInfo.address;
 
         // Fetch and update the balance periodically
-        await fetchAndUpdateBalance(userInfo.address);
-        setInterval(() => fetchAndUpdateBalance(userInfo.address), 4000);
+        if (authToken) {
+            await fetchAndUpdateBalance(userInfo.address, authToken);
+            setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
+        } else {
+            console.error('Auth token is missing.');
+        }
     });
 };
 
-// Function to fetch and update the wallet balance
-async function fetchAndUpdateBalance(address) {
+// Function to fetch and update the wallet balance (same API as profile.js)
+async function fetchAndUpdateBalance(address, authToken) {
     try {
-        const response = await fetch(`http://127.0.0.1:8000/api/check-balance/${address}`);
-        const data = await response.json();
-        
-        if (data.balance) {
-            document.getElementById('balance').textContent = `AED ${data.balance}`;
+        const response = await fetch('https://log-iam.finloge.com/api/wallet-balance/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `token ${authToken}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        console.log('Balance fetch response:', response);
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Balance data:', responseData);
+
+            // Assuming the balance is in responseData.data
+            const balance = responseData.data;
+            if (balance !== undefined) {
+                document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;
+            } else {
+                console.error('Balance not available in response data');
+            }
         } else {
-            console.error('Error fetching balance');
+            console.error('Failed to fetch balance:', response.statusText);
         }
     } catch (error) {
         console.error('Failed to fetch balance:', error);
     }
 }
+chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
+    if (request.action === "refresh") {
+        // Reload the popup content by calling the relevant function
+        window.location.reload();
+    }
+});

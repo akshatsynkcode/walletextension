@@ -1,21 +1,44 @@
 // Import necessary modules from polkadot/api
 import { ApiPromise, WsProvider } from '@polkadot/api';
 
-// Initialize Polkadot API connection
-async function getPolkadotApi() {
-    const provider = new WsProvider('wss://contract-node.finloge.com');
-    const api = await ApiPromise.create({ provider });
-    return api;
-}
-
+// Fetch and update balance
 // Fetch and update balance
 async function fetchAndUpdateBalance(address) {
     try {
-        const api = await getPolkadotApi();
-        const { data: { free: balance } } = await api.query.system.account(address);
-        const decimals = api.registry.chainDecimals[0]; // Fetch decimals
-        const humanBalance = balance / Math.pow(10, decimals);
-        document.getElementById('balance').textContent = `AED ${humanBalance.toFixed(3)}`;
+        // Retrieve token from local storage
+        const { authToken } = await chrome.storage.local.get('authToken');
+
+        if (!authToken) {
+            console.error('Authorization token is missing');
+            return;
+        }
+
+        const response = await fetch('https://log-iam.finloge.com/api/wallet-balance/', {
+            method: 'GET',
+            headers: {
+                'Authorization': `token ${authToken}`,
+                'Content-Type': 'application/json',
+            }
+        });
+
+        console.log('Balance fetch response:', response);
+
+        if (response.ok) {
+            const responseData = await response.json();
+            console.log('Balance data:', responseData);
+
+            // Assuming the balance is in responseData.data
+            const balance = responseData.data; 
+            if (balance !== undefined) {
+                const decimals = 18; // Assuming 18 decimals for demonstration
+                const humanBalance = balance / Math.pow(10, decimals);
+                document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`; // Displaying the raw balance from the API
+            } else {
+                console.error('Balance not available in response data');
+            }
+        } else {
+            console.error('Failed to fetch balance:', response.statusText);
+        }
     } catch (error) {
         console.error('Error fetching balance:', error);
     }

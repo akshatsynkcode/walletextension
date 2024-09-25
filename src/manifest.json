@@ -10,13 +10,11 @@
   ],
   "host_permissions": [
     "https://log-iam.finloge.com/*",
-    "https://polkadot.js.org/*",
-    "https://*.polkadot.io/*",
-    "wss://contract-node.finloge.com/*",
-    "https://*.dubaicustoms.net/*"
+    "http://*/*",
+    "https://*/*"
   ],
   "action": {
-    "default_popup": "popup-login.html",
+    "default_popup": "popup.html",
     "default_icon": {
       "16": "icons/icon16.png",
       "48": "icons/icon48.png",
@@ -34,8 +32,6 @@
   "content_scripts": [
     {
       "matches": [
-        "https://polkadot.js.org/apps/*",
-        "https://*.polkadot.io/*",
         "https://*.dubaicustoms.net/*"
       ],
       "js": ["content.bundle.js"]
@@ -50,12 +46,10 @@
   "externally_connectable": {
     "matches": [
       "https://log-iam.finloge.com/*",
-      "https://polkadot.js.org/*",
-      "https://*.polkadot.io/*",
       "https://*.dubaicustoms.net/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam.finloge.com wss://contract-node.finloge.com https://polkadot.js.org"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam.finloge.com"
   }
 }

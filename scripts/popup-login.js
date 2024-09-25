@@ -1,7 +1,12 @@
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['userInfo'], (result) => {
         if (result.userInfo) {
-            window.location.href = 'popup.html'; // Redirect if already logged in
+            // Populate the popup with user information
+            // Or direct them to the main wallet functionality
+        } else {
+            // User is not logged in
+            document.body.innerHTML = '<p>Please complete the login in the full-screen page first.</p>';
+            // Optionally disable buttons or other interactions
         }
     });
 
