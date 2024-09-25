@@ -5,8 +5,8 @@ const CopyWebpackPlugin = require('copy-webpack-plugin');
 module.exports = {
   mode: 'production',
   entry: {
-    background: './src/background.js',
-    content: './src/content.js',
+    background: './src/js/background.js',
+    content: './src/js/content.js',
     welcome: './scripts/welcome.js',
     login: './scripts/login.js',
     lock: './scripts/lock.js',

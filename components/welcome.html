@@ -4,24 +4,89 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Welcome to Dubai Customs Wallet</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
+      background: linear-gradient(108deg, #010179 -0.79%, #008bb2 100%);
+      color: white;
       font-family: Arial, sans-serif;
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      margin: 0;
+    }
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+    .logo img {
+      width: 100px;
+      margin-right: 10px;
+    }
+    h1 {
+      font-size: 48px;
+      margin-bottom: 20px;
+    }
+    h2 {
+      font-size: 24px;
+      margin-bottom: 30px;
+      font-weight: normal;
+    }
+    .features {
+      font-size: 18px;
+      margin-bottom: 40px;
       text-align: center;
-      margin-top: 50px;
+      line-height: 1.6;
+      text-align: left;
     }
     button {
-      padding: 10px 20px;
-      font-size: 16px;
+      padding: 12px 24px;
+      font-size: 18px;
+      background-color: #007bff;
+      color: white;
+      border: none;
+      border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+    button:hover {
+      background-color: #0056b3;
     }
   </style>
 </head>
 <body>
-  <h1>Welcome to Dubai Customs Wallet</h1>
-  <button id="get-started-btn">Get Started</button>
 
-  <!-- Link to external script -->
+  <!-- Logo Section Centered Above the Title -->
+  <div class="logo">
+    <img src="./icons/icon128.png" alt="Dubai Customs Wallet Logo"> 
+    <h2>Dubai Customs <span>Wallet</span></h2>
+  </div>
+
+  <!-- Main Title -->
+  <h1>
+    Simplified Blockchain <span style="color: #bb9753;">Solutions</span>
+  </h1>
+
+
+  <!-- Subtitle -->
+  <h2>Dubai Customs Blockchain Network with AED Token Support</h2>
+
+  <!-- Features List -->
+  <div class="features">
+    <p>• Single Network: Exclusive to Dubai Customs</p>
+    <p>• Blockchain Support: Optimized for secure, fast transactions</p>
+    <p>• AED Token: The only token supported for streamlined operations</p>
+  </div>
+
+  <!-- Get Started Button -->
+  <button id="get-started-btn" class="btn btn-primary">Get Started →</button>
+
+  <!-- External Script -->
   <script src="welcome.bundle.js"></script>
+  <script src="./src/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
