@@ -63,8 +63,9 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to popup.html after successful login
                     window.location.href = 'popup.html';
 
-                    // Send message to open the popup window for the wallet
-                    chrome.runtime.sendMessage({ action: 'openPopup' });
+                    
+                    // // Send message to open the popup window for the wallet
+                    // chrome.runtime.sendMessage({ action: 'openPopup' });
                 });
 
             } else {

@@ -6,6 +6,20 @@
   <title>Profile</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <style>
+     #balance-loader {
+      display: inline-block;
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #0a0a68; /* Dark blue */
+      border-radius: 50%;
+      width: 20px;
+      height: 20px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     body {
       background: linear-gradient(108deg, #010179 -0.79%, #008bb2 100%);
       font-family: Arial, sans-serif;
@@ -104,7 +118,12 @@
       <div class="wallet-info">
         <p><strong>Username:</strong> <span id="username">N/A</span></p>
         <p><strong>Account Address:</strong> <span id="wallet-address">N/A</span></p>
-        <p class="balance"><strong>Balance:</strong> <span id="balance">N/A</span></p>
+        <p class="balance">
+          <strong>Balance:</strong> 
+          <span id="balance">
+            <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
+          </span>
+        </p>
       </div>
     </div>
   </div>

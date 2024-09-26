@@ -1,6 +1,8 @@
 // Fetch and update balance
 // Fetch and update balance
 async function fetchAndUpdateBalance(address) {
+    const loader = document.getElementById('balance-loader');
+    loader.style.display = 'inline-block';  // Show the loader
     try {
         // Retrieve token from local storage
         const { authToken } = await chrome.storage.local.get('authToken');
@@ -30,6 +32,8 @@ async function fetchAndUpdateBalance(address) {
                 if (!isNaN(balance)) {
                     // Assuming no need to divide by 10^18 since balance is already in human-readable form
                     document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;  // Format balance to 3 decimal places
+                        // Hide the loader after fetching the balance
+                        loader.style.display = 'none';
                 } else {
                     console.error('Balance is not a valid number:', balanceString);
                 }

@@ -5,6 +5,20 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Popup</title>
   <style>
+     #balance-loader {
+      display: inline-block;
+      border: 4px solid #f3f3f3; /* Light grey */
+      border-top: 4px solid #0a0a68; /* Dark blue */
+      border-radius: 50%;
+      width: 10px;
+      height: 10px;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
     body {
       font-family: Arial, sans-serif;
       margin: 20px;
@@ -81,7 +95,12 @@
   <div class="output">
     <p><strong>Username:</strong> <span id="username"></span></p>
     <p><strong>Account Address:</strong> <span id="address"></span></p>
-    <p><strong>Balance:</strong> <span id="balance">N/A</span></p>
+    <p class="balance">
+      <strong>Balance:</strong> 
+      <span id="balance">
+        <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
+      </span>
+    </p>
   </div>
 
   <!-- Lock Wallet Button -->

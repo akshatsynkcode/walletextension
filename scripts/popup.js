@@ -80,6 +80,8 @@ window.onload = async function () {
 
 // Function to fetch and update the wallet balance (same API as profile.js)
 async function fetchAndUpdateBalance(address, authToken) {
+    const loader = document.getElementById('balance-loader');
+    loader.style.display = 'inline-block';  // Show the loader
     try {
         const response = await fetch('https://log-iam.finloge.com/api/wallet-balance/', {
             method: 'GET',
@@ -101,7 +103,9 @@ async function fetchAndUpdateBalance(address, authToken) {
                 const balance = parseFloat(balanceString);  // Convert the balance to a number
                 if (!isNaN(balance)) {
                     document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`; // Format balance to 3 decimal places
-                } else {
+                    loader.style.display = 'none';
+                }
+                else {
                     console.error('Balance is not a valid number:', balanceString);
                 }
             } else {
