@@ -20,7 +20,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         const response = await fetch('https://log-iam.finloge.com/api/mobile-login/', {
             method: 'POST',
             headers: {
-                'Content-Type': 'application/json'
+                'Content-Type': 'application/json',
             },
             body: JSON.stringify({ email, password })
         });
@@ -66,4 +66,3 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         loginButton.style.display = 'block';
     }
   });
-  

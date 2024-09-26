@@ -1,7 +1,4 @@
-// Import necessary modules from polkadot/api
-import { ApiPromise, WsProvider } from '@polkadot/api';
 
-// Fetch and update balance
 // Fetch and update balance
 async function fetchAndUpdateBalance(address) {
     try {
@@ -78,8 +75,7 @@ window.onload = async function () {
         console.log('AuthToken:', authToken);
 
         if (!userInfo) {
-            document.body.textContent = 'Please log in first.';
-            return;
+            window.location.href = 'login.html';
         }
 
         const usernameElement = document.getElementById('username');
