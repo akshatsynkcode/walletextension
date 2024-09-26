@@ -96,9 +96,14 @@ async function fetchAndUpdateBalance(address, authToken) {
             console.log('Balance data:', responseData);
 
             // Assuming the balance is in responseData.data
-            const balance = responseData.data;
-            if (balance !== undefined) {
-                document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;
+            const balanceString = responseData.data;
+            if (balanceString !== undefined) {
+                const balance = parseFloat(balanceString);  // Convert the balance to a number
+                if (!isNaN(balance)) {
+                    document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`; // Format balance to 3 decimal places
+                } else {
+                    console.error('Balance is not a valid number:', balanceString);
+                }
             } else {
                 console.error('Balance not available in response data');
             }
@@ -109,6 +114,7 @@ async function fetchAndUpdateBalance(address, authToken) {
         console.error('Failed to fetch balance:', error);
     }
 }
+
 chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
     if (request.action === "refresh") {
         // Reload the popup content by calling the relevant function

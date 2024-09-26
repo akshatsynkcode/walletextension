@@ -3,64 +3,129 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Popup Login</title>
+  <title>Login</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
   <style>
     body {
+      background: linear-gradient(108deg, #010179 -0.79%, #008bb2 100%);
+      font-family: Arial, sans-serif;
       display: flex;
       justify-content: center;
       align-items: center;
-      height: 100vh;
+      padding: 10px;  /* Adjusted for popup dimensions */
       margin: 0;
-      font-family: Arial, sans-serif;
     }
 
     .login-container {
-      padding: 20px;
-      border: 1px solid #ccc;
-      border-radius: 5px;
-      background: #fff;
-      box-shadow: 0 0 10px rgba(0,0,0,0.1);
+      background: white;
+      color: #0a0a68;
+      padding: 20px;  /* Reduced padding for popup */
+      border-radius: 10px;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      width: 100%;  /* Full width of the popup */
+      max-width: 300px;  /* Smaller max width suitable for a popup */
+      text-align: center;
     }
 
-    input[type="email"], input[type="password"] {
-      width: calc(100% - 20px);
-      padding: 10px;
-      margin: 10px 0;
-      display: inline-block;
-      border: 1px solid #ccc;
+    h2 {
+      font-size: 20px;  /* Smaller font size for popup */
+      margin-bottom: 15px;
+    }
+
+    .form-group {
+      text-align: left;
+      margin-bottom: 10px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 5px;
+    }
+
+    input {
+      width: 100%;
+      padding: 8px;
+      border: 1px solid #ddd;
       border-radius: 5px;
+      background-color: rgba(0, 0, 0, 0.1);
+      margin-bottom: 10px;  /* Smaller margin */
     }
 
     button {
       width: 100%;
-      padding: 10px;
+      padding: 10px 20px;
+      font-size: 16px;
+      background-color: #011427;
       color: white;
-      background-color: #007bff;
       border: none;
       border-radius: 5px;
       cursor: pointer;
+      transition: background-color 0.3s ease;
     }
 
     button:hover {
       background-color: #0056b3;
     }
 
-    p#error-message {
+    .error {
       color: red;
-      text-align: center;
+      margin-top: 10px;
+    }
+
+    .logo {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      margin-bottom: 15px;
+    }
+
+    .logo img {
+      width: 80px;  /* Smaller logo for popup */
+    }
+
+    #loader {
+      display: none;
+      border: 6px solid #f3f3f3;
+      border-top: 6px solid #0a0a68;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      animation: spin 1s linear infinite;
+      margin: 15px auto;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
     }
   </style>
 </head>
 <body>
   <div class="login-container">
-    <h1>Login to Your Account</h1>
-    <form id="loginForm">
-      <input type="email" id="email" placeholder="Email" required>
-      <input type="password" id="password" placeholder="Password" required>
-      <button type="submit">Login</button>
-      <p id="error-message"></p>
+    <form id="loginForm">  <!-- Form element added -->
+      <div class="logo">
+        <img src="./icons/icon128.png" alt="Dubai Customs Wallet Logo">
+        <h2>Dubai Customs Wallet</h2>
+      </div>
+
+      <div class="form-group">
+        <h2>Login to Your Wallet</h2>
+        <label for="email">Email:</label>
+        <input type="email" id="email" placeholder="Enter your email" required>
+
+        <label for="password">Password:</label>
+        <input type="password" id="password" placeholder="Enter your password" required>
+      </div>
+
+      <div class="login-btn">
+        <button type="submit" id="login-btn">Login</button>  <!-- Type attribute added for button -->
+        <div id="loader"></div>
+      </div>
+
+      <p id="error-message" class="error"></p>
     </form>
   </div>
-  <script src="popup-login.js"></script>
+
+  <script src="popup-login.bundle.js"></script>
 </body>
 </html>

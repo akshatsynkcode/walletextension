@@ -39,14 +39,20 @@
   ],
   "web_accessible_resources": [
     {
-      "resources": ["scripts/polkadot-api.min.js"],
+      "resources": [
+        "scripts/polkadot-api.min.js",
+        "popup.bundle.js",  
+        "popup-login.bundle.js"
+      ],
       "matches": ["<all_urls>"]
     }
   ],
   "externally_connectable": {
     "matches": [
       "https://log-iam.finloge.com/*",
-      "https://*.dubaicustoms.net/*"
+      "https://*.dubaicustoms.net/*",
+      "http://localhost/*", 
+      "http://127.0.0.1/*"
     ]
   },
   "content_security_policy": {

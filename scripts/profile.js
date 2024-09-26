@@ -1,4 +1,4 @@
-
+// Fetch and update balance
 // Fetch and update balance
 async function fetchAndUpdateBalance(address) {
     try {
@@ -18,21 +18,29 @@ async function fetchAndUpdateBalance(address) {
             }
         });
 
-        console.log('Balance fetch response:', response);
-
         if (response.ok) {
             const responseData = await response.json();
             console.log('Balance data:', responseData);
 
-            // Assuming the balance is in responseData.data
-            const balance = responseData.data; 
-            if (balance !== undefined) {
-                const decimals = 18; // Assuming 18 decimals for demonstration
-                const humanBalance = balance / Math.pow(10, decimals);
-                document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`; // Displaying the raw balance from the API
+            // Assuming the balance is in responseData.data and it's a string
+            const balanceString = responseData.data;
+
+            if (balanceString !== undefined) {
+                const balance = parseFloat(balanceString);  // Convert the balance to a number
+                if (!isNaN(balance)) {
+                    // Assuming no need to divide by 10^18 since balance is already in human-readable form
+                    document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;  // Format balance to 3 decimal places
+                } else {
+                    console.error('Balance is not a valid number:', balanceString);
+                }
             } else {
                 console.error('Balance not available in response data');
             }
+        } else if (response.status === 401) {
+            console.error('Token expired or invalid, redirecting to login.');
+            chrome.storage.local.remove('authToken', function() {
+                window.location.href = 'login.html';
+            });
         } else {
             console.error('Failed to fetch balance:', response.statusText);
         }
@@ -40,6 +48,7 @@ async function fetchAndUpdateBalance(address) {
         console.error('Error fetching balance:', error);
     }
 }
+
 
 // Fetch updated username from the API
 async function fetchUpdatedUserProfile(token) {
@@ -58,6 +67,11 @@ async function fetchUpdatedUserProfile(token) {
             const data = await response.json();
             console.log('Profile data:', data);
             return data; // Assuming the response contains updated user data
+        } else if (response.status === 401) {
+            console.error('Token expired or invalid, redirecting to login.');
+            chrome.storage.local.remove('authToken', function() {
+                window.location.href = 'login.html';
+            });
         } else {
             console.error('Failed to fetch user profile:', response.statusText);
         }
@@ -90,16 +104,24 @@ window.onload = async function () {
                     chrome.storage.local.set({ userInfo: updatedUserInfo });
                     usernameElement.textContent = updatedUserInfo.name;
                 } else {
-                    usernameElement.textContent = userInfo.name || 'N/A';
+                    usernameElement.textContent = userInfo.name || 'Guest'; // Fallback value
                 }
             } else {
-                usernameElement.textContent = userInfo.name || 'N/A';
+                usernameElement.textContent = userInfo.name || 'Guest'; // Fallback value
             }
 
             walletAddressElement.textContent = userInfo.address || 'N/A';
 
             await fetchAndUpdateBalance(userInfo.address); // Initial fetch
-            setInterval(() => fetchAndUpdateBalance(userInfo.address), 4000); // Continuous fetch
+
+            // Continuous fetch every 4 seconds, with error handling
+            setInterval(async () => {
+                try {
+                    await fetchAndUpdateBalance(userInfo.address);
+                } catch (error) {
+                    console.error('Error fetching balance in setInterval:', error);
+                }
+            }, 4000);
         } else {
             console.error('One or more profile elements are missing in the DOM');
         }
