@@ -66,3 +66,11 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         loginButton.style.display = 'block';
     }
   });
+
+window.onload = function () {
+    chrome.storage.local.get(['userInfo'], function (result) {
+        if (result.userInfo) {
+            window.location.href = 'profile.html';
+        }
+    });
+}

@@ -27,9 +27,7 @@ async function lockWallet() {
                     // Close the full-screen tab
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, function (response) {
                         if (response.success) {
-                            console.log('Full-screen tab closed.');
-                            // Redirect to login page
-                            window.location.href = 'login.html';
+                            window.close();
                         } else {
                             console.error('Failed to close full-screen tab.');
                         }
@@ -60,21 +58,23 @@ window.onload = async function () {
         const authToken = result.authToken;
 
         if (!userInfo) {
-            document.body.innerHTML = '<p>Please log in first.</p>';
-            return;
+            // prohibited to open popup without login
+            window.close();
+        }
+        else{
+            // Display user information
+            document.getElementById('username').textContent = userInfo.name;
+            document.getElementById('address').textContent = userInfo.address;
+    
+            // Fetch and update the balance periodically
+            if (authToken) {
+                await fetchAndUpdateBalance(userInfo.address, authToken);
+                setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
+            } else {
+                console.error('Auth token is missing.');
+            }
         }
 
-        // Display user information
-        document.getElementById('username').textContent = userInfo.name;
-        document.getElementById('address').textContent = userInfo.address;
-
-        // Fetch and update the balance periodically
-        if (authToken) {
-            await fetchAndUpdateBalance(userInfo.address, authToken);
-            setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
-        } else {
-            console.error('Auth token is missing.');
-        }
     });
 };
 

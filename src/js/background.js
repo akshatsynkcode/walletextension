@@ -47,7 +47,7 @@ function handleLockWallet(sendResponse) {
             } else {
                 fullscreenTabId = null;
                 isLoggedIn = false;
-                chrome.action.setPopup({popup: "popup-login.html"}); // Set popup to login page after locking
+                chrome.action.setPopup({popup: "popup-login.html"});
                 sendResponse({ success: true });
             }
         });
