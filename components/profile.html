@@ -6,110 +6,160 @@
     <title>Profile</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300..800;1,300..800&family=Roboto:ital,wght@0,100;0,300;0,400;0,500;0,700;0,900;1,100;1,300;1,400;1,500;1,700;1,900&display=swap"
+      rel="stylesheet"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+    <!-- <link
+      rel="stylesheet"
+      href="./css/all.min.css"
+    /> -->
   </head>
   <body>
-    <div id="particles-js"></div>
-    <div
-      class="container d-flex flex-column justify-content-center align-items-center min-vh-100 gap-2"
-    >
-      <div class="profile-container">
-        <h2 class="wallet-text">Your Wallet Profile</h2>
-        <div class="wallet-info">
-          <p><strong>Username:</strong> <span id="username">N/A</span></p>
-          <p>
-            <strong>Account Address:</strong>
-            <span id="wallet-address">N/A</span>
-          </p>
-          <p class="balance">
-            <strong>Balance:</strong> 
-            <span id="balance">
-              <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
-            </span>
-          </p>
+    <div class="container-fluid p-0">
+      <nav class="navbar navbar-expand-lg header">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"
+            ><img src="./icons/icon48.png" alt="Logo" />
+          </a>
+          <button
+            class="navbar-toggler"
+            type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarSupportedContent"
+            aria-controls="navbarSupportedContent"
+            aria-expanded="false"
+            aria-label="Toggle navigation"
+          >
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <ul class="navbar-nav me-auto ms-5 mb-2 mb-lg-0">
+              <li class="nav-item">
+                <a class="nav-link active text-white" aria-current="page" href="#"
+                  >Dashboard</a
+                >
+              </li>
+            </ul>
+            <form class="d-flex align-items-center">
+              <span class="text-light me-4">Username</span>
+              <button class="btn btn-light btn-sm" type="submit">
+                Lock Wallet
+              </button>
+            </form>
+          </div>
+        </div>
+      </nav>
+      <div class="container">
+        <div class="row mt-5">
+          <div class="col-lg-5 col-12">
+            <div class="card table-card">
+              <div class="card-body">
+                <div class="card-header">
+                  <h5 class="card-title font-20 text-white">Profile Details</h5>
+                </div>
+                <div class="p-4">
+                  <p>
+                    <span class="font-18"> Username :</span>
+                    <span id="username" class="font-regular">N/A</span>
+                  </p>
+                  <p>
+                    <span class="font-18"> Account Address :</span>
+                    <span id="wallet-address" class="font-regular">N/A</span>
+                    <button
+                      onclick="copyAddress()"
+                      class="copy-button"
+                      aria-label="Copy Address"
+                    >
+                      <i class="fas fa-copy"></i>
+                    </button>
+                  </p>
+                  <!-- <p>
+                    <span class="font-18"> Balance :</span>
+                    <span id="balance" class="font-regular"><span id="balance-loader"></span></span>
+                  </p> -->
+                  <div class="balance-circle">
+                    <p class="font-15 mb-0">Balance:</p>
+                    <p id="balance" class="font-18 font-regular">
+                      <span id="balance-loader"></span>
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-7 col-12">
+            <div class="card table-card">
+              <div class="card-body">
+                <div class="card-header">
+                  <h5 class="card-title font-20 text-white">Transaction Details</h5>
+                </div>
+                <div class="p-4">
+                  <div class="table-responsive">
+                    <table class="table table-hover align-middle mb-4">
+                      <thead>
+                        <tr>
+                          <th scope="col" class="font-18">head</th>
+                          <th scope="col" class="font-18">head</th>
+                          <th scope="col" class="font-18">head</th>
+                          <th scope="col" class="font-18">head</th>
+                          <th scope="col" class="font-18">head</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td scope="row" class="font-15">1</td>
+                          <td class="font-15">2</td>
+                          <td class="font-15">3</td>
+                          <td class="font-15">4</td>
+                          <td class="font-15">5</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                    <nav aria-label="Page navigation example">
+                      <ul class="pagination pagination-sm justify-content-end">
+                        <li class="page-item">
+                          <a class="page-link" href="#" aria-label="Previous">
+                            <span aria-hidden="true">&laquo;</span>
+                          </a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">1</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">2</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#">3</a>
+                        </li>
+                        <li class="page-item">
+                          <a class="page-link" href="#" aria-label="Next">
+                            <span aria-hidden="true">&raquo;</span>
+                          </a>
+                        </li>
+                      </ul>
+                    </nav>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
       </div>
     </div>
     <script src="welcome.bundle.js"></script>
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script src="./js/particles.js"></script>
-    <script src="http://threejs.org/examples/js/libs/stats.min.js"></script>
-
     <script>
-      // Ensure particles.js is loaded correctly
-      particlesJS("particles-js", {
-        particles: {
-          number: { value: 160, density: { enable: true, value_area: 800 } },
-          color: { value: "#ffffff" },
-          shape: {
-            type: "circle",
-            stroke: { width: 0, color: "#000000" },
-            polygon: { nb_sides: 5 },
-            image: { src: "img/github.svg", width: 100, height: 100 },
-          },
-          opacity: {
-            value: 1,
-            random: true,
-            anim: { enable: true, speed: 1, opacity_min: 0, sync: false },
-          },
-          size: {
-            value: 3,
-            random: true,
-            anim: { enable: false, speed: 4, size_min: 0.3, sync: false },
-          },
-          move: {
-            enable: true,
-            speed: 1,
-            direction: "none",
-            random: true,
-            straight: false,
-            out_mode: "out",
-            bounce: false,
-          },
-        },
-        interactivity: {
-          detect_on: "canvas",
-          events: {
-            onhover: { enable: true, mode: "bubble" },
-            onclick: { enable: true, mode: "repulse" },
-            resize: true,
-          },
-          modes: {
-            bubble: {
-              distance: 250,
-              size: 0,
-              duration: 2,
-              opacity: 0,
-              speed: 3,
-            },
-            repulse: { distance: 400, duration: 0.4 },
-            push: { particles_nb: 4 },
-            remove: { particles_nb: 2 },
-          },
-        },
-        retina_detect: true,
-      });
-
-      var stats = new Stats();
-      stats.setMode(0);
-      stats.domElement.style.position = "absolute";
-      stats.domElement.style.left = "0px";
-      stats.domElement.style.top = "0px";
-      document.body.appendChild(stats.domElement);
-
-      var count_particles = document.querySelector(".js-count-particles");
-      var update = function () {
-        stats.begin();
-        stats.end();
-        if (
-          window.pJSDom[0].pJS.particles &&
-          window.pJSDom[0].pJS.particles.array
-        ) {
-          count_particles.innerText =
-            window.pJSDom[0].pJS.particles.array.length;
-        }
-        requestAnimationFrame(update);
-      };
-      requestAnimationFrame(update);
-    </script>
+      function copyAddress() {
+  var copyText = document.getElementById("wallet-address");
+  copyText.select();
+  navigator.clipboard.writeText(copyText.value);
+  alert("Copied the text: " + copyText.value);
+}
+ </script>
   </body>
 </html>

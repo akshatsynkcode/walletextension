@@ -6,7 +6,6 @@ module.exports = {
   mode: 'production',
   entry: {
     background: './src/js/background.js',
-    particles: './src/js/particles.js',
     content: './src/js/content.js',
     welcome: './scripts/welcome.js',
     login: './scripts/login.js',

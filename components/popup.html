@@ -9,19 +9,42 @@
 </head>
 <body>
     <div class="popup-container">
-    <h2 class="wallet-text">Wallet Profile</h2>
-    <div class="wallet-info">
-      <p><strong>Username:</strong> <span id="username"></span></p>
-      <p><strong>Account Address:</strong> <span id="address"></span></p>
+      <nav class="navbar navbar-expand-lg header">
+        <div class="container-fluid">
+          <a class="navbar-brand text-white" href="#"
+            ><img src="./icons/icon48.png" alt="Logo" class="me-3"/>Wallet Profile
+          </a>
+        </div>
+      </nav>
+    <div class="wallet-info p-5">
+      <p><strong>Username :</strong> <span id="username"></span></p>
+      <p><strong>Account Address :</strong> <span id="address"></span></p>
       <p class="balance">
-        <strong>Balance:</strong> 
+        <strong>Balance :</strong> 
         <span id="balance">
-          <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
+          <span id="balance-loader"></span>
         </span>
       </p>
-      <button id="lock-wallet-btn">Lock Wallet</button>
+      <button id="lock-wallet-btn" class="login-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Lock Wallet</button>
     </div>
   </div>
+  <!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        Are you sure you want to lock the wallet?
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+        <button type="button" class="btn btn-primary">Yes</button>
+      </div>
+    </div>
+  </div>
+</div>
 
   <!-- Include the popup script -->
   <script src="popup.bundle.js"></script>
