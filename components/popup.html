@@ -4,109 +4,27 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Popup</title>
-  <style>
-     #balance-loader {
-      display: inline-block;
-      border: 4px solid #f3f3f3; /* Light grey */
-      border-top: 4px solid #0a0a68; /* Dark blue */
-      border-radius: 50%;
-      width: 10px;
-      height: 10px;
-      animation: spin 1s linear infinite;
-    }
-
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    body {
-      font-family: Arial, sans-serif;
-      margin: 20px;
-      width: 350px;
-      height: 400px;
-      overflow: auto;
-    }
-
-    h1 {
-      font-size: 18px;
-      margin-bottom: 20px;
-    }
-
-    .output {
-      margin-top: 20px;
-      padding: 10px;
-      border: 1px solid #ddd;
-      border-radius: 5px;
-      background-color: #f9f9f9;
-    }
-
-    label {
-      display: block;
-      margin-top: 10px;
-    }
-
-    input[type="text"],
-    input[type="number"] {
-      width: calc(100% - 22px);
-      padding: 8px;
-      margin-top: 5px;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-    }
-
-    button {
-      padding: 10px 15px;
-      margin-top: 10px;
-      border: none;
-      border-radius: 5px;
-      background-color: #007bff;
-      color: white;
-      cursor: pointer;
-      font-size: 16px;
-    }
-
-    button:hover {
-      background-color: #0056b3;
-    }
-
-    button:disabled {
-      background-color: #ccc;
-      cursor: not-allowed;
-    }
-
-    h2 {
-      font-size: 16px;
-      margin-top: 20px;
-    }
-
-    a {
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    a:hover {
-      text-decoration: underline;
-    }
-  </style>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet" />
 </head>
 <body>
-  <h1>Wallet Profile</h1>
-
-  <div class="output">
-    <p><strong>Username:</strong> <span id="username"></span></p>
-    <p><strong>Account Address:</strong> <span id="address"></span></p>
-    <p class="balance">
-      <strong>Balance:</strong> 
-      <span id="balance">
-        <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
-      </span>
-    </p>
+    <div class="popup-container">
+    <h2 class="wallet-text">Wallet Profile</h2>
+    <div class="wallet-info">
+      <p><strong>Username:</strong> <span id="username"></span></p>
+      <p><strong>Account Address:</strong> <span id="address"></span></p>
+      <p class="balance">
+        <strong>Balance:</strong> 
+        <span id="balance">
+          <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
+        </span>
+      </p>
+      <button id="lock-wallet-btn">Lock Wallet</button>
+    </div>
   </div>
 
-  <!-- Lock Wallet Button -->
-  <button id="lock-wallet-btn">Lock Wallet</button>
-
   <!-- Include the popup script -->
-  <script src="popup.bundle.js"></script>  <!-- Ensure the path is correct -->
+  <script src="popup.bundle.js"></script>
+  <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

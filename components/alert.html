@@ -12,21 +12,10 @@
     <div
       class="container d-flex flex-column justify-content-center align-items-center min-vh-100 gap-2"
     >
-      <div class="profile-container">
-        <h2 class="wallet-text">Your Wallet Profile</h2>
-        <div class="wallet-info">
-          <p><strong>Username:</strong> <span id="username">N/A</span></p>
-          <p>
-            <strong>Account Address:</strong>
-            <span id="wallet-address">N/A</span>
-          </p>
-          <p class="balance">
-            <strong>Balance:</strong> 
-            <span id="balance">
-              <span id="balance-loader"></span> <!-- Loader will be shown here initially -->
-            </span>
-          </p>
-        </div>
+      <div class="popup-container">
+        <h2>Are you sure you want to lock the wallet?</h2>
+        <button class="yes-button" onclick="handleYes()">Yes</button>
+        <button class="no-button" onclick="handleNo()">No</button>
       </div>
     </div>
     <script src="welcome.bundle.js"></script>
@@ -111,5 +100,15 @@
       };
       requestAnimationFrame(update);
     </script>
+
+<script>
+    function handleYes() {
+        alert("You clicked Yes!");
+    }
+
+    function handleNo() {
+        alert("You clicked No!");
+    }
+</script>
   </body>
 </html>

@@ -1,0 +1,166 @@
+body {
+    margin: 0;
+    font: normal 75% Arial, Helvetica, sans-serif;
+}
+canvas {
+    display: block;
+    vertical-align: bottom;
+}
+#particles-js {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    background-color: black;
+    background-repeat: no-repeat;
+    background-size: 20%;
+    background-position: 50% 50%;
+}
+.logo {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+h1, h4 {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+.features {
+    text-align: center;
+    position: relative;
+    z-index: 1;
+}
+#get-started-btn {
+    display: block;
+    margin: 20px auto;
+    position: relative;
+    z-index: 1;
+    width: auto;
+}
+.logo-img{
+  height: 100px;
+}
+.logo-img1{
+    height: 80px;
+}
+.login-container {
+    background: white;
+    color: black;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
+
+  .form-group {
+    text-align: left;
+    margin-bottom: 20px;
+  }
+
+  label {
+    display: block;
+    margin-bottom: 5px;
+    color: black;
+  }
+  #balance-loader {
+    display: inline-block;
+    border: 4px solid #f3f3f3; /* Light grey */
+    border-top: 4px solid #0a0a68; /* Dark blue */
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+
+  input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    background-color: rgba(0, 0, 0, 0.1);
+    color: black;
+    margin-bottom: 20px;
+  }
+
+  .login-btn {
+    margin-top: 20px;
+    text-align: center;
+  }
+
+  button {
+    width: 100%;
+    padding: 12px 24px;
+    font-size: 18px;
+    background-color: black;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+
+  button:hover {
+    background-color: #141414;
+  }
+
+  .error {
+    color: red;
+    margin-top: 10px;
+  }
+
+  #loader {
+    display: none;
+    border: 8px solid #f3f3f3;
+    border-top: 8px solid black;
+    border-radius: 50%;
+    width: 50px;
+    height: 50px;
+    animation: spin 1s linear infinite;
+    margin: 20px auto;
+  }
+
+  @keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+  }
+  .profile-container {
+    background: white;
+    color: black;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 500px;
+    position: relative;
+  }
+  .balance {
+    color: green;
+    font-weight: bold;
+  }
+  .wallet-text{
+    font-size: 36px;
+      margin-bottom: 30px;
+  }
+
+  .wallet-info p {
+    font-size: 20px;
+    margin-bottom: 20px;
+    word-wrap: break-word;
+  }
+  .popup-container{
+    background: white;
+    color: black;
+    padding: 50px;
+    border-radius: 10px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 100%;
+    max-width: 400px;
+    position: relative;
+  }
