@@ -17,14 +17,16 @@
         </div>
       </nav>
     <div class="wallet-info p-5">
+      <div class="text-center">
+        <img src="./icons/wallet.png" alt="wallet-logo" style="width: 80px; height: 80px;">
+        <p>Total Balance</p>
+        <h2><span id="balance">
+          <span id="balance-loader"></span>
+        </span></h2>
+      </div>
+      </div>
       <p><strong>Username :</strong> <span id="username"></span></p>
       <p><strong>Account Address :</strong> <span id="address"></span></p>
-      <p class="balance">
-        <strong>Balance :</strong> 
-        <span id="balance">
-          <span id="balance-loader"></span>
-        </span>
-      </p>
       <button id="lock-wallet-btn" class="login-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Lock Wallet</button>
     </div>
   </div>
