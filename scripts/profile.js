@@ -135,3 +135,31 @@ window.onload = async function () {
         }
     });
 };
+
+document.addEventListener('DOMContentLoaded', () => {
+    const copyButton = document.getElementById('copy-button');
+    console.log(copyButton, "copy button");
+    copyButton.addEventListener('click', copyAddress);
+});
+
+function copyAddress() {
+    const walletAddressElement = document.getElementById('wallet-address');
+    const copyMessageElement = document.getElementById('copy-message');
+
+    if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
+        const tempInput = document.createElement('textarea');
+        tempInput.value = walletAddressElement.textContent;
+        document.body.appendChild(tempInput);
+        tempInput.select();
+        document.execCommand('copy');
+        document.body.removeChild(tempInput);
+
+        // Show the copied message
+        copyMessageElement.style.display = 'inline'; // Show the message
+        setTimeout(() => {
+            copyMessageElement.style.display = 'none'; // Hide after a delay
+        }, 2000); // Change the delay as needed
+    } else {
+        alert('No wallet address to copy.');
+    }
+}

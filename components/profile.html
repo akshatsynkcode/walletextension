@@ -68,15 +68,12 @@
                     <span id="username" class="font-regular">N/A</span>
                   </p>
                   <p>
-                    <span class="font-18"> Account Address :</span>
+                    <span class="font-18">Account Address:</span>
                     <span id="wallet-address" class="font-regular">N/A</span>
-                    <button
-                      onclick="copyAddress()"
-                      class="copy-button"
-                      aria-label="Copy Address"
-                    >
-                      <i class="fas fa-copy"></i>
+                    <button id="copy-button" class="copy-button" aria-label="Copy Address">
+                        <i class="fas fa-copy"></i>
                     </button>
+                    <span id="copy-message" class="copy-message" style="display: none; margin-left: 8px; font-size: 12px; color: green">Copied!<span>
                   </p>
                   <!-- <p>
                     <span class="font-18"> Balance :</span>
@@ -153,13 +150,5 @@
     </div>
     <script src="profile.bundle.js"></script>
     <script src="./js/bootstrap.bundle.min.js"></script>
-    <script>
-      function copyAddress() {
-  var copyText = document.getElementById("wallet-address");
-  copyText.select();
-  navigator.clipboard.writeText(copyText.value);
-  alert("Copied the text: " + copyText.value);
-}
- </script>
   </body>
 </html>
