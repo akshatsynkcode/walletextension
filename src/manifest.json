@@ -9,9 +9,7 @@
     "tabs"
   ],
   "host_permissions": [
-    "https://log-iam.finloge.com/*",
-    "http://*/*",
-    "https://*/*"
+    "*://*/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -32,7 +30,7 @@
   "content_scripts": [
     {
       "matches": [
-        "https://*.dubaicustoms.net/*"
+        "*://*/*"
       ],
       "js": ["content.bundle.js"]
     }
@@ -44,15 +42,12 @@
         "popup.bundle.js",  
         "popup-login.bundle.js"
       ],
-      "matches": ["<all_urls>"]
+      "matches": ["*://*/*"]
     }
   ],
   "externally_connectable": {
     "matches": [
-      "https://log-iam.finloge.com/*",
-      "https://*.dubaicustoms.net/*",
-      "http://localhost/*", 
-      "http://127.0.0.1/*"
+      "*://*/*"
     ]
   },
   "content_security_policy": {
