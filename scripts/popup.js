@@ -93,7 +93,6 @@ async function fetchAndUpdateBalance(address, authToken) {
             }
         });
 
-        console.log('Balance fetch response:', response);
 
         if (response.ok) {
             const responseData = await response.json();
