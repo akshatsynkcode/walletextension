@@ -28,16 +28,47 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             sendResponse({ sites: connectedSites });
             break;
         case 'check_login_status':
-            sendResponse({ loggedIn: isLoggedIn });
+            checkLoginStatus(sendResponse);
             break;
         case 'login_complete':
             handleLoginComplete();
+            break;
+        case 'EXTENSION_DATA':
+            handleExtensionData(message.data, sendResponse);
             break;
     }
     return true; // Keep the message channel open for asynchronous responses
 });
 
-// Handler functions for different message actions
+// Handler for incoming data
+function handleExtensionData(data, sendResponse) {
+    chrome.storage.local.get(['userInfo'], function(result) {
+        if (result.userInfo) {
+            // If user info already exists, log in automatically
+            isLoggedIn = true;
+            chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
+            sendResponse({ status: 'Already logged in', userInfo: result.userInfo });
+        } else {
+            // If no user info is found, store the new data and proceed with the login flow
+            chrome.storage.local.set({ userInfo: data }, function() {
+                isLoggedIn = true;
+                chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
+                sendResponse({ status: 'Data stored and logged in', userInfo: data });
+            });
+        }
+    });
+}
+
+function checkLoginStatus(sendResponse) {
+    chrome.storage.local.get(['userInfo'], function(result) {
+        if (result.userInfo) {
+            sendResponse({ loggedIn: true, userInfo: result.userInfo });
+        } else {
+            sendResponse({ loggedIn: false });
+        }
+    });
+}
+
 function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
         chrome.tabs.remove(fullscreenTabId, () => {
@@ -69,6 +100,7 @@ function handleUnlockWallet(sendResponse) {
         });
     }
 }
+
 
 function handleRequestConnection(message, sender, sendResponse) {
     const request = {
@@ -147,3 +179,11 @@ chrome.runtime.onMessageExternal.addListener(
     }
   }
 );
+// background.js
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.type === 'EXTENSION_DATA') {
+        console.log('Data received in background:', request.data);
+        // Handle the received data here
+        sendResponse({ status: 'Data received successfully', receivedData: request.data });
+    }
+});
