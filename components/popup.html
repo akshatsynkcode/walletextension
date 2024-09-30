@@ -49,7 +49,7 @@
                 <p id="username" class="text-white font-regular m-0"></p>
             </div>
             <div class="dropdown">
-                <button class="btn text-white dropdown-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                <button class="btn text-white dropdown-btn  wallet-left-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
                     <i class="fas fa-ellipsis-v"></i>
                 </button>
                 <ul class="dropdown-menu dropdown-menu-end p-1" aria-labelledby="dropdownMenuButton">
@@ -95,22 +95,25 @@
       </div>
     </div>
   <!-- Modal -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-      </div>
-      <div class="modal-body">
-        Are you sure you want to lock the wallet?
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
-        <button type="button" class="btn btn-primary">Yes</button>
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content">
+        <div class="modal-header">
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body text-center font-20 font-regular">
+          <div class="navbar-brand mb-3"
+          ><img src="./icons/icon48.png" alt="Logo" />
+        </div>
+          Are you sure you want to lock the wallet?
+        </div>
+        <div class="modal-footer justify-content-center border-0">
+          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+          <button type="button" class="btn btn-primary yes-btn">Yes</button>
+        </div>
       </div>
     </div>
   </div>
-</div>
 
   <!-- Include the popup script -->
   <script src="popup.bundle.js"></script>
