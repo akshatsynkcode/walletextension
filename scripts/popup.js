@@ -11,7 +11,7 @@ async function lockWallet() {
             }
 
             // Call the logout API
-            const response = await fetch('https://log-iam.finloge.com/api/mobile-logout/', {
+            const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-logout/', {
                 method: 'POST',
                 headers: {
                     'Authorization': `token ${authToken}`,
@@ -85,7 +85,7 @@ async function fetchAndUpdateBalance(address, authToken) {
     loader.style.display = 'inline-block';
     }  // Show the loader
     try {
-        const response = await fetch('https://log-iam.finloge.com/api/wallet-balance/', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
             method: 'GET',
             headers: {
                 'Authorization': `token ${authToken}`,
@@ -146,7 +146,7 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 function copyAddress() {
-    const walletAddressElement = document.getElementById('wallet-address');
+    const walletAddressElement = document.getElementById('address');
     const copyMessageElement = document.getElementById('copy-message');
 
     if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {

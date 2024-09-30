@@ -51,6 +51,6 @@
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam.finloge.com"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com"
   }
 }

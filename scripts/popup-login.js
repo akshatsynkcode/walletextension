@@ -30,7 +30,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'block';
 
         try {
-            const response = await fetch('https://log-iam.finloge.com/api/mobile-login/', {
+            const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-login/', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

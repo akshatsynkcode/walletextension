@@ -14,7 +14,7 @@ async function fetchAndUpdateBalance(address) {
             return;
         }
 
-        const response = await fetch('https://log-iam.finloge.com/api/wallet-balance/', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
             method: 'GET',
             headers: {
                 'Authorization': `token ${authToken}`,
@@ -61,7 +61,7 @@ async function fetchAndUpdateBalance(address) {
 // Fetch updated username from the API
 async function fetchUpdatedUserProfile(token) {
     try {
-        const response = await fetch('https://log-iam.finloge.com/api/user-profile/', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/user-profile/', {
             method: 'GET',
             headers: {
                 'Authorization': `token ${token}`,
@@ -173,3 +173,11 @@ function copyAddress() {
         alert('No wallet address to copy.');
     }
 }
+const fullAddress = "0x13ad787D599B06da0";
+    const shortenedAddress = `${fullAddress.slice(0, 5)}.....${fullAddress.slice(-5)}`;
+
+    const link = document.querySelector(".address-link");
+    link.href = "";
+    link.textContent = shortenedAddress;
+    link.title = fullAddress;
+

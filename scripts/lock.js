@@ -6,7 +6,7 @@
 //           const authToken = data.authToken;
 
 //           try {
-//               const response = await fetch('https://log-iam.finloge.com/api/mobile-logout/', {
+//               const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-logout/', {
 //                   method: 'POST',
 //                   headers: {
 //                       'Authorization': `token ${authToken}`,
