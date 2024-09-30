@@ -13,9 +13,37 @@ body html{
 .font-regular{
   font-weight: 500 !important;
 }
+.font-bold{
+  font-weight: 700 !important;
+}
 .header{
   background: linear-gradient(90deg, rgba(2, 0, 0.6, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
   height: 80px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+}
+#middle-div {
+  display: flex;
+  align-items: center;
+}
+.navbar-nav {
+  margin: 0;
+}
+.wallet-address {
+  text-shadow: none !important;
+  width: 30%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  margin-top: 15px !important;
+  position: relative;
+  display: inline-block;
+}
+.font-12{
+  font-size: 12px;
+  font-weight: 400;
+  line-height: 21.9px;
 }
 .font-18 {
   font-size: 18px;
@@ -32,9 +60,40 @@ body html{
   line-height: 28.4px;
   color: rgba(25, 30, 59, 0.9);
 }
+.font-70 {
+  font-size: 70px;
+  line-height: 60px;
+}
+.font-40 {
+  font-size: 40px;
+  line-height: 50px;
+}
+.nav-icon{
+  height: 20px;
+}
+.dropdown-menu{
+min-width: 5rem;
+}
+.wallet-info{
+  padding: 3rem 3rem 1rem 3rem !important;
+}
+.login-info{
+  padding: 1rem 3rem 0rem 3rem !important;
+}
+.color{
+  color: #040486;
+}
+.bg-color{
+  background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
+}
+.wallet-link{
+  background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
+  text-decoration: none;
+  padding: 7px;
+  border-radius: 20px;
+}
 .login-button {
-  width: 100%;
-  padding: 12px 24px;
+  padding: 10px 20px;
   font-size: 18px;
   background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
   color: white;
@@ -56,12 +115,31 @@ body html{
   height: 150px;
   border-radius: 50%;
   border: 7px solid #020275 ;
-  font-size: 1.2rem;
-  text-align: center;
+  margin: 0 auto;
+  padding: 10px;
 }
-
+.wallet-left-btn{
+border-color: white;
+    padding: 1px 8px;
+    border-radius: 15px;
+}
+.input{
+  border: none;
+  border-bottom: 2px solid #020275;
+  border-radius: 0;
+}
+.form-floating>.form-control, .form-floating>.form-control-plaintext, .form-floating>.form-select{
+  min-height: 50px;
+  height: 50px;
+}
+.input:focus{
+  box-shadow: none;
+  border-bottom: 2px solid #020275;
+}
+.icon-blue {
+  color: #020275;
+}
 .copy-button {
-  margin-left: 10px;
   background: none;
   border: none;
   cursor: pointer;
@@ -109,6 +187,14 @@ h1, h4 {
   .card-header{
     background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
   }
+  .yes-btn{
+    background: #020275;
+    border-color: #020275;
+  }
+  .yes-btn:hover{
+    background: #020275;
+  border-color: #020275;
+  }
 
   .form-group {
     text-align: left;
@@ -134,17 +220,6 @@ h1, h4 {
     0% { transform: rotate(0deg); }
     100% { transform: rotate(360deg); }
   }
-
-  input {
-    width: 100%;
-    padding: 10px;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    background-color: rgba(0, 0, 0, 0.1);
-    color: black;
-    margin-bottom: 20px;
-  }
-
   .login-btn {
     margin-top: 20px;
     text-align: center;
@@ -211,7 +286,15 @@ h1, h4 {
     border: none;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 400px;
+    max-width: 320px;
+    position: relative;
+  }
+  .popup-login-container{
+    background: white;
+    color: black;
+    border: none;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+    width: 320px;
     position: relative;
   }
   .page-link{
@@ -220,10 +303,81 @@ h1, h4 {
   .page-link:focus{
     box-shadow: none;
   }
+  .middle-div{
+    flex-grow: 1; 
+    display: flex; 
+    justify-content: center;
+  }
   .copy-message {
-    margin-left: 8px;
-    font-size: 12px;
-    color: green; /* You can change this to any color */
+    display: none;
+    font-size: 10px;
+    padding: 5px;
+    border-radius: 5px;
+    background-color: #0808ac;
+    color: #fff;
+}
+.btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
+  border: none;
+}
+.dropdown-item.active, .dropdown-item:active{
+  background-color: #060677;
+}
+.navbar-toggler{
+  background-color: white;
+}
+@media screen and (max-width:992px) {
+  .navbar-collapse.collapse.show {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 30vh;
+      background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
+      z-index: 999;
+      overflow-y: auto;
+      justify-content: center;
+  }
+
+  .navbar-nav {
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20%;
+      margin: 0 !important;
+  }
+  .right-nav{
+    justify-content: center;
+    span{
+      display: none;
+    }
+  }
+
+  .nav-link {
+      padding: 15px 20px;
+      font-size: 1.5rem;
+  }
+  .close-btn {
+    display: none;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: none;
+    border: none;
+    color: white;
+    font-size: 2rem;
+    cursor: pointer;
+}
+
+.close-btn:focus {
+    outline: none;
+}
+
+.navbar-collapse.collapse.show .close-btn {
+    display: block;
+}
+
+.navbar-collapse.collapse:not(.show) .close-btn {
+    display: none;
+}
 }
 .wrapper {
   position: absolute;

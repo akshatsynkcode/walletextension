@@ -50,19 +50,20 @@
             <span class="navbar-toggler-icon"></span>
           </button>
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
+            <!-- <button class="close-btn" aria-label="Close">×</button> -->
             <ul class="navbar-nav me-auto ms-5 mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active text-white" aria-current="page" href="#"
+                <a class="nav-link active text-white font-regular" aria-current="page" href="#"
                   >Dashboard</a
                 >
               </li>
             </ul>
-            <form class="d-flex align-items-center">
-              <span class="text-light me-4" id="username">Username</span>
-              <button class="btn btn-light btn-sm" type="submit">
+            <div class="d-flex align-items-center right-nav">
+              <span class="text-light me-4 font-regular" id="username">Username</span>
+              <button class="btn btn-light btn-sm" data-bs-toggle="modal" data-bs-target="#exampleModal">
                 Lock Wallet
-              </button>
-            </form>
+              </button> 
+            </div>
           </div>
         </div>
       </nav>
@@ -74,19 +75,15 @@
                 <div class="card-header">
                   <h5 class="card-title font-20 text-white">Profile Details</h5>
                 </div>
-                <div class="p-4">
+                <div class="p-4 text-center">
                   <p>
                     <span class="font-18">Account Address:</span>
                     <span id="wallet-address" class="font-regular">N/A</span>
                     <button id="copy-button" class="copy-button" aria-label="Copy Address">
-                        <i class="fas fa-copy"></i>
+                      <i class="fas fa-copy"></i>
                     </button>
-                    <span id="copy-message" class="copy-message" style="display: none; margin-left: 8px; font-size: 12px; color: green">Copied!<span>
+                    <span id="copy-message" class="copy-message">Copied!</span>
                   </p>
-                  <!-- <p>
-                    <span class="font-18"> Balance :</span>
-                    <span id="balance" class="font-regular"><span id="balance-loader"></span></span>
-                  </p> -->
                   <div class="balance-circle">
                     <p class="font-15 mb-0">Balance:</p>
                     <p id="balance" class="font-18 font-regular">
@@ -96,6 +93,8 @@
                 </div>
               </div>
             </div>
+            
+            
           </div>
           <div class="col-lg-7 col-12">
             <div class="card table-card">
@@ -152,6 +151,25 @@
                 </div>
               </div>
             </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+          </div>
+          <div class="modal-body text-center font-20 font-regular">
+            <div class="navbar-brand mb-3"
+            ><img src="./icons/icon48.png" alt="Logo" />
+          </div>
+            Are you sure you want to lock the wallet?
+          </div>
+          <div class="modal-footer justify-content-center border-0">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">No</button>
+            <button type="button" class="btn btn-primary yes-btn">Yes</button>
           </div>
         </div>
       </div>

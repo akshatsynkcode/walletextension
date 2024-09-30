@@ -140,6 +140,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copy-button');
     console.log(copyButton, "copy button");
     copyButton.addEventListener('click', copyAddress);
+
+    const closeButton = document.querySelector('.close-btn');
+    const navbarCollapse = document.getElementById('navbarSupportedContent');
+
+    closeButton.addEventListener('click', function() {
+        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
+            toggle: false
+        });
+        bsCollapse.hide();
+    });
 });
 
 function copyAddress() {
@@ -158,7 +168,7 @@ function copyAddress() {
         copyMessageElement.style.display = 'inline'; // Show the message
         setTimeout(() => {
             copyMessageElement.style.display = 'none'; // Hide after a delay
-        }, 2000); // Change the delay as needed
+        }, 1000); // Change the delay as needed
     } else {
         alert('No wallet address to copy.');
     }

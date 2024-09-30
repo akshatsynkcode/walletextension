@@ -6,36 +6,86 @@
   <title>Profile Popup</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link href="./css/style.css" rel="stylesheet" />
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
 </head>
 <body>
-    <div class="popup-container">
-      <nav class="navbar navbar-expand-lg header">
-        <div class="container-fluid">
-          <a class="navbar-brand text-white" href="#"
-            ><img src="./icons/icon48.png" alt="Logo" class="me-3"/>Wallet Profile
-          </a>
+    <div class="popup-container pb-3">
+      <nav class="navbar navbar-expand-lg header shadow-lg">
+        <div class="box-header">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
         </div>
-      </nav>
-    <div class="wallet-info p-5">
-      <div class="text-center">
-        <img src="./icons/wallet.png" alt="wallet-logo" style="width: 80px; height: 80px;">
-        <p>Total Balance</p>
-        <h2><span id="balance">
+        <div class="container-fluid">
+            <div class="navbar-brand text-white m-0">
+                <div class="dropdown nav-dropdown shadow-lg">
+                  <button class="btn text-white dropdown-btn dropdown-toggle wallet-left-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="./icons/icon48.png" class="nav-icon mb-1" alt="Logo"/>
+                  </button>
+                  <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                      <li><a class="dropdown-item" href="#">Dubai Customs Network</a></li>
+                  </ul>
+              </div>
+            </div>
+            <div class="middle-div">
+                <p id="username" class="text-white font-regular m-0"></p>
+            </div>
+            <div class="dropdown">
+                <button class="btn text-white dropdown-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+                    <i class="fas fa-ellipsis-v"></i>
+                </button>
+                <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="dropdownMenuButton">
+                    <li><a class="dropdown-item" href="#"><i class="fa-solid fa-up-right-and-down-left-from-center me-2"></i>Expand Screen</a></li>
+                    <li><a class="dropdown-item" href="#" id="lock-wallet-btn" data-bs-toggle="modal" data-bs-target="#exampleModal"><i class="fa-solid fa-lock me-2"></i>Lock Wallet</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+      
+    <div class="wallet-info text-center">
+      <p>
+        <span id="balance" class="font-40 font-regular color">
           <span id="balance-loader"></span>
-        </span></h2>
+        </span>
+      </p>
+      <div>
+        <span id="address" class="font-regular wallet-address mt-2">N/A</span>
+        <button id="copy-button" class="copy-button" aria-label="Copy Address">
+            <i class="fas fa-copy"></i>
+        </button>
+        <span id="copy-message" class="copy-message">Copied!<span>
+        </div>
+      </div>  
+      <div class="card bg-color text-white m-2">
+        <div class="box-header">
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+          <div></div>
+        </div>
+        <div class="card-body text-white">
+          <h5 class="card-title">Start your journey with AED</h5>
+          <h6 class="card-subtitle mb-3">Get started with bt adding some AED to your wallet.</h6>
+          <a href="#" class="card-link wallet-link text-white">Buy AED</a>
+        </div>
       </div>
-      </div>
-      <div id="account-info">
-        <p><strong>Username:</strong>
-            <span id="username"></span>
-        </p>
-        <p><strong>Account Address:</strong>
-            <span id="address"></span>
-        </p>
-      </div>    
-      <button id="lock-wallet-btn" class="login-button" data-bs-toggle="modal" data-bs-target="#exampleModal">Lock Wallet</button>
     </div>
-  </div>
   <!-- Modal -->
 <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
   <div class="modal-dialog">
