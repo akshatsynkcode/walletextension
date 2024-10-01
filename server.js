@@ -1,157 +1,148 @@
 const express = require('express');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const { ApiPromise, WsProvider, Keyring } = require('@polkadot/api');
-const { mnemonicGenerate, mnemonicValidate } = require('@polkadot/util-crypto');
+let fetch;
+
+import('node-fetch').then(mod => {
+    fetch = mod.default;
+}).catch(err => console.log('Failed to load node-fetch:', err)); // Make sure to have node-fetch installed
 
 const app = express();
-
 app.use(cors());
 app.use(bodyParser.json());
 
-const wsProvider = new WsProvider('wss://contract-node.finloge.com'); // Private node
-let api;
+app.post('/api/mobile-login', async (req, res) => {
+    try {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-login/', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(req.body) // Forward the body from the request
+        });
 
-// Initialize Polkadot API connection
-const initApi = async () => {
-  api = await ApiPromise.create({ provider: wsProvider });
-  console.log('Connected to Substrate node');
-};
-
-// Format balance to human-readable format with 3 decimal places
-const formatBalance = (balance) => {
-  const DECIMALS = 12;
-  const divisor = BigInt(Math.pow(10, DECIMALS));
-  const balanceNumber = BigInt(balance);
-  const formattedBalance = (Number(balanceNumber) / Number(divisor)).toFixed(3);
-  return `AED ${formattedBalance}`;
-};
-
-// Fetch balance function
-const fetchBalance = async (address) => {
-  try {
-    const { data: { free: balance } } = await api.query.system.account(address);
-    return formatBalance(balance.toString()); // Format balance and return
-  } catch (error) {
-    console.error('Error fetching balance:', error);
-    return null;
-  }
-};
-
-// Function to get the account address from mnemonic
-const getAddressFromMnemonic = (mnemonic) => {
-  if (!mnemonicValidate(mnemonic)) {
-    throw new Error('Invalid mnemonic');
-  }
-
-  const keyring = new Keyring({ type: 'sr25519' });
-  const account = keyring.addFromUri(mnemonic);
-
-  return account;
-};
-
-// Event listener for balance changes
-const watchBalance = async (address) => {
-  let previousBalance = await fetchBalance(address);
-
-  api.query.system.account(address, ({ data: { free: newBalance } }) => {
-    const newBalanceFormatted = formatBalance(newBalance.toString());
-    if (newBalanceFormatted !== previousBalance) {
-      console.log(`Balance updated: ${newBalanceFormatted}`);
-      previousBalance = newBalanceFormatted;
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data); // Forward the response from the backend API
+        } else {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
+            } else {
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error during login proxy:', error);
+        res.status(500).json({ error: 'Internal server error' });
     }
-  });
-};
-
-// Endpoint to create a new wallet (generate mnemonic and address)
-app.post('/create-wallet', async (req, res) => {
-  try {
-    const mnemonic = mnemonicGenerate(); // Generate a new 12-word mnemonic
-    const account = getAddressFromMnemonic(mnemonic);
-    const address = account.address;
-
-    const balance = await fetchBalance(address);
-    await watchBalance(address);
-
-    res.json({ mnemonic, address, balance });
-  } catch (error) {
-    console.error('Error creating wallet:', error);
-    res.status(500).json({ error: 'Failed to create wallet' });
-  }
 });
 
-// Endpoint to import an existing wallet using a mnemonic
-app.post('/import-wallet', async (req, res) => {
-  const { mnemonic } = req.body;
 
-  if (!mnemonic) {
-    return res.status(400).json({ error: 'Mnemonic is required' });
-  }
+// Proxy endpoint to fetch user profile
+app.get('/api/user-profile', async (req, res) => {
+    const authToken = req.header('Authorization');
+    const cookie = req.header('Cookie');
 
-  try {
-    const account = getAddressFromMnemonic(mnemonic);
-    const address = account.address;
-
-    const balance = await fetchBalance(address);
-    await watchBalance(address);
-
-    res.json({ address, balance });
-  } catch (error) {
-    console.error('Error importing wallet:', error);
-    res.status(500).json({ error: 'Failed to import wallet' });
-  }
-});
-
-// Endpoint to check balance of a specific address
-app.get('/check-balance/:address', async (req, res) => {
-  const { address } = req.params;
-
-  try {
-    const balance = await fetchBalance(address);
-    if (balance === null) {
-      res.status(404).json({ error: 'Address not found or balance could not be fetched' });
-    } else {
-      res.json({ address, balance });
+    if (!authToken) {
+        return res.status(401).json({ error: 'Authorization token is required' });
     }
-  } catch (error) {
-    console.error('Error fetching balance for address:', error);
-    res.status(500).json({ error: 'Failed to fetch balance for address' });
-  }
+
+    try {
+        const userProfileResponse = await fetch('https://log-iam-temp.finloge.com/api/user-profile/', {
+            method: 'GET',
+            headers: {
+                'Authorization': authToken,
+                'Cookie': cookie,
+                'Content-Type': 'application/json'
+            }
+        });
+
+        const data = await userProfileResponse.json();
+
+        if (userProfileResponse.ok) {
+            res.json(data);
+        } else {
+            res.status(userProfileResponse.status).json(data);
+        }
+    } catch (error) {
+        console.error('Error fetching user profile:', error);
+        res.status(500).json({ error: 'Internal server error while fetching user profile' });
+    }
 });
 
-// Endpoint to send funds
-app.post('/send-funds', async (req, res) => {
-  const { mnemonic, recipientAddress, amount } = req.body;
+app.get('/api/wallet-balance', async (req, res) => {
+    const authToken = req.header('Authorization');
+    const cookie = req.header('Cookie');
 
-  if (!mnemonic || !recipientAddress || !amount) {
-    return res.status(400).json({ error: 'Mnemonic, recipient address, and amount are required' });
-  }
+    if (!authToken) {
+        return res.status(401).json({ error: 'Authorization token is required' });
+    }
 
-  try {
-    const sender = getAddressFromMnemonic(mnemonic);
-    
-    // Convert amount to Plancks (assuming it's in DOT format)
-    const amountInPlancks = BigInt(amount * 1e12);
+    try {
+        const balanceResponse = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
+            method: 'GET',
+            headers: {
+                'Authorization': authToken,
+                'Cookie': cookie
+            }
+        });
 
-    // Create and sign the transaction
-    const transfer = api.tx.balances.transfer(recipientAddress, amountInPlancks);
+        if (balanceResponse.ok) {
+            const data = await balanceResponse.json();
+            res.json(data);
+        } else {
+            // Handle non-200 responses
+            if (balanceResponse.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await balanceResponse.json();
+                res.status(balanceResponse.status).json(errorData);
+            } else {
+                const errorData = await balanceResponse.text();
+                res.status(balanceResponse.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching wallet balance:', error);
+        res.status(500).json({ error: 'Internal server error while fetching wallet balance' });
+    }
+});
+app.post('/api/mobile-logout', async (req, res) => {
+    const authToken = req.header('Authorization');
+    const cookie = req.header('Cookie');
 
-    const unsub = await transfer.signAndSend(sender, (result) => {
-      if (result.status.isInBlock) {
-        console.log(`Transaction included in block ${result.status.asInBlock}`);
-        res.json({ message: 'Funds sent successfully!' });
-        unsub();
-      } else if (result.status.isFinalized) {
-        console.log(`Transaction finalized at blockHash ${result.status.asFinalized}`);
-      }
-    });
-  } catch (error) {
-    console.error('Error sending funds:', error);
-    res.status(500).json({ error: 'Failed to send funds' });
-  }
+    if (!authToken) {
+        return res.status(401).json({ error: 'Authorization token is required' });
+    }
+
+    try {
+        const logoutResponse = await fetch('https://log-iam-temp.finloge.com/api/mobile-logout/', {
+            method: 'POST',
+            headers: {
+                'Authorization': authToken,
+                'Cookie': cookie
+            }
+        });
+
+        if (logoutResponse.ok) {
+            const data = await logoutResponse.json();
+            res.json(data);
+        } else {
+            // Handle non-200 responses
+            if (logoutResponse.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await logoutResponse.json();
+                res.status(logoutResponse.status).json(errorData);
+            } else {
+                const errorData = await logoutResponse.text();
+                res.status(logoutResponse.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error during logout:', error);
+        res.status(500).json({ error: 'Internal server error during logout' });
+    }
 });
 
-app.listen(3000, async () => {
-  await initApi();
-  console.log('Server is running on port 3000');
+app.listen(3000, () => {
+    console.log('Server is running on port 3000');
 });
