@@ -13,6 +13,9 @@ body html{
 .font-regular{
   font-weight: 500 !important;
 }
+.font-400{
+  font-weight: 400 !important;
+}
 .font-bold{
   font-weight: 700 !important;
 }
@@ -75,8 +78,8 @@ body html{
   line-height: 28.4px;
   color: rgba(25, 30, 59, 0.9);
 }
-.font-70 {
-  font-size: 70px;
+.font-60 {
+  font-size: 60px;
   line-height: 60px;
 }
 .font-40 {
