@@ -96,7 +96,8 @@ module.exports = {
       patterns: [
         { from: './src/manifest.json', to: 'manifest.json' },
         { from: './src/icons', to: 'icons' },
-        { from: './src/css', to: 'css' }
+        { from: './src/css', to: 'css' },
+        { from: './src/js', to: 'js' }
       ]
     }),
     new BundleAnalyzerPlugin({

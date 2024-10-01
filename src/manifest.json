@@ -40,9 +40,9 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "scripts/polkadot-api.min.js",
         "popup.bundle.js",  
-        "popup-login.bundle.js"
+        "popup-login.bundle.js",
+        "bootstrap.bundle.min.js"
       ],
       "matches": [
         "*://*/*",
