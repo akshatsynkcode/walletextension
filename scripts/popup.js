@@ -1,18 +1,14 @@
-// Function to lock the wallet and log out
-async function lockWallet() {
-    try {
-        // Retrieve the authentication token from chrome.storage
-        chrome.storage.local.get(['authToken'], async function (result) {
-            const authToken = result.authToken;
-            
-            if (!authToken) {
-                console.error('No authToken found. Cannot log out.');
-                return;
-            }
+document.addEventListener('DOMContentLoaded', function() {
+    // Fetch and update the wallet balance
+    async function fetchAndUpdateBalance(address, authToken) {
+        const loader = document.getElementById('balance-loader');
+        if (loader) {
+            loader.style.display = 'inline-block'; // Show the loader
+        }
 
-            // Call the logout API
-            const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-logout/', {
-                method: 'POST',
+        try {
+            const response = await fetch(`https://log-iam-temp.finloge.com/api/wallet-balance/`, {
+                method: 'GET',
                 headers: {
                     'Authorization': `token ${authToken}`,
                     'Content-Type': 'application/json',
@@ -20,150 +16,115 @@ async function lockWallet() {
             });
 
             if (response.ok) {
-                // Clear storage after successful logout
-                chrome.storage.local.remove(['userInfo', 'authToken'], function () {
-                    console.log('User info and token cleared');
-                    
-                    // Close the full-screen tab
-                    chrome.runtime.sendMessage({ action: 'lock_wallet' }, function (response) {
-                        if (response.success) {
-                            window.close();
-                        } else {
-                            console.error('Failed to close full-screen tab.');
-                        }
-                    });
-                });
+                const data = await response.json();
+                const balanceElement = document.getElementById('balance');
+                if (balanceElement) {
+                    const balance = parseFloat(data.data); // Convert the balance to a number
+                    balanceElement.textContent = `AED ${balance.toFixed(3)}`; // Format balance to 3 decimal places
+                    if (loader) {
+                        loader.style.display = 'none'; // Hide the loader after fetching the balance
+                    }
+                }
             } else {
-                console.error('Failed to log out.');
-                alert('Logout failed. Please try again.');
+                console.error('Failed to fetch balance:', response.statusText);
+            }
+        } catch (error) {
+            console.error('Error fetching balance:', error);
+        }
+    }
+
+    // Function to lock the wallet and log out
+    async function lockWallet() {
+        chrome.storage.local.get(['authToken'], async function(result) {
+            const authToken = result.authToken;
+
+            if (!authToken) {
+                console.error('No authToken found. Cannot log out.');
+                return;
+            }
+
+            try {
+                const response = await fetch(`https://log-iam-temp.finloge.com/api/mobile-logout/`, {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `token ${authToken}`,
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    chrome.storage.local.remove(['userInfo', 'authToken'], function() {
+                        chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
+                            if (response.success) {
+                                window.close();
+                            } else {
+                                console.error('Failed to close full-screen tab.');
+                            }
+                        });
+                    });
+                } else {
+                    console.error('Failed to log out.');
+                    alert('Logout failed. Please try again.');
+                }
+            } catch (error) {
+                console.error('Error during logout:', error);
+                alert('An error occurred during logout. Please try again.');
             }
         });
-    } catch (error) {
-        console.error('Error during logout:', error);
-        alert('An error occurred during logout. Please try again.');
     }
-}
 
-// Add event listener to lock button
-document.getElementById('lock-wallet-btn').addEventListener('click', () => {
-    if (confirm('Are you sure you want to lock the wallet?')) {
-        lockWallet();
+    // Check if the lock button exists and set event listener
+    const lockButton = document.getElementById('lock-wallet-btn');
+    if (lockButton) {
+        lockButton.addEventListener('click', function() {
+            if (confirm('Are you sure you want to lock the wallet?')) {
+                lockWallet();
+            }
+        });
     }
-});
 
-// Fetch user info and update the UI on load
-window.onload = async function () {
-    chrome.storage.local.get(['userInfo', 'authToken'], async function (result) {
+    // Fetch user info and update UI
+    chrome.storage.local.get(['userInfo', 'authToken'], async function(result) {
         const userInfo = result.userInfo;
         const authToken = result.authToken;
 
         if (!userInfo) {
-            // prohibited to open popup without login
-            window.close();
-        }
-        else{
-            // Display user information
-            document.getElementById('username').textContent = userInfo.name;
-            document.getElementById('address').textContent = userInfo.address;
-    
-            // Fetch and update the balance periodically
-            if (authToken) {
-                await fetchAndUpdateBalance(userInfo.address, authToken);
-                setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
-            } else {
-                console.error('Auth token is missing.');
-            }
-        }
-
-    });
-};
-
-// Function to fetch and update the wallet balance (same API as profile.js)
-async function fetchAndUpdateBalance(address, authToken) {
-    const loader = document.getElementById('balance-loader');
-    if(loader){
-    loader.style.display = 'inline-block';
-    }  // Show the loader
-    try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
-            method: 'GET',
-            headers: {
-                'Authorization': `token ${authToken}`,
-                'Content-Type': 'application/json',
-            }
-        });
-
-
-        if (response.ok) {
-            const responseData = await response.json();
-            console.log('Balance data:', responseData);
-
-            // Assuming the balance is in responseData.data
-            const balanceString = responseData.data;
-            if (balanceString !== undefined) {
-                const balance = parseFloat(balanceString);  // Convert the balance to a number
-                if (!isNaN(balance)) {
-                    document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`; // Format balance to 3 decimal places
-                    if(loader){
-                    loader.style.display = 'none';
-                    }
-                }
-                else {
-                    console.error('Balance is not a valid number:', balanceString);
-                }
-            } else {
-                console.error('Balance not available in response data');
-            }
+            window.close(); // Close if no user info is found
         } else {
-            console.error('Failed to fetch balance:', response.statusText);
+            const usernameElement = document.getElementById('username');
+            const addressElement = document.getElementById('address');
+
+            if (usernameElement && addressElement) {
+                usernameElement.textContent = userInfo.name;
+                addressElement.textContent = userInfo.address;
+
+                if (authToken) {
+                    await fetchAndUpdateBalance(userInfo.address, authToken);
+                    setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
+                }
+            }
         }
-    } catch (error) {
-        console.error('Failed to fetch balance:', error);
-    }
-}
-
-chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
-    if (request.action === "refresh") {
-        // Reload the popup content by calling the relevant function
-        window.location.reload();
-    }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
-    const copyButton = document.getElementById('copy-button');
-    console.log(copyButton, "copy button");
-    copyButton.addEventListener('click', copyAddress);
-
-    const closeButton = document.querySelector('.close-btn');
-    const navbarCollapse = document.getElementById('navbarSupportedContent');
-
-    closeButton.addEventListener('click', function() {
-        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-            toggle: false
-        });
-        bsCollapse.hide();
     });
-});
 
-function copyAddress() {
-    const walletAddressElement = document.getElementById('address');
-    const copyMessageElement = document.getElementById('copy-message');
+    // Function to handle address copy
+    const copyButton = document.getElementById('copy-button');
+    if (copyButton) {
+        copyButton.addEventListener('click', function() {
+            const walletAddressElement = document.getElementById('address');
+            const copyMessageElement = document.getElementById('copy-message');
 
-    if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
-        const tempInput = document.createElement('textarea');
-        tempInput.value = walletAddressElement.textContent;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-
-        // Show the copied message
-        copyMessageElement.style.display = 'inline'; // Show the message
-        setTimeout(() => {
-            copyMessageElement.style.display = 'none'; // Hide after a delay
-        }, 1000); // Change the delay as needed
-    } else {
-        alert('No wallet address to copy.');
+            if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
+                navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+                    if (copyMessageElement) {
+                        copyMessageElement.style.display = 'inline'; // Show copied message
+                        setTimeout(() => { copyMessageElement.style.display = 'none'; }, 1000);
+                    }
+                }).catch(err => {
+                    console.error('Failed to copy address:', err);
+                });
+            } else {
+                alert('No wallet address to copy.');
+            }
+        });
     }
-}
-
+});

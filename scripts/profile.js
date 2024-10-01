@@ -1,16 +1,14 @@
 // Fetch and update balance
-// Fetch and update balance
 async function fetchAndUpdateBalance(address) {
     const loader = document.getElementById('balance-loader');
-    if(loader){
-    loader.style.display = 'inline-block';
-    }  // Show the loader
+    if (loader) {
+        loader.style.display = 'inline-block';
+    }
     try {
-        // Retrieve token from local storage
         const { authToken } = await chrome.storage.local.get('authToken');
-
         if (!authToken) {
             console.error('Authorization token is missing');
+            loader && (loader.style.display = 'none');
             return;
         }
 
@@ -24,20 +22,11 @@ async function fetchAndUpdateBalance(address) {
 
         if (response.ok) {
             const responseData = await response.json();
-            console.log('Balance data:', responseData);
-
-            // Assuming the balance is in responseData.data and it's a string
             const balanceString = responseData.data;
-
             if (balanceString !== undefined) {
-                const balance = parseFloat(balanceString);  // Convert the balance to a number
+                const balance = parseFloat(balanceString);
                 if (!isNaN(balance)) {
-                    // Assuming no need to divide by 10^18 since balance is already in human-readable form
-                    document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;  // Format balance to 3 decimal places
-                        // Hide the loader after fetching the balance
-                        if(loader){
-                        loader.style.display = 'none';
-                        }
+                    document.getElementById('balance').textContent = `AED ${balance.toFixed(3)}`;
                 } else {
                     console.error('Balance is not a valid number:', balanceString);
                 }
@@ -46,17 +35,18 @@ async function fetchAndUpdateBalance(address) {
             }
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
-            chrome.storage.local.remove('authToken', function() {
-                window.location.href = 'login.html';
-            });
+            chrome.storage.local.remove('authToken', () => window.location.href = 'login.html');
         } else {
             console.error('Failed to fetch balance:', response.statusText);
         }
     } catch (error) {
         console.error('Error fetching balance:', error);
+    } finally {
+        if (loader) {
+            loader.style.display = 'none';
+        }
     }
 }
-
 
 // Fetch updated username from the API
 async function fetchUpdatedUserProfile(token) {
@@ -69,17 +59,12 @@ async function fetchUpdatedUserProfile(token) {
             }
         });
 
-        console.log('Profile fetch response:', response);
-
         if (response.ok) {
             const data = await response.json();
-            console.log('Profile data:', data);
-            return data; // Assuming the response contains updated user data
+            return data;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
-            chrome.storage.local.remove('authToken', function() {
-                window.location.href = 'login.html';
-            });
+            chrome.storage.local.remove('authToken', () => window.location.href = 'login.html');
         } else {
             console.error('Failed to fetch user profile:', response.statusText);
         }
@@ -88,14 +73,9 @@ async function fetchUpdatedUserProfile(token) {
     }
 }
 
-window.onload = async function () {
-    chrome.storage.local.get(['userInfo', 'authToken'], async function (result) {
-        const userInfo = result.userInfo;
-        const authToken = result.authToken;
-
-        console.log('UserInfo from storage:', userInfo);
-        console.log('AuthToken:', authToken);
-
+document.addEventListener('DOMContentLoaded', () => {
+    chrome.storage.local.get(['userInfo', 'authToken'], async (result) => {
+        const { userInfo, authToken } = result;
         if (!userInfo) {
             window.location.href = 'login.html';
         }
@@ -112,44 +92,38 @@ window.onload = async function () {
                     chrome.storage.local.set({ userInfo: updatedUserInfo });
                     usernameElement.textContent = updatedUserInfo.name;
                 } else {
-                    usernameElement.textContent = userInfo.name || 'Guest'; // Fallback value
+                    usernameElement.textContent = userInfo.name || 'Guest';
                 }
+                await fetchAndUpdateBalance(userInfo.address);
+                setInterval(async () => {
+                    try {
+                        await fetchAndUpdateBalance(userInfo.address);
+                    } catch (error) {
+                        console.error('Error fetching balance in setInterval:', error);
+                    }
+                }, 4000);
             } else {
-                usernameElement.textContent = userInfo.name || 'Guest'; // Fallback value
+                usernameElement.textContent = userInfo.name || 'Guest';
+                walletAddressElement.textContent = userInfo.address || 'N/A';
             }
-
-            walletAddressElement.textContent = userInfo.address || 'N/A';
-
-            await fetchAndUpdateBalance(userInfo.address); // Initial fetch
-
-            // Continuous fetch every 4 seconds, with error handling
-            setInterval(async () => {
-                try {
-                    await fetchAndUpdateBalance(userInfo.address);
-                } catch (error) {
-                    console.error('Error fetching balance in setInterval:', error);
-                }
-            }, 4000);
         } else {
             console.error('One or more profile elements are missing in the DOM');
         }
     });
-};
 
-document.addEventListener('DOMContentLoaded', () => {
     const copyButton = document.getElementById('copy-button');
-    console.log(copyButton, "copy button");
-    copyButton.addEventListener('click', copyAddress);
-
-    const closeButton = document.querySelector('.close-btn');
-    const navbarCollapse = document.getElementById('navbarSupportedContent');
-
-    closeButton.addEventListener('click', function() {
-        const bsCollapse = new bootstrap.Collapse(navbarCollapse, {
-            toggle: false
+    if (copyButton) {
+        copyButton.addEventListener('click', () => {
+            const walletAddressElement = document.getElementById('wallet-address');
+            const copyMessageElement = document.getElementById('copy-message');
+            if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
+                navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+                    copyMessageElement.style.display = 'inline';
+                    setTimeout(() => (copyMessageElement.style.display = 'none'), 2000);
+                });
+            }
         });
-        bsCollapse.hide();
-    });
+    }
 });
 
 function copyAddress() {
@@ -157,27 +131,14 @@ function copyAddress() {
     const copyMessageElement = document.getElementById('copy-message');
 
     if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
-        const tempInput = document.createElement('textarea');
-        tempInput.value = walletAddressElement.textContent;
-        document.body.appendChild(tempInput);
-        tempInput.select();
-        document.execCommand('copy');
-        document.body.removeChild(tempInput);
-
-        // Show the copied message
-        copyMessageElement.style.display = 'inline'; // Show the message
-        setTimeout(() => {
-            copyMessageElement.style.display = 'none'; // Hide after a delay
-        }, 1000); // Change the delay as needed
+        navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+            copyMessageElement.style.display = 'inline';
+            setTimeout(() => (copyMessageElement.style.display = 'none'), 1000);
+        }).catch(err => {
+            console.error('Error copying text: ', err);
+            alert('Failed to copy wallet address.');
+        });
     } else {
         alert('No wallet address to copy.');
     }
 }
-const fullAddress = "0x13ad787D599B06da0";
-    const shortenedAddress = `${fullAddress.slice(0, 5)}.....${fullAddress.slice(-5)}`;
-
-    const link = document.querySelector(".address-link");
-    link.href = "";
-    link.textContent = shortenedAddress;
-    link.title = fullAddress;
-

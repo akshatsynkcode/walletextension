@@ -1,6 +1,8 @@
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
+const TerserPlugin = require('terser-webpack-plugin');
 
 module.exports = {
   mode: 'production',
@@ -17,7 +19,7 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js',
-    publicPath: '/',
+    publicPath: '/' // Automatically clean the dist folder before each build
   },
   resolve: {
     extensions: ['.js'],
@@ -35,44 +37,76 @@ module.exports = {
       }
     ]
   },
+  optimization: {
+    minimize: true, // Enable minimization
+    minimizer: [new TerserPlugin({
+      terserOptions: {
+        compress: {
+          drop_console: true, // Remove console logs
+          drop_debugger: true // Remove debugger statements
+        },
+        output: {
+          comments: false // Remove comments
+        }
+      }
+    })],
+    splitChunks: {
+      chunks: 'all',
+      cacheGroups: {
+        vendors: {
+          test: /[\\/]node_modules[\\/]/,
+          name: 'vendors',
+          chunks: 'all',
+        }
+      }
+    }
+  },
   plugins: [
     new HtmlWebpackPlugin({
       template: './components/welcome.html',
       filename: 'welcome.html',
-      chunks: ['welcome']
+      chunks: ['welcome', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/login.html',
       filename: 'login.html',
-      chunks: ['login']
+      chunks: ['login', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/lock.html',
       filename: 'lock.html',
-      chunks: ['lock']
+      chunks: ['lock', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/popup.html',
       filename: 'popup.html',
-      chunks: ['popup']
+      chunks: ['popup', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/profile.html',
       filename: 'profile.html',
-      chunks: ['profile']
+      chunks: ['profile', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/popup-login.html',
       filename: 'popup-login.html',
-      chunks: ['popupLogin']
+      chunks: ['popupLogin', 'vendors'] // Include vendor chunk
     }),
     new CopyWebpackPlugin({
       patterns: [
         { from: './src/manifest.json', to: 'manifest.json' },
         { from: './src/icons', to: 'icons' },
-        { from: './src/css', to: 'css' },
-        { from: './src/js', to: 'js' }
+        { from: './src/css', to: 'css' }
       ]
+    }),
+    new BundleAnalyzerPlugin({
+      analyzerMode: 'static',
+      openAnalyzer: false
     })
-  ]
+  ],
+  performance: {
+    hints: 'warning', // Set hints to warn if assets exceed size limits
+    maxAssetSize: 500000, // Set asset size limit
+    maxEntrypointSize: 500000 // Set entry point size limit
+  }
 };

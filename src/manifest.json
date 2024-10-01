@@ -2,11 +2,10 @@
   "manifest_version": 3,
   "name": "Dubai Customs Wallet Extension",
   "description": "A Chrome extension for connecting with Dubai Customs Blockchain",
-  "version": "1.1",
+  "version": "1.2",
   "permissions": [
     "storage",
-    "activeTab",
-    "tabs"
+    "activeTab"
   ],
   "host_permissions": [
     "*://*/*"
@@ -25,12 +24,15 @@
     "128": "icons/icon128.png"
   },
   "background": {
-    "service_worker": "background.bundle.js"
+    "service_worker": "background.bundle.js",
+    "type": "module"
   },
   "content_scripts": [
     {
       "matches": [
-        "*://*/*"
+        "*://*/*",
+        "https://*.finloge.com/*",
+        "https://*.dubai-customs.gov/*"
       ],
       "js": ["content.bundle.js"]
     }
@@ -42,15 +44,21 @@
         "popup.bundle.js",  
         "popup-login.bundle.js"
       ],
-      "matches": ["*://*/*"]
+      "matches": [
+        "*://*/*",
+        "https://*.finloge.com/*",
+        "https://*.dubai-customs.gov/*"
+      ]
     }
   ],
   "externally_connectable": {
     "matches": [
-      "*://*/*"
+      "*://*/*",
+      "https://*.finloge.com/*",
+      "https://*.dubai-customs.gov/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com; frame-src 'none';"
   }
 }
