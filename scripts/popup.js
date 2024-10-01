@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`https://log-iam-temp.finloge.com/api/wallet-balance/`, {
+            const response = await fetch(`http://13.233.172.115:3000/api/wallet-balance`, {
                 method: 'GET',
                 headers: {
                     'Authorization': `token ${authToken}`,
@@ -30,6 +30,10 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         } catch (error) {
             console.error('Error fetching balance:', error);
+        } finally {
+            if (loader) {
+                loader.style.display = 'none';
+            }
         }
     }
 
@@ -44,7 +48,7 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch(`https://log-iam-temp.finloge.com/api/mobile-logout/`, {
+                const response = await fetch(`http://13.233.172.115:3000/api/mobile-logout`, {
                     method: 'POST',
                     headers: {
                         'Authorization': `token ${authToken}`,
@@ -53,17 +57,24 @@ document.addEventListener('DOMContentLoaded', function() {
                 });
 
                 if (response.ok) {
-                    chrome.storage.local.remove(['userInfo', 'authToken'], function() {
-                        chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
-                            if (response.success) {
-                                window.close();
-                            } else {
-                                console.error('Failed to close full-screen tab.');
-                            }
+                    const data = await response.json();
+                    if (data.success) {
+                        // Successfully logged out, remove user info
+                        chrome.storage.local.remove(['userInfo', 'authToken'], function() {
+                            chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
+                                if (response.success) {
+                                    window.close();
+                                } else {
+                                    console.error('Failed to close full-screen tab.');
+                                }
+                            });
                         });
-                    });
+                    } else {
+                        console.error('Logout failed. Please try again.');
+                        alert('Logout failed. Please try again.');
+                    }
                 } else {
-                    console.error('Failed to log out.');
+                    console.error('Failed to log out:', response.statusText);
                     alert('Logout failed. Please try again.');
                 }
             } catch (error) {
@@ -73,14 +84,24 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 
-    // Check if the lock button exists and set event listener
+    // Event listener for lock button
     const lockButton = document.getElementById('lock-wallet-btn');
     if (lockButton) {
-        lockButton.addEventListener('click', function() {
-            if (confirm('Are you sure you want to lock the wallet?')) {
-                lockWallet();
-            }
-        });
+        // Ensure only one event listener is added
+        if (!lockButton.hasAttribute('listener-added')) {
+            lockButton.setAttribute('listener-added', 'true');
+            lockButton.addEventListener('click', function() {
+                // Open modal to confirm lock
+                const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                lockModal.show();
+                
+                const confirmButton = document.querySelector('.yes-btn');
+                confirmButton.addEventListener('click', function() {
+                    lockModal.hide();
+                    lockWallet();
+                }, { once: true });  // Ensure only one event listener is added for confirmation
+            });
+        }
     }
 
     // Fetch user info and update UI

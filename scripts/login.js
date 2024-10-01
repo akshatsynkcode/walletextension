@@ -17,7 +17,8 @@ document.getElementById('login-btn').addEventListener('click', async function lo
     loader.style.display = 'block';
   
     try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-login/', {
+        // Update the fetch URL to point to your EC2 instance where server.js is running
+        const response = await fetch('http://13.233.172.115:3000/api/mobile-login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -65,7 +66,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         loader.style.display = 'none';
         loginButton.style.display = 'block';
     }
-  });
+});
 
 window.onload = function () {
     chrome.storage.local.get(['userInfo'], function (result) {
@@ -73,4 +74,4 @@ window.onload = function () {
             window.location.href = 'profile.html';
         }
     });
-}
+};

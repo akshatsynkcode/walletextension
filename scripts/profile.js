@@ -2,21 +2,22 @@
 async function fetchAndUpdateBalance(address) {
     const loader = document.getElementById('balance-loader');
     if (loader) {
-        loader.style.display = 'inline-block';
+        loader.style.display = 'inline-block'; // Show loader before fetching balance
     }
+
     try {
-        const { authToken } = await chrome.storage.local.get('authToken');
+        const result = await chrome.storage.local.get('authToken');
+        const authToken = result.authToken;
         if (!authToken) {
             console.error('Authorization token is missing');
-            loader && (loader.style.display = 'none');
+            loader && (loader.style.display = 'none'); // Hide loader if token is missing
             return;
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
+        const response = await fetch('http://13.233.172.115:3000/api/wallet-balance', {
             method: 'GET',
             headers: {
-                'Authorization': `token ${authToken}`,
-                'Content-Type': 'application/json',
+                'Authorization': `token ${authToken}`
             }
         });
 
@@ -43,19 +44,18 @@ async function fetchAndUpdateBalance(address) {
         console.error('Error fetching balance:', error);
     } finally {
         if (loader) {
-            loader.style.display = 'none';
+            loader.style.display = 'none'; // Hide loader after balance is fetched
         }
     }
 }
 
-// Fetch updated username from the API
-async function fetchUpdatedUserProfile(token) {
+// Fetch updated user profile from the API
+async function fetchUpdatedUserProfile(authToken) {
     try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/user-profile/', {
+        const response = await fetch('http://13.233.172.115:3000/api/user-profile', {
             method: 'GET',
             headers: {
-                'Authorization': `token ${token}`,
-                'Content-Type': 'application/json',
+                'Authorization': `token ${authToken}`
             }
         });
 
@@ -75,42 +75,45 @@ async function fetchUpdatedUserProfile(token) {
 
 document.addEventListener('DOMContentLoaded', () => {
     chrome.storage.local.get(['userInfo', 'authToken'], async (result) => {
-        const { userInfo, authToken } = result;
-        if (!userInfo) {
+        const userInfo = result.userInfo;
+        const authToken = result.authToken;
+
+        if (!userInfo || !authToken) {
             window.location.href = 'login.html';
+            return;
         }
 
         const usernameElement = document.getElementById('username');
         const walletAddressElement = document.getElementById('wallet-address');
-        const balanceElement = document.getElementById('balance');
 
-        if (usernameElement && walletAddressElement && balanceElement) {
-            if (authToken) {
-                const updatedProfile = await fetchUpdatedUserProfile(authToken);
-                if (updatedProfile && updatedProfile.username) {
-                    const updatedUserInfo = { ...userInfo, name: updatedProfile.username };
-                    chrome.storage.local.set({ userInfo: updatedUserInfo });
-                    usernameElement.textContent = updatedUserInfo.name;
-                } else {
-                    usernameElement.textContent = userInfo.name || 'Guest';
-                }
-                await fetchAndUpdateBalance(userInfo.address);
-                setInterval(async () => {
-                    try {
-                        await fetchAndUpdateBalance(userInfo.address);
-                    } catch (error) {
-                        console.error('Error fetching balance in setInterval:', error);
-                    }
-                }, 4000);
+        if (usernameElement && walletAddressElement) {
+            // Fetch updated profile
+            const updatedProfile = await fetchUpdatedUserProfile(authToken);
+            if (updatedProfile && updatedProfile.data) {
+                const updatedUserInfo = {
+                    ...userInfo,
+                    name: `${updatedProfile.data.first_name} ${updatedProfile.data.last_name}`
+                };
+                chrome.storage.local.set({ userInfo: updatedUserInfo });
+
+                usernameElement.textContent = updatedUserInfo.name;
+                walletAddressElement.textContent = updatedProfile.data.wallet_details[0].wallet_address || 'N/A';
             } else {
                 usernameElement.textContent = userInfo.name || 'Guest';
                 walletAddressElement.textContent = userInfo.address || 'N/A';
             }
+
+            await fetchAndUpdateBalance(walletAddressElement.textContent); // Fetch balance
+
+            setInterval(async () => {
+                await fetchAndUpdateBalance(walletAddressElement.textContent);
+            }, 4000);
         } else {
             console.error('One or more profile elements are missing in the DOM');
         }
     });
 
+    // Copy wallet address functionality
     const copyButton = document.getElementById('copy-button');
     if (copyButton) {
         copyButton.addEventListener('click', () => {
