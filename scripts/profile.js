@@ -127,8 +127,71 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         });
     }
-});
+    const lockButton = document.getElementById('lock-wallet-btn');
+    if (lockButton) {
+        // Ensure only one event listener is added
+        if (!lockButton.hasAttribute('listener-added')) {
+            lockButton.setAttribute('listener-added', 'true');
+            lockButton.addEventListener('click', function() {
+                // Open modal to confirm lock
+                const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
+                lockModal.show();
+                
+                const confirmButton = document.querySelector('.yes-btn');
+                confirmButton.addEventListener('click', function() {
+                    lockModal.hide();
+                    lockWallet();
+                }, { once: true });  // Ensure only one event listener is added for confirmation
+            });
+        }
+    }
 
+});
+async function lockWallet() {
+    chrome.storage.local.get(['authToken'], async function(result) {
+        const authToken = result.authToken;
+
+        if (!authToken) {
+            console.error('No authToken found. Cannot log out.');
+            return;
+        }
+
+        try {
+            const response = await fetch(`http://13.233.172.115:3000/api/mobile-logout`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `token ${authToken}`,
+                    'Content-Type': 'application/json',
+                }
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    // Successfully logged out, remove user info
+                    chrome.storage.local.remove(['userInfo', 'authToken'], function() {
+                        chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
+                            if (response.success) {
+                                window.close();
+                            } else {
+                                console.error('Failed to close full-screen tab.');
+                            }
+                        });
+                    });
+                } else {
+                    console.error('Logout failed. Please try again.');
+                    alert('Logout failed. Please try again.');
+                }
+            } else {
+                console.error('Failed to log out:', response.statusText);
+                alert('Logout failed. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error during logout:', error);
+            alert('An error occurred during logout. Please try again.');
+        }
+    });
+}
 function copyAddress() {
     const walletAddressElement = document.getElementById('wallet-address');
     const copyMessageElement = document.getElementById('copy-message');
@@ -145,3 +208,5 @@ function copyAddress() {
         alert('No wallet address to copy.');
     }
 }
+
+
