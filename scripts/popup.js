@@ -149,3 +149,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+// Event listener for the "Expand Screen" button
+document.getElementById('expand-btn').addEventListener('click', function(event) {
+    event.preventDefault();
+    // Open the login.html in a new fullscreen window
+    window.open('login.html', '_blank');
+});
