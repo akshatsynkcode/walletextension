@@ -12,9 +12,6 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
-    "@polkadot/api": "^13.2.1",
-    "@polkadot/keyring": "^13.0.2",
-    "@polkadot/util-crypto": "^13.0.2",
     "body-parser": "^1.20.3",
     "cors": "^2.8.5",
     "express": "^4.21.0"
