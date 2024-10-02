@@ -11,7 +11,6 @@ module.exports = {
     content: './src/js/content.js',
     welcome: './scripts/welcome.js',
     login: './scripts/login.js',
-    lock: './scripts/lock.js',
     popup: './scripts/popup.js',
     profile: './scripts/profile.js',
     popupLogin: './scripts/popup-login.js'
@@ -71,11 +70,6 @@ module.exports = {
       template: './components/login.html',
       filename: 'login.html',
       chunks: ['login', 'vendors'] // Include vendor chunk
-    }),
-    new HtmlWebpackPlugin({
-      template: './components/lock.html',
-      filename: 'lock.html',
-      chunks: ['lock', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/popup.html',
