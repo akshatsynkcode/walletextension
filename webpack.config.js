@@ -13,7 +13,8 @@ module.exports = {
     login: './scripts/login.js',
     popup: './scripts/popup.js',
     profile: './scripts/profile.js',
-    popupLogin: './scripts/popup-login.js'
+    popupLogin: './scripts/popup-login.js',
+    approval: './scripts/approval.js' // Add the approval script entry
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -85,6 +86,11 @@ module.exports = {
       template: './components/popup-login.html',
       filename: 'popup-login.html',
       chunks: ['popupLogin', 'vendors'] // Include vendor chunk
+    }),
+    new HtmlWebpackPlugin({
+      template: './components/approval.html', // Add approval HTML template
+      filename: 'approval.html',
+      chunks: ['approval', 'vendors'] // Include the approval chunk
     }),
     new CopyWebpackPlugin({
       patterns: [

@@ -40,9 +40,11 @@
   "web_accessible_resources": [
     {
       "resources": [
-        "popup.bundle.js",  
+       "popup.bundle.js",
+        "approval.bundle.js",
         "popup-login.bundle.js",
-        "bootstrap.bundle.min.js"
+        "bootstrap.bundle.min.js",
+        "approval.html"
       ],
       "matches": [
         "*://*/*",
@@ -53,12 +55,14 @@
   ],
   "externally_connectable": {
     "matches": [
+      "*://localhost/*",
+    "*://127.0.0.1/*", 
       "*://*/*",
       "https://*.finloge.com/*",
       "https://*.dubai-customs.gov/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com http://13.233.172.115:3000; frame-src 'none';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com http://13.233.172.115:3000; frame-src 'self';"
   }
 }

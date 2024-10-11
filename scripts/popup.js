@@ -1,4 +1,5 @@
 document.addEventListener('DOMContentLoaded', function() {
+
     // Fetch and update the wallet balance
     async function fetchAndUpdateBalance(address, authToken) {
         const loader = document.getElementById('balance-loader');
@@ -87,19 +88,17 @@ document.addEventListener('DOMContentLoaded', function() {
     // Event listener for lock button
     const lockButton = document.getElementById('lock-wallet-btn');
     if (lockButton) {
-        // Ensure only one event listener is added
         if (!lockButton.hasAttribute('listener-added')) {
             lockButton.setAttribute('listener-added', 'true');
             lockButton.addEventListener('click', function() {
-                // Open modal to confirm lock
                 const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
                 lockModal.show();
-                
+
                 const confirmButton = document.querySelector('.yes-btn');
                 confirmButton.addEventListener('click', function() {
                     lockModal.hide();
                     lockWallet();
-                }, { once: true });  // Ensure only one event listener is added for confirmation
+                }, { once: true });
             });
         }
     }
@@ -110,7 +109,7 @@ document.addEventListener('DOMContentLoaded', function() {
         const authToken = result.authToken;
 
         if (!userInfo) {
-            window.close(); // Close if no user info is found
+            window.close();
         } else {
             const usernameElement = document.getElementById('username');
             const addressElement = document.getElementById('address');
@@ -137,7 +136,7 @@ document.addEventListener('DOMContentLoaded', function() {
             if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
                 navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
                     if (copyMessageElement) {
-                        copyMessageElement.style.display = 'inline'; // Show copied message
+                        copyMessageElement.style.display = 'inline';
                         setTimeout(() => { copyMessageElement.style.display = 'none'; }, 1000);
                     }
                 }).catch(err => {
@@ -148,8 +147,48 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
+
+    document.addEventListener('DOMContentLoaded', function() {
+        const mainContent = document.querySelector('.popup-container');
+        const connectWalletScreen = document.getElementById('connect-wallet-screen');
+    
+        function showConnectWalletScreen() {
+            mainContent.style.display = 'none';
+            connectWalletScreen.style.display = 'block';
+        }
+    
+        function hideConnectWalletScreen() {
+            mainContent.style.display = 'block';
+            connectWalletScreen.style.display = 'none';
+        }
+    
+        // Approve button handler
+        document.getElementById('approve-connection-btn').addEventListener('click', function() {
+            chrome.runtime.sendMessage({ action: 'approve_connection' }, function() {
+                hideConnectWalletScreen();
+                window.close(); // Close the popup
+            });
+        });
+    
+        // Reject button handler
+        document.getElementById('reject-connection-btn').addEventListener('click', function() {
+            chrome.runtime.sendMessage({ action: 'reject_connection' }, function() {
+                hideConnectWalletScreen();
+                window.close(); // Close the popup
+            });
+        });
+    
+        // Listen for the message to show the connect wallet approval screen
+        chrome.runtime.onMessage.addListener(function(message) {
+            if (message.action === 'show_connect_wallet') {
+                showConnectWalletScreen();
+            }
+        });
+    });
+    
+    
 });
-// Event listener for the "Expand Screen" button
+
 document.getElementById('expand-btn').addEventListener('click', function(event) {
     event.preventDefault();
     // Open the login.html in a new fullscreen window
