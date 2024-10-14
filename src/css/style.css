@@ -1,26 +1,65 @@
-body html{
+body{
     margin: 0;
     padding: 0;
     height: 100%;
-    overflow: hidden;
-    font-family: "Roboto", sans-serif;
+    font-family: "Poppins", sans-serif !important;
     font-style: normal;
     font-size: 16px;
+    font-weight: 400;
+    background-color: black;
+}
+.img-container{
+  background-image: url(../icons/bg-frame.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat; 
 }
 .table-card{
-  border-radius: 10px;
+  border-radius: 30px;
+  background-color: rgba(20, 20, 20, 1);
+}
+.activity-icon{
+  width: 60px;
+  height: 60px;
+}
+.user-icon{
+  width: 40px;
+  height: 40px;
 }
 .font-regular{
   font-weight: 500 !important;
 }
-.font-400{
+.fw-400{
   font-weight: 400 !important;
+}
+.fw-600{
+  font-weight: 600 !important;
 }
 .font-bold{
   font-weight: 700 !important;
 }
+.pt-100{
+  padding-top: 100px;
+}
+.light-black{
+  color: rgba(255, 255, 255, 0.5) !important;
+}
+.dark-black{
+  color: rgba(255, 255, 255, 0.7) !important;
+}
+.blue-gradient{
+  background: linear-gradient(90deg, rgba(67, 106, 173, 1) 35%, rgba(67, 145, 178, 1) 100%);
+   -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+.dark-blue-gradient{
+  background: linear-gradient(90deg, rgba(65, 89, 185, 1) 35%, rgba(29, 40, 83, 1) 100%);
+}
 .header{
-  background: linear-gradient(90deg, rgba(2, 0, 0.6, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
+  background-image: url(../icons/bg-frame.png);
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
   height: 80px;
     display: flex;
     align-items: center;
@@ -52,6 +91,10 @@ body html{
   align-items: center;
   justify-content: center;
 }
+.activity-card{
+  background-color: rgba(20, 20, 20, 1);
+  color: white;
+}
 .activity-card-body{
   padding-left: 0;
 }
@@ -73,24 +116,56 @@ body html{
    font-size: 15px;
    line-height: 21.9px;
 }
+.font-14 {
+  font-size: 14px;
+  line-height: 26px;
+}
+.f-14 {
+  font-size: 14px;
+}
+.f-10 {
+  font-size: 10px;
+}
+
+.font-16 {
+  font-size: 16.95px;
+  line-height: 26px;
+}
 .font-20 {
   font-size: 20px;
   line-height: 28.4px;
-  color: rgba(25, 30, 59, 0.9);
+}
+.font-24 {
+  font-size: 24px;
+  line-height: 39px;
+}
+.font-30 {
+  font-size: 30px;
+  line-height: 43.7px;
 }
 .font-60 {
   font-size: 60px;
-  line-height: 60px;
+  line-height: 80px;
+}
+.font-80 {
+  font-size: 80px;
 }
 .font-40 {
   font-size: 40px;
-  line-height: 50px;
+  line-height: 60px;
 }
 .nav-icon{
   height: 30px;
 }
 .dropdown-menu{
-min-width: 5rem;
+min-width: 7rem;
+background-color: rgba(20, 20, 20, 1);
+}
+.dropdown-menu[data-bs-popper]{
+  left: 40px;
+}
+.dropdown-toggle .fa-chevron-down {
+  color: white;
 }
 .icon-container {
   position: relative;
@@ -129,7 +204,7 @@ min-width: 5rem;
   color: #040486;
 }
 .bg-color{
-  background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
+  /* background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%); */
 }
 .wallet-link{
   background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
@@ -138,12 +213,15 @@ min-width: 5rem;
   border-radius: 20px;
 }
 .login-button {
-  padding: 10px 20px;
+  height: 45px;
   font-size: 18px;
-  background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
+  width: 100%;
+  background: linear-gradient(108deg, rgba(65, 89, 185, 1) 35%, rgba(29, 40, 83, 1) 100%);
   color: white;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 500;
   cursor: pointer;
   transition: background-color 0.3s ease;
 }
@@ -159,30 +237,30 @@ min-width: 5rem;
   width: 150px;
   height: 150px;
   border-radius: 50%;
-  border: 7px solid #020275 ;
+  border: 7px solid rgba(64, 87, 180, 1) ;
   margin: 0 auto;
   padding: 10px;
 }
+
 .wallet-left-btn{
   border: none;
     padding: 1px 8px;
 }
 .input{
   border: none;
-  border-bottom: 2px solid #020275;
-  border-radius: 0;
-}
-.form-floating>.form-control, .form-floating>.form-control-plaintext, .form-floating>.form-select{
-  min-height: 60px;
-  height: 60px;
-  padding-bottom: 0;
+  border-radius: 8px;
+  background-color: rgba(36, 36, 36, 1);
+  height: 44px;
+  color: rgba(255, 255, 255, 0.6);
 }
 .input:focus{
   box-shadow: none;
-  border-bottom: 2px solid #020275;
+  color: rgba(255, 255, 255, 0.6);
+  background-color: rgba(36, 36, 36, 1);
 }
-.icon-blue {
-  color: #020275;
+.input::placeholder{
+  color: rgba(255, 255, 255, 0.6);
+  font-size: 13px;
 }
 .mt-15{
   margin-top: 15px;
@@ -214,7 +292,7 @@ h1, h4 {
     margin: 20px auto;
     position: relative;
     z-index: 1;
-    width: auto;
+    width: 14%;
 }
 .logo-img{
   height: 100px;
@@ -223,17 +301,14 @@ h1, h4 {
     height: 80px;
 }
 .login-container {
-    background: white;
-    color: black;
+    background: rgba(20, 20, 20, 1);
+    color: white;
     padding: 50px;
-    border-radius: 10px;
+    border-radius: 30px;
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     width: 100%;
-    max-width: 400px;
+    max-width: 450px;
     position: relative;
-  }
-  .card-header{
-    background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
   }
   .yes-btn{
     background: #020275;
@@ -257,7 +332,7 @@ h1, h4 {
   #balance-loader {
     display: inline-block;
     border: 4px solid #f3f3f3;
-    border-top: 4px solid black;
+    border-top: 4px solid rgba(29, 40, 83, 1);
     border-radius: 50%;
     width: 20px;
     height: 20px;
@@ -280,7 +355,7 @@ h1, h4 {
   #loader {
     display: none;
     border: 8px solid #f3f3f3;
-    border-top: 8px solid #060677;
+    border-top: 8px solid rgba(29, 40, 83, 1);
     border-radius: 50%;
     width: 50px;
     height: 50px;
@@ -358,17 +433,21 @@ h1, h4 {
   }
   .copy-message {
     display: none;
-    font-size: 10px;
-    padding: 5px;
+    font-size: 7px;
+    padding: 2px;
     border-radius: 5px;
     background-color: #0808ac;
     color: #fff;
 }
+.popup-modal{
+  background-color: rgba(20, 20, 20, 1);
+  border-radius: 20px;
+}
 .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
   border: none;
 }
-.dropdown-item.active, .dropdown-item:active{
-  background-color: #060677;
+.dropdown-item:hover, .dropdown-item:active{
+  background-color: black;
 }
 .navbar-toggler{
   background-color: white;
@@ -435,16 +514,6 @@ h1, h4 {
   background: linear-gradient(90deg, rgba(2, 0, 0.6, 1) 0%, rgba(9, 9, 121, 1) 35%, rgba(0, 212, 255, 1) 100%);
   backdrop-filter: blur(20px); /* Adjust blur intensity as needed */
   z-index: 1;
-}
-
-.container-fluid{
-  position: relative;
-  z-index: 2;
-  text-align: center;
-}
-h1 h4 {
-  color: #fff;
-  margin: 10px 0;
 }
 .box div, .box-header div{
   position: absolute;

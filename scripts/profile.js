@@ -113,27 +113,43 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    // Copy wallet address functionality
+    // Copy address-link functionality
     const copyButton = document.getElementById('copy-button');
     if (copyButton) {
         copyButton.addEventListener('click', () => {
-            const walletAddressElement = document.getElementById('wallet-address');
+            const walletAddressElement = document.getElementById('address-link');
             const copyMessageElement = document.getElementById('copy-message');
-            if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
-                navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+            
+            if (walletAddressElement && walletAddressElement.dataset.fullAddress) {
+                const fullAddress = walletAddressElement.dataset.fullAddress;
+                navigator.clipboard.writeText(fullAddress).then(() => {
                     copyMessageElement.style.display = 'inline';
-                    setTimeout(() => (copyMessageElement.style.display = 'none'), 2000);
+                    setTimeout(() => (copyMessageElement.style.display = 'none'), 1000);
                 });
             }
         });
     }
+    
+    function formatAddress(address) {
+        if (address.length > 10) {
+            return address.slice(0, 6) + '...' + address.slice(-4);
+        }
+        return address;
+    }
+    
+    const fullAddress = '0x13ad787D599B06da0';
+    const formattedAddress = formatAddress(fullAddress);
+    
+    const walletAddressElement = document.getElementById('address-link');
+    if (walletAddressElement) {
+        walletAddressElement.textContent = formattedAddress;
+        walletAddressElement.dataset.fullAddress = fullAddress; 
+    }
     const lockButton = document.getElementById('lock-wallet-btn');
     if (lockButton) {
-        // Ensure only one event listener is added
         if (!lockButton.hasAttribute('listener-added')) {
             lockButton.setAttribute('listener-added', 'true');
             lockButton.addEventListener('click', function() {
-                // Open modal to confirm lock
                 const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
                 lockModal.show();
                 
@@ -141,7 +157,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 confirmButton.addEventListener('click', function() {
                     lockModal.hide();
                     lockWallet();
-                }, { once: true });  // Ensure only one event listener is added for confirmation
+                }, { once: true }); 
             });
         }
     }
