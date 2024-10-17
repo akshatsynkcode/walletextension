@@ -12,56 +12,44 @@
 />
 </head>
 <body>
-  <div class="popup-login-container pb-5">
-    <nav class="navbar navbar-expand-lg header shadow-lg">
-      <div class="box-header">
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-        <div></div>
-      </div>
+  <div class="popup-login-container img-login-container">
+    <nav class="navbar navbar-expand-lg">
       <div class="container-fluid">
-          <div class="navbar-brand text-white">
-              <div class="dropdown nav-dropdown shadow-lg">
-                <button class="btn text-white dropdown-btn dropdown-toggle wallet-left-btn font-12" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                  <img src="./icons/icon48.png" class="nav-icon mb-1 me-2" alt="Logo"/>Dubai Customs
-                </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-                    <li><a class="dropdown-item" href="#">Dubai Customs</a></li>
-                </ul>
-            </div>
-          </div>
-          <a href="#"
-            ><img src="./icons/icon48.png" alt="Logo" />
-          </a>
+        <a class="navbar-brand"><img src="./icons/white-logo.svg" style="width: 60%;"></a>
       </div>
-  </nav>
+    </nav>
+      <div class="pop-login-container mt-3">
+        <div class="logo">
+          <div class="font-30">Login</div>
+          <div class="font-16 mt-1">
+            Dubai Customs <span style="color: #bb9753">Wallet</span>
+          </div>
+        </div>
+        <div class="mb-4 mt-3">
+          <label for="exampleInputEmail1" class="form-label text-white font-14 font-regular">Email</label>
+          <input
+            type="email"
+            id="email"
+            class="form-control input"
+            placeholder="example@email.com"
+          />
+        </div>
+        <div class="mb-3">
+          <label for="exampleInputPassword1" class="form-label text-white font-14 font-regular">Password</label>
+          <input
+            type="password"
+            id="password"
+            class="form-control input"
+            placeholder="xxxxxxxxxx"
+          />
+        </div>
+        <div class="login-btn">
+          <button id="login-btn" class="login-button mt-3">Login</button>
+          <div id="loader" class=" mt-4"></div>
+        </div>
     
-  <div class="login-info text-center">
-    <div class="logo pt-4">
-      <img class="logo-img1" src="./icons/icon128.png" alt="Dubai Customs Wallet Logo"> 
-      <h2>Dubai Customs <br><small style="color: #bb9753;">Wallet</small></h2>
-    </div>
-    <div class="form-floating">
-      <input type="email" id="email" class="form-control input" id="floatingEmail" placeholder="example@gmail.com">
-      <label for="floatingEmail"><i class="fas fa-envelope me-2 icon-blue"></i>Email</label>
-    </div>
-    <div class="form-floating mt-4 mb-5">
-      <input type="password" id="password" class="form-control input" id="floatingPassword" placeholder="Password">
-      <label for="floatingPassword"><i class="fas fa-lock me-2 icon-blue"></i>Password</label>
-    </div>
-    <div class="login-btn">
-      <button id="login-btn" class="login-button">Login</button>
-      <div id="loader"></div>
-    </div>
-    <p id="error-message" class="error"></p>
-  </div>
+        <p id="error-message" class="error"></p>
+      </div>
 
   <script src="popup-login.bundle.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
