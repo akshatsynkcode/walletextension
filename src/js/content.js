@@ -12,7 +12,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
 
 // Function to connect the wallet
 function connectWallet(sendResponse) {
-  chrome.storage.local.get(["address"], function(result) {
+  chrome.storage.sync.get(["address"], function(result) {
       if (result.address) {
           // If the wallet is already connected, return the address
           sendResponse({ success: true, address: result.address });

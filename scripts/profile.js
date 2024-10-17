@@ -6,7 +6,7 @@ async function fetchAndUpdateBalance(address) {
     }
 
     try {
-        const result = await chrome.storage.local.get('authToken');
+        const result = await chrome.storage.sync.get('authToken');
         const authToken = result.authToken;
         if (!authToken) {
             console.error('Authorization token is missing');
@@ -36,7 +36,7 @@ async function fetchAndUpdateBalance(address) {
             }
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
-            chrome.storage.local.remove('authToken', () => window.location.href = 'login.html');
+            chrome.storage.sync.remove('authToken', () => window.location.href = 'login.html');
         } else {
             console.error('Failed to fetch balance:', response.statusText);
         }
@@ -64,7 +64,7 @@ async function fetchUpdatedUserProfile(authToken) {
             return data;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
-            chrome.storage.local.remove('authToken', () => window.location.href = 'login.html');
+            chrome.storage.sync.remove('authToken', () => window.location.href = 'login.html');
         } else {
             console.error('Failed to fetch user profile:', response.statusText);
         }
@@ -74,7 +74,7 @@ async function fetchUpdatedUserProfile(authToken) {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    chrome.storage.local.get(['userInfo', 'authToken'], async (result) => {
+    chrome.storage.sync.get(['userInfo', 'authToken'], async (result) => {
         const userInfo = result.userInfo;
         const authToken = result.authToken;
 
@@ -94,7 +94,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     ...userInfo,
                     name: `${updatedProfile.data.first_name} ${updatedProfile.data.last_name}`
                 };
-                chrome.storage.local.set({ userInfo: updatedUserInfo });
+                chrome.storage.sync.set({ userInfo: updatedUserInfo });
 
                 usernameElement.textContent = updatedUserInfo.name;
                 walletAddressElement.textContent = updatedProfile.data.wallet_details[0].wallet_address || 'N/A';
@@ -164,7 +164,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
 });
 async function lockWallet() {
-    chrome.storage.local.get(['authToken'], async function(result) {
+    chrome.storage.sync.get(['authToken'], async function(result) {
         const authToken = result.authToken;
 
         if (!authToken) {
@@ -185,7 +185,7 @@ async function lockWallet() {
                 const data = await response.json();
                 if (data.success) {
                     // Successfully logged out, remove user info
-                    chrome.storage.local.remove(['userInfo', 'authToken'], function() {
+                    chrome.storage.sync.remove(['userInfo', 'authToken'], function() {
                         chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
                             if (response.success) {
                                 window.close();

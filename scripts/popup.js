@@ -39,7 +39,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Function to lock the wallet and log out
     async function lockWallet() {
-        chrome.storage.local.get(['authToken'], async function(result) {
+        chrome.storage.sync.get(['authToken'], async function(result) {
             const authToken = result.authToken;
 
             if (!authToken) {
@@ -60,7 +60,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     const data = await response.json();
                     if (data.success) {
                         // Successfully logged out, remove user info
-                        chrome.storage.local.remove(['userInfo', 'authToken'], function() {
+                        chrome.storage.sync.remove(['userInfo', 'authToken'], function() {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
                                 if (response.success) {
                                     window.close();
@@ -105,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     // Fetch user info and update UI
-    chrome.storage.local.get(['userInfo', 'authToken'], async function(result) {
+    chrome.storage.sync.get(['userInfo', 'authToken'], async function(result) {
         const userInfo = result.userInfo;
         const authToken = result.authToken;
 

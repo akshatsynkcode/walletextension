@@ -31,7 +31,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         if (response.ok && data.success) {
             const walletDetails = data.data.wallet_details[0];
   
-            chrome.storage.local.set({
+            chrome.storage.sync.set({
                 userInfo: {
                     name: walletDetails.full_name,
                     address: walletDetails.wallet_address,
@@ -69,7 +69,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
 });
 
 window.onload = function () {
-    chrome.storage.local.get(['userInfo'], function (result) {
+    chrome.storage.sync.get(['userInfo'], function (result) {
         if (result.userInfo) {
             window.location.href = 'profile.html';
         }

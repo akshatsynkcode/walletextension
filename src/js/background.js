@@ -42,7 +42,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Handler for incoming data
 function handleExtensionData(data, sendResponse) {
-    chrome.storage.local.get(['userInfo'], function(result) {
+    chrome.storage.sync.get(['userInfo'], function(result) {
         if (result.userInfo) {
             // If user info already exists, log in automatically
             isLoggedIn = true;
@@ -50,7 +50,7 @@ function handleExtensionData(data, sendResponse) {
             sendResponse({ status: 'Already logged in', userInfo: result.userInfo });
         } else {
             // If no user info is found, store the new data and proceed with the login flow
-            chrome.storage.local.set({ userInfo: data }, function() {
+            chrome.storage.sync.set({ userInfo: data }, function() {
                 isLoggedIn = true;
                 chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
                 sendResponse({ status: 'Data stored and logged in', userInfo: data });
@@ -60,7 +60,7 @@ function handleExtensionData(data, sendResponse) {
 }
 
 function checkLoginStatus(sendResponse) {
-    chrome.storage.local.get(['userInfo'], function(result) {
+    chrome.storage.sync.get(['userInfo'], function(result) {
         if (result.userInfo) {
             sendResponse({ loggedIn: true, userInfo: result.userInfo });
         } else {
@@ -168,7 +168,7 @@ chrome.action.onClicked.addListener(() => {
 chrome.runtime.onMessageExternal.addListener(
   function(request, sender, sendResponse) {
     if (request.message === "getAddress") {
-      chrome.storage.local.get('userInfo', function(result) {
+      chrome.storage.sync.get('userInfo', function(result) {
         if (result.userInfo && result.userInfo.address) {
           sendResponse({ address: result.userInfo.address });
         } else {

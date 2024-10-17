@@ -6,7 +6,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-btn');
 
     // Check if user is already logged in and redirect if necessary
-    chrome.storage.local.get(['userInfo'], (result) => {
+    chrome.storage.sync.get(['userInfo'], (result) => {
         if (result.userInfo) {
             window.location.href = 'popup.html';  // User is already logged in, redirect to main popup
         }
@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 const walletDetails = data.data.wallet_details[0];
 
                 // Store the user info and auth token in chrome storage
-                chrome.storage.local.set({
+                chrome.storage.sync.set({
                     userInfo: {
                         name: walletDetails.full_name,
                         address: walletDetails.wallet_address,
