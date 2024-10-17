@@ -188,6 +188,9 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .f-10 {
   font-size: 10px;
 }
+.f-20 {
+  font-size: 20px;
+}
 .f-16{
   font-size: 16.95px;
 }
@@ -391,6 +394,7 @@ h1, h4 {
     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
     max-width: 430px;
     position: relative;
+    border-radius: 30px;
   }
 
   .form-group {
@@ -567,7 +571,44 @@ h1, h4 {
     display: none;
 }
 }
-.form-check-input:checked{
-  background-color: rgba(65, 89, 185, 1);
-  border-color: #0d6efd; 
+.wallet-info {
+  position: relative;
+}
+.top-left-img {
+  position: absolute;
+  top: 20%; 
+  left: 0;
+  width: 120px;
+  height: auto;
+}
+.top-right-img {
+  position: absolute;
+  top: -25%; 
+  right: 0; 
+  width: 170px;
+  height: auto;
+}
+.bottom-middle-img {
+  position: absolute;
+  bottom: -12%; 
+  left: 50%; 
+  transform: translateX(-50%);
+  width: 80px;
+  height: auto; 
+}
+.user-detail {
+  position: relative;
+  width: 80%;
+  margin-left: 35px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  background: rgba(255, 255, 255, 0.3);
+  backdrop-filter: blur(18px); 
+  padding: 20px; 
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1); 
+  z-index: 1;
+  margin-bottom: 70px;
+}
+.buttons{
+  padding-bottom: 40px !important;
 }
