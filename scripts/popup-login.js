@@ -6,16 +6,17 @@ document.addEventListener('DOMContentLoaded', () => {
     const loginButton = document.getElementById('login-btn');
 
     // Check if user is already logged in and redirect if necessary
-    chrome.storage.sync.get(['userInfo'], (result) => {
-        if (result.userInfo) {
-            window.location.href = 'popup.html';  // User is already logged in, redirect to main popup
+    chrome.storage.sync.get(['authToken'], (result) => {
+        if (result.authToken) {
+            console.log('User is already logged in');
+            window.location.href = 'popup.html';  // Redirect to main popup
         }
     });
 
     // Handle the login when the login button is clicked
     loginButton.addEventListener('click', async function login(event) {
         event.preventDefault();  // Prevent default form submission behavior
-        
+
         const email = emailInput.value;
         const password = passwordInput.value;
 
@@ -32,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'block';
 
         try {
-            const response = await fetch('http://13.233.172.115:3000/api/mobile-login/', {
+            const response = await fetch('https://log-iam-temp.finloge.com/api/ext-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -42,25 +43,18 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
-            if (response.ok && data.success) {
-                const walletDetails = data.data.wallet_details[0];
-
-                // Store the user info and auth token in chrome storage
+            if (response.ok && data.token) {
+                // Store the auth token in chrome storage
                 chrome.storage.sync.set({
-                    userInfo: {
-                        name: walletDetails.full_name,
-                        address: walletDetails.wallet_address,
-                        balance: walletDetails.balance
-                    },
                     authToken: data.token
                 }, function () {
                     if (chrome.runtime.lastError) {
-                        console.error('Error setting userInfo:', chrome.runtime.lastError);
-                        errorMessage.textContent = 'Failed to store user info.';
+                        console.error('Error setting authToken:', chrome.runtime.lastError);
+                        errorMessage.textContent = 'Failed to store auth token.';
                         loader.style.display = 'none';
                         loginButton.style.display = 'block';
                         return;
-                    }
+                    }                    
 
                     // Redirect to popup.html after successful login
                     window.location.href = 'popup.html';
@@ -71,7 +65,7 @@ document.addEventListener('DOMContentLoaded', () => {
             }
         } catch (error) {
             console.error('Error during login:', error);
-            errorMessage.textContent = 'An error occurred during login. Please try again.';
+            errorMessage.textContent ='Login failed, please try again.';
         } finally {
             // Hide the loader and show the login button
             loader.style.display = 'none';

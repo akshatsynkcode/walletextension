@@ -58,7 +58,7 @@ async function fetchUpdatedUserProfile() {
         if (response.ok) {
             const data = await response.json();
             return data;
-        } else if (response.status === 401) {
+        } else if (response.status === 404) {
             console.error('Token expired or invalid, redirecting to login.');
             redirectToLogin();
         } else {
@@ -70,13 +70,12 @@ async function fetchUpdatedUserProfile() {
 }
 
 function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'userInfo'], () => {
-        window.location.href = 'login.html';
-    });
+    chrome.storage.sync.remove('authToken');
+    window.location.href = 'login.html';
 }
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const { userInfo, authToken } = await chrome.storage.sync.get(['userInfo', 'authToken']);
+    const { authToken } = await chrome.storage.sync.get(['authToken']);
 
     if (!authToken) {
         redirectToLogin();
@@ -91,15 +90,11 @@ document.addEventListener('DOMContentLoaded', async () => {
         const updatedProfile = await fetchUpdatedUserProfile();
         if (updatedProfile) {
             const updatedUserInfo = {
-                ...userInfo,
                 fullName: updatedProfile.fullName,
                 walletAddress: updatedProfile.walletAddress,
             };
-
-            // Update storage and UI
-            chrome.storage.sync.set({ userInfo: updatedUserInfo });
-            usernameElement.textContent = updatedUserInfo.fullName || 'Guest';
-            walletAddressElement.textContent = updatedUserInfo.walletAddress || 'N/A';
+            walletAddressElement.textContent = updatedUserInfo.walletAddress || 'Guest';
+            usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
         }
 
         // Fetch balance
@@ -159,7 +154,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['userInfo', 'authToken'], () => {
+                chrome.storage.sync.remove(['authToken'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';
@@ -176,6 +171,6 @@ async function lockWallet() {
         }
     } catch (error) {
         console.error('Error during logout:', error);
-        alert('An error occurred during logout. Please try again.');
+        alert('An error occurred during logout. Please try again.' + response.status);
     }
 }

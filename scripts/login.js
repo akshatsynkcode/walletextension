@@ -33,17 +33,17 @@ document.getElementById('login-btn').addEventListener('click', async function lo
 
         if (response.ok && data.token) {
             // Store the token in chrome.storage.sync
-            chrome.storage.sync.set({ authToken: data.token }, function () {
+            chrome.storage.sync.set({
+                authToken: data.token
+            }, function () {
                 if (chrome.runtime.lastError) {
-                    console.error('Error storing authToken:', chrome.runtime.lastError);
-                    errorMessage.textContent = 'Failed to store authentication token.';
+                    console.error('Error setting authToken:', chrome.runtime.lastError);
+                    errorMessage.textContent = 'Failed to store auth token.';
                     loader.style.display = 'none';
                     loginButton.style.display = 'block';
-                    loginButton.disabled = false;  // Re-enable the button
                     return;
                 }
-
-                // Redirect to profile.html after login
+                // Redirect to profile.html after successful login
                 window.location.href = 'profile.html';
             });
 

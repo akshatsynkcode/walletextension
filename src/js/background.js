@@ -24,68 +24,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'reject_connection':
             handleRejectConnection(message, sendResponse);
             break;
-        case 'get_connected_sites':
-            sendResponse({ sites: connectedSites });
-            break;
-        case 'check_login_status':
-            checkLoginStatus(sendResponse);
-            break;
-        case 'login_complete':
-            handleLoginComplete();
-            break;
-        case 'EXTENSION_DATA':
-            handleExtensionData(message.data, sendResponse);
-            break;
     }
     return true; // Keep the message channel open for asynchronous responses
 });
 
-// Handler for incoming data
-function handleExtensionData(data, sendResponse) {
-    chrome.storage.sync.get(['userInfo', 'authToken'], function(result) {
-        if (chrome.runtime.lastError) {
-            console.error('Error fetching data from chrome storage:', chrome.runtime.lastError);
-            sendResponse({ status: 'Error fetching user info' });
-            return;
-        }
-        
-        if (result.authToken && result.userInfo) {
-            // If user info already exists, log in automatically
-            isLoggedIn = true;
-            chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
-            sendResponse({ status: 'Already logged in', userInfo: result.userInfo });
-        } else {
-            // If no user info is found, store the new data and proceed with the login flow
-            chrome.storage.sync.set({ userInfo: data }, function() {
-                if (chrome.runtime.lastError) {
-                    console.error('Error storing user info:', chrome.runtime.lastError);
-                    sendResponse({ status: 'Error storing user info' });
-                    return;
-                }
-                isLoggedIn = true;
-                chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
-                sendResponse({ status: 'Data stored and logged in', userInfo: data });
-            });
-        }
-    });
-}
-
-function checkLoginStatus(sendResponse) {
-    chrome.storage.sync.get(['authToken', 'userInfo'], function(result) {
-        if (chrome.runtime.lastError) {
-            console.error('Error fetching data from chrome storage:', chrome.runtime.lastError);
-            sendResponse({ loggedIn: false });
-            return;
-        }
-
-        if (result.authToken && result.userInfo) {
-            sendResponse({ loggedIn: true, userInfo: result.userInfo });
-        } else {
-            sendResponse({ loggedIn: false });
-        }
-    });
-}
-
+// Listener for extension installation
 function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
         chrome.tabs.get(fullscreenTabId, function(tab) {
@@ -143,33 +86,38 @@ function handleRequestConnection(message, sender, sendResponse) {
         responseCallback: sendResponse
     };
     pendingRequests.push(request);
-    chrome.runtime.sendMessage({ action: 'show_connection_request', request });
+
+    // Open the approval popup
+    chrome.windows.create({
+        url: chrome.runtime.getURL('connect-wallet.html'), // approval.html should have the UI for user consent
+        type: 'popup',
+        width: 400,
+        height: 600
+    });
 }
 
 function handleApproveConnection(message, sendResponse) {
-    const approveRequest = pendingRequests.find(req => req.tabId === message.requestId);
+    const approveRequest = pendingRequests.shift(); // Get the first pending request
     if (approveRequest) {
-        connectedSites.push(approveRequest.url);
-        chrome.tabs.sendMessage(approveRequest.tabId, { action: 'connection_approved' });
-        pendingRequests = pendingRequests.filter(req => req.tabId !== message.requestId);
-        approveRequest.responseCallback({ success: true });
+        chrome.storage.sync.get(['authToken'], function(result) {
+            if (result.authToken) {
+                // Send the address back to the original request
+                approveRequest.responseCallback({ success: true, authToken : result.authToken });
+                sendResponse({ success: true });
+            } else {
+                approveRequest.responseCallback({ success: false, message: "No user logged in." });
+                sendResponse({ success: false });
+            }
+        });
     }
 }
 
 function handleRejectConnection(message, sendResponse) {
-    const rejectRequest = pendingRequests.find(req => req.tabId === message.requestId);
+    const rejectRequest = pendingRequests.shift(); // Get the first pending request
     if (rejectRequest) {
-        chrome.tabs.sendMessage(rejectRequest.tabId, { action: 'connection_rejected' });
-        pendingRequests = pendingRequests.filter(req => req.tabId !== message.requestId);
-        rejectRequest.responseCallback({ success: false });
+        rejectRequest.responseCallback({ success: false, message: "Connection rejected by the user." });
+        sendResponse({ success: true });
     }
-}
-
-function handleLoginComplete() {
-    isLoggedIn = true;
-    chrome.action.setPopup({popup: "popup.html"}); // Enable popup after login
-    pendingRequests.forEach(callback => callback());
-    pendingRequests = [];
 }
 
 // Listener for extension installation
@@ -181,44 +129,5 @@ chrome.runtime.onInstalled.addListener((details) => {
         }, (tab) => {
             fullscreenTabId = tab.id;
         });
-    }
-});
-
-// Handle action button click
-chrome.action.onClicked.addListener(() => {
-    if (!isLoggedIn) {
-        chrome.tabs.create({url: "login.html"}); // Open login in a new tab if not logged in
-    } else {
-        chrome.windows.create({
-            url: chrome.runtime.getURL('popup.html'),
-            type: 'popup',
-            width: 400,
-            height: 600
-        });
-    }
-});
-
-// External message listener for fetching address
-chrome.runtime.onMessageExternal.addListener(
-    function(request, sender, sendResponse) {
-      if (request.message === "getAddress") {
-        chrome.storage.sync.get('userInfo', function(result) {
-          if (result.userInfo && result.userInfo.address) {
-            sendResponse({ address: result.userInfo.address });
-          } else {
-            sendResponse({ error: "No address found" });
-          }
-        });
-        return true; // Keep the message channel open for the response
-      }
-    }
-);
-
-// Message listener for handling incoming data
-chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
-    if (request.type === 'EXTENSION_DATA') {
-        console.log('Data received in background:', request.data);
-        // Handle the received data here
-        sendResponse({ status: 'Data received successfully', receivedData: request.data });
     }
 });
