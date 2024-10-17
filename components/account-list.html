@@ -11,16 +11,9 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
 </head>
-<style>
-  body{
-    width: 340px !important;
-    max-width: 340px !important;
-    border-radius: 30px !important;
-}
-</style>
 <body>
-    <div class="popup-container p-4 bg-color border-0 ">
-      <nav class="navbar navbar-expand-lg">
+    <div class="popup-container bg-color border-0 ">
+      <nav class="navbar navbar-expand-lg  p-4">
           <div>
             <img src="./icons/user-icon.svg" class="user-icon">
             <span id="username" class="f-16 fw-600">Username</span>
@@ -36,59 +29,26 @@
           </div>
       </nav>
     <div class="wallet-info mt-3">
-      <div class="">
-        <h2 class="f-16">Choose the account(s) you’d like to
-          connect</h2>
-      </div>
-      <div class="form-check d-flex justify-content-between align-items-center p-0 mt-4">
-        <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
-            <div class="d-flex">
-                <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
-                <div class="text-start text-white ms-2 align-content-center">
-                    <span id="username" class="f-15">Username</span>
-                </div>
-            </div>
-        </label>
-        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-    </div>
-    <div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
-      <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
-          <div class="d-flex">
-              <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
-              <div class="text-start text-white ms-2 align-content-center">
-                  <span id="username" class="f-15 font-regular">Username</span>
-              </div>
-          </div>
-      </label>
-      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-  </div>
-  <div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
-    <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
-        <div class="d-flex">
-            <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
-            <div class="text-start text-white ms-2 align-content-center">
-                <span id="username" class="f-15 font-regular">Username</span>
-            </div>
-        </div>
-    </label>
-    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-</div>
-<div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
-  <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
-      <div class="d-flex">
-          <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
-          <div class="text-start text-white ms-2 align-content-center">
-              <span id="username" class="f-15 font-regular">Username</span>
-          </div>
-      </div>
-  </label>
-  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
-</div>
-      <div class="d-flex w-100 mt-5">
-        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Reject</button>
-        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button">Connect</button>
-      </div>
+      <img class="top-left-img" src="./icons/Ellipse2.svg" alt="Icon">
+      <img class="top-right-img" src="./icons/Ellipse1.svg" alt="Icon">
+      <img class="bottom-middle-img" src="./icons/Ellipse3.svg" alt="Icon">
+     <div class="text-center user-detail mt-5">
+      <img src="./icons/user-icon.svg" style="width: 40%;">
+      <p id="username" class="f-20 fw-500">Username</p>
+      <p class="font-12 fw-400 light-black mb-0">Address</p>
+      <p>
+        <span id="address" class="wallet-address font-12 fw-400">N/A</span>
+        <button id="copy-button" class="copy-button" aria-label="Copy Address">
+          <img src="./icons/copy.svg" class="pb-3">
+        </button>
+        <span id="copy-message" class="copy-message">Copied!<span>
+        </p>
+     </div>
     </div> 
+    <div class="d-flex w-100 mt-5 p-4 buttons">
+      <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Reject</button>
+      <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button">Connect</button>
+    </div>
     </div>
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
