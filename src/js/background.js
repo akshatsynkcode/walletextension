@@ -42,8 +42,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
 // Handler for incoming data
 function handleExtensionData(data, sendResponse) {
-    chrome.storage.sync.get(['userInfo'], function(result) {
-        if (result.userInfo) {
+    chrome.storage.sync.get(['userInfo', 'authToken'], function(result) {
+        if (chrome.runtime.lastError) {
+            console.error('Error fetching data from chrome storage:', chrome.runtime.lastError);
+            sendResponse({ status: 'Error fetching user info' });
+            return;
+        }
+        
+        if (result.authToken && result.userInfo) {
             // If user info already exists, log in automatically
             isLoggedIn = true;
             chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
@@ -51,6 +57,11 @@ function handleExtensionData(data, sendResponse) {
         } else {
             // If no user info is found, store the new data and proceed with the login flow
             chrome.storage.sync.set({ userInfo: data }, function() {
+                if (chrome.runtime.lastError) {
+                    console.error('Error storing user info:', chrome.runtime.lastError);
+                    sendResponse({ status: 'Error storing user info' });
+                    return;
+                }
                 isLoggedIn = true;
                 chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after login
                 sendResponse({ status: 'Data stored and logged in', userInfo: data });
@@ -60,8 +71,14 @@ function handleExtensionData(data, sendResponse) {
 }
 
 function checkLoginStatus(sendResponse) {
-    chrome.storage.sync.get(['userInfo'], function(result) {
-        if (result.userInfo) {
+    chrome.storage.sync.get(['authToken', 'userInfo'], function(result) {
+        if (chrome.runtime.lastError) {
+            console.error('Error fetching data from chrome storage:', chrome.runtime.lastError);
+            sendResponse({ loggedIn: false });
+            return;
+        }
+
+        if (result.authToken && result.userInfo) {
             sendResponse({ loggedIn: true, userInfo: result.userInfo });
         } else {
             sendResponse({ loggedIn: false });
@@ -71,15 +88,25 @@ function checkLoginStatus(sendResponse) {
 
 function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
-        chrome.tabs.remove(fullscreenTabId, () => {
-            if (chrome.runtime.lastError) {
-                console.log('Error closing tab:', chrome.runtime.lastError);
-                sendResponse({ success: false });
-            } else {
+        chrome.tabs.get(fullscreenTabId, function(tab) {
+            if (chrome.runtime.lastError || !tab) {
+                // If tab doesn't exist, reset the fullscreenTabId
                 fullscreenTabId = null;
                 isLoggedIn = false;
                 chrome.action.setPopup({popup: "popup-login.html"});
                 sendResponse({ success: true });
+            } else {
+                chrome.tabs.remove(fullscreenTabId, () => {
+                    if (chrome.runtime.lastError) {
+                        console.log('Error closing tab:', chrome.runtime.lastError);
+                        sendResponse({ success: false });
+                    } else {
+                        fullscreenTabId = null;
+                        isLoggedIn = false;
+                        chrome.action.setPopup({popup: "popup-login.html"});
+                        sendResponse({ success: true });
+                    }
+                });
             }
         });
     } else {
@@ -95,12 +122,19 @@ function handleUnlockWallet(sendResponse) {
             url: chrome.runtime.getURL('profile.html'),
             active: true
         }, (tab) => {
-            fullscreenTabId = tab.id;
-            console.log("Tab opened:", tab);
+            if (tab && tab.id) {
+                fullscreenTabId = tab.id; // Ensure the tab ID is stored
+                console.log("Tab opened:", tab);
+                sendResponse({ success: true });
+            } else {
+                sendResponse({ success: false });
+                console.error("Failed to create the tab");
+            }
         });
+    } else {
+        sendResponse({ success: true });
     }
 }
-
 
 function handleRequestConnection(message, sender, sendResponse) {
     const request = {
@@ -166,20 +200,21 @@ chrome.action.onClicked.addListener(() => {
 
 // External message listener for fetching address
 chrome.runtime.onMessageExternal.addListener(
-  function(request, sender, sendResponse) {
-    if (request.message === "getAddress") {
-      chrome.storage.sync.get('userInfo', function(result) {
-        if (result.userInfo && result.userInfo.address) {
-          sendResponse({ address: result.userInfo.address });
-        } else {
-          sendResponse({ error: "No address found" });
-        }
-      });
-      return true; // Keep the message channel open for the response
+    function(request, sender, sendResponse) {
+      if (request.message === "getAddress") {
+        chrome.storage.sync.get('userInfo', function(result) {
+          if (result.userInfo && result.userInfo.address) {
+            sendResponse({ address: result.userInfo.address });
+          } else {
+            sendResponse({ error: "No address found" });
+          }
+        });
+        return true; // Keep the message channel open for the response
+      }
     }
-  }
 );
-// background.js
+
+// Message listener for handling incoming data
 chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
     if (request.type === 'EXTENSION_DATA') {
         console.log('Data received in background:', request.data);

@@ -13,10 +13,12 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Handle the login when the login button is clicked
-    document.getElementById('login-btn').addEventListener('click', async function login() {
+    loginButton.addEventListener('click', async function login(event) {
+        event.preventDefault();  // Prevent default form submission behavior
+        
         const email = emailInput.value;
         const password = passwordInput.value;
-        
+
         errorMessage.textContent = '';  // Clear previous error messages
 
         // Validate input
@@ -62,10 +64,6 @@ document.addEventListener('DOMContentLoaded', () => {
 
                     // Redirect to popup.html after successful login
                     window.location.href = 'popup.html';
-
-                    
-                    // // Send message to open the popup window for the wallet
-                    // chrome.runtime.sendMessage({ action: 'openPopup' });
                 });
 
             } else {

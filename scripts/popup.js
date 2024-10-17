@@ -7,11 +7,10 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         try {
-            const response = await fetch(`http://13.233.172.115:3000/api/wallet-balance`, {
+            const response = await fetch('https://log-iam-temp.finloge.com/api/ext-balance', {
                 method: 'GET',
                 headers: {
-                    'Authorization': `token ${authToken}`,
-                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${authToken}`
                 }
             });
 
@@ -19,7 +18,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 const data = await response.json();
                 const balanceElement = document.getElementById('balance');
                 if (balanceElement) {
-                    const balance = parseFloat(data.data); // Convert the balance to a number
+                    const balance = parseFloat(data.balance); // Convert the balance to a number
                     balanceElement.textContent = `AED ${balance.toFixed(3)}`; // Format balance to 3 decimal places
                     if (loader) {
                         loader.style.display = 'none'; // Hide the loader after fetching the balance
@@ -48,17 +47,17 @@ document.addEventListener('DOMContentLoaded', function() {
             }
 
             try {
-                const response = await fetch(`http://13.233.172.115:3000/api/mobile-logout`, {
-                    method: 'POST',
+                // Updated to use the correct GET method for logout
+                const response = await fetch('https://log-iam-temp.finloge.com/api/ext-logout', {
+                    method: 'GET',
                     headers: {
-                        'Authorization': `token ${authToken}`,
-                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${authToken}`
                     }
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    if (data.success) {
+                    if (data.message === "Successfully Logged Out") {
                         // Successfully logged out, remove user info
                         chrome.storage.sync.remove(['userInfo', 'authToken'], function() {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, function(response) {
@@ -116,12 +115,12 @@ document.addEventListener('DOMContentLoaded', function() {
             const addressElement = document.getElementById('address');
 
             if (usernameElement && addressElement) {
-                usernameElement.textContent = userInfo.name;
-                addressElement.textContent = userInfo.address;
+                usernameElement.textContent = userInfo.fullName;
+                addressElement.textContent = userInfo.walletAddress;
 
                 if (authToken) {
-                    await fetchAndUpdateBalance(userInfo.address, authToken);
-                    setInterval(() => fetchAndUpdateBalance(userInfo.address, authToken), 4000);
+                    await fetchAndUpdateBalance(userInfo.walletAddress, authToken);
+                    setInterval(() => fetchAndUpdateBalance(userInfo.walletAddress, authToken), 4000);
                 }
             }
         }
@@ -149,9 +148,10 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
 // Event listener for the "Expand Screen" button
 document.getElementById('expand-btn').addEventListener('click', function(event) {
     event.preventDefault();
-    // Open the login.html in a new fullscreen window
-    window.open('login.html', '_blank');
+    // Open the profile.html in a new fullscreen window
+    window.open('profile.html', '_blank');
 });
