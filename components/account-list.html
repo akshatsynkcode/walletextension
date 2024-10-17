@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Popup</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet" />
+  <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
+    />
+</head>
+<style>
+  body{
+    width: 340px !important;
+    max-width: 340px !important;
+    border-radius: 30px !important;
+}
+</style>
+<body>
+    <div class="popup-container p-4 bg-color border-0 ">
+      <nav class="navbar navbar-expand-lg">
+          <div>
+            <img src="./icons/user-icon.svg" class="user-icon">
+            <span id="username" class="f-16 fw-600">Username</span>
+          </div>
+          <div class="dropdown">
+            <button class="btn  ps-1 border-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="fas fa-ellipsis-v" style="color: rgba(162, 162, 163, 1);"></i>
+            </button>
+            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <li><button id="expand-btn" class="dropdown-item btn font-12 text-white" href="#"><i class="fa-solid fa-up-right-and-down-left-from-center me-2"></i>Expand Screen</button></li>
+              <li><button class="dropdown-item btn font-12 text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" id ="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
+            </ul>
+          </div>
+      </nav>
+    <div class="wallet-info mt-3">
+      <div class="">
+        <h2 class="f-16">Choose the account(s) you’d like to
+          connect</h2>
+      </div>
+      <div class="form-check d-flex justify-content-between align-items-center p-0 mt-4">
+        <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
+            <div class="d-flex">
+                <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
+                <div class="text-start text-white ms-2 align-content-center">
+                    <span id="username" class="f-15">Username</span>
+                </div>
+            </div>
+        </label>
+        <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+    </div>
+    <div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
+      <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
+          <div class="d-flex">
+              <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
+              <div class="text-start text-white ms-2 align-content-center">
+                  <span id="username" class="f-15 font-regular">Username</span>
+              </div>
+          </div>
+      </label>
+      <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+  </div>
+  <div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
+    <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
+        <div class="d-flex">
+            <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
+            <div class="text-start text-white ms-2 align-content-center">
+                <span id="username" class="f-15 font-regular">Username</span>
+            </div>
+        </div>
+    </label>
+    <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+</div>
+<div class="form-check d-flex justify-content-between align-items-center p-0 mt-3">
+  <label class="form-check-label d-flex align-items-center" for="flexCheckDefault">
+      <div class="d-flex">
+          <img src="./icons/user-icon.svg" class="user-icon" alt="User Icon">
+          <div class="text-start text-white ms-2 align-content-center">
+              <span id="username" class="f-15 font-regular">Username</span>
+          </div>
+      </div>
+  </label>
+  <input class="form-check-input" type="checkbox" value="" id="flexCheckDefault">
+</div>
+      <div class="d-flex w-100 mt-5">
+        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Reject</button>
+        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button">Connect</button>
+      </div>
+    </div> 
+    </div>
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content popup-modal p-4">
+        <div class="modal-body text-center  pb-0">
+          <div class="font-24">Confirm Logout</div>
+           <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
+        </div>
+        <div class="modal-footer justify-content-between border-0">
+          <div class="d-flex w-100">
+            <button type="button" class="btn btn-dark w-50 f-14 border-color " data-bs-dismiss="modal">No</button>
+            <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient  border-0 f-14">Yes</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Include the popup script -->
+  <script src="./js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

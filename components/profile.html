@@ -18,8 +18,8 @@
   <body>
     <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-lg header">
-        <div class="container-fluid">
-          <a class="navbar-brand m-0 ps-5" href="#"
+        <div class="container-fluid z-2">
+          <a class="navbar-brand m-0 ps-5"
             ><img src="./icons/white-logo.svg" style="width: 70%;">
           </a>
           <button
@@ -36,7 +36,7 @@
           <div class="collapse navbar-collapse" id="navbarSupportedContent">
             <ul class="navbar-nav ms-auto me-auto mb-2 mb-lg-0">
               <li class="nav-item">
-                <a class="nav-link active text-white font-regular font-20" aria-current="page" href="#"
+                <a class="nav-link active text-white font-regular font-20" aria-current="page"
                   >Dashboard</a
                 >
               </li>
@@ -48,13 +48,12 @@
                 <div class="d-flex">
                   <div class="text-start">
                     <span id="username" class="f-14">Username</span>
-                    <p class="mb-0 f-10">@krishnaR147</p>
                 </div>
                  <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
                 </div>
                 </button>
-                <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                  <li><button class="dropdown-item btn text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" id ="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
+                <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
+                  <li><button class="dropdown-item btn text-white font-14" data-bs-toggle="modal" data-bs-target="#exampleModal" id ="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
                 </ul>
               </div>
             </div>
@@ -64,7 +63,7 @@
       <div class="container">
         <div class="row mt-5">
           <div class="col-lg-7 col-12 mt-4 mt-lg-0">
-            <div class="card table-card mb-5">
+            <div class="card table-card mb-5" style="max-height: 450px;">
                 <div class="card-body position-relative">
                     <div class="position-absolute end-0 top-0 p-4">
                         <div class="dropdown">
@@ -106,7 +105,7 @@
             </div>
         </div>
           <div class="col-lg-5 col-12">
-            <div class="card table-card mb-5">
+            <div class="card table-card mb-5" style="max-height: 450px;">
               <div class="card-body position-relative">
                   <div class="position-absolute end-0 top-0 p-4">
                       <div class="dropdown">
@@ -142,12 +141,12 @@
         <div class="modal-content popup-modal p-4">
           <div class="modal-body text-center text-white pb-0">
             <div class="font-24">Confirm Logout</div>
-             <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
+             <p class="dark-black pt-2 font-16">Are you sure you want to logout?</p>
           </div>
           <div class="modal-footer justify-content-between border-0">
             <div class="d-flex w-100">
-              <button type="button" class="btn btn-secondary w-50" data-bs-dismiss="modal">No</button>
-              <button type="button" class="btn btn-primary w-50 ms-2 yes-btn">Yes</button>
+              <button type="button" class="btn btn-dark w-50 f-14 border-color text-white" data-bs-dismiss="modal">No</button>
+              <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">Yes</button>
             </div>
           </div>
         </div>

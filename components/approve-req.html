@@ -11,6 +11,13 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
 </head>
+<style>
+  body{
+    width: 340px !important;
+    max-width: 340px !important;
+    border-radius: 30px !important;
+}
+</style>
 <body>
     <div class="popup-container p-4 bg-color border-0">
       <nav class="navbar navbar-expand-lg">
@@ -29,39 +36,35 @@
           </div>
       </nav>
     <div class="wallet-info mt-3">
-      <div class="ps-3">
-        <span id="balance" class="font-28 fw-600">
-          <span id="balance-loader"></span>
-        </span>
-        <p>
-        <span id="address" class="wallet-address light-black font-14">N/A</span>
-        <button id="copy-button" class="copy-button" aria-label="Copy Address">
-          <img src="./icons/copy.svg" class="pb-3">
-        </button>
-        <span id="copy-message" class="copy-message">Copied!<span>
-        </p>
+      <div>
+        <p class="font-regular font-24 mb-0 mt-3">Approve request</p>
+        <p class="f-14 dark-black mt-2">You are approving a request with account  _____  on dubai customs...
       </div>
-      <div class="text-center">
-        <img src="./icons/login-vector.svg" style="width: 60%;">
-        <p class="font-regular font-24 mb-0 mt-3">Get started</p>
-        <p class="f-14 dark-black">Get started with adding some AED
-          <br>to your wallet</p>
-        </div>
-      <button id="login-btn" class="login-button mt-2 mb-3">Buy AED</button>
+      <div class="text-center mt-4">
+      <img src="./icons/approve-vector.svg" style="width: 60%;">
+    </div>
+    <div class="d-flex justify-content-between mt-4">
+      <span class="dark-black">Estimated fee</span>
+      <span class="dark-black">0.0003 AED</span>
+    </div>
+      <div class="d-flex w-100 mt-3">
+        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Cancel</button>
+        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button">Approve</button>
+      </div>
     </div> 
     </div>
   <!-- Modal -->
   <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content popup-modal p-1 m-3">
+      <div class="modal-content popup-modal p-4">
         <div class="modal-body text-center  pb-0">
-          <div class="font-20">Confirm Logout</div>
-           <p class="dark-black font-14">Are you sure you want to logout?</p>
+          <div class="font-24">Confirm Logout</div>
+           <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
         </div>
-        <div class="modal-footer justify-content-between border-0 p-1 mb-3">
+        <div class="modal-footer justify-content-between border-0">
           <div class="d-flex w-100">
             <button type="button" class="btn btn-dark w-50 f-14 border-color " data-bs-dismiss="modal">No</button>
-            <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient border-0 f-14 text-white">Yes</button>
+            <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient  border-0 f-14">Yes</button>
           </div>
         </div>
       </div>
@@ -69,7 +72,6 @@
   </div>
 
   <!-- Include the popup script -->
-  <script src="popup.bundle.js"></script>
   <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 </html>
