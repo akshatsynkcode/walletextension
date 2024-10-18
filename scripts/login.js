@@ -1,61 +1,54 @@
-document.getElementById('login-btn').addEventListener('click', async function login() {
+document.getElementById('login-btn').addEventListener('click', async function login(event) {
+    event.preventDefault();  // Prevent default form submission behavior
+
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const errorMessage = document.getElementById('error-message');
     const loginButton = document.getElementById('login-btn');
     const loader = document.getElementById('loader');
-  
-    errorMessage.textContent = '';
-    
+
+    errorMessage.textContent = '';  // Clear any previous errors
+
+    // Validate input fields
     if (!email || !password) {
         errorMessage.textContent = 'Please enter both email and password.';
         return;
     }
-  
+
     // Show the loader and hide the login button
-    loginButton.style.display = 'none';
+    loginButton.disabled = true;  // Disable button to prevent multiple clicks
     loader.style.display = 'block';
-  
+    loginButton.style.display = 'none';
+
     try {
-        // Update the fetch URL to point to your EC2 instance where server.js is running
-        const response = await fetch('http://13.233.172.115:3000/api/mobile-login', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
             },
             body: JSON.stringify({ email, password })
         });
-  
+
         const data = await response.json();
-  
-        if (response.ok && data.success) {
-            const walletDetails = data.data.wallet_details[0];
-  
+
+        if (response.ok && data.token) {
+            // Store the token in chrome.storage.sync
             chrome.storage.sync.set({
-                userInfo: {
-                    name: walletDetails.full_name,
-                    address: walletDetails.wallet_address,
-                    balance: walletDetails.balance
-                },
                 authToken: data.token
             }, function () {
                 if (chrome.runtime.lastError) {
-                    console.error('Error setting userInfo:', chrome.runtime.lastError);
-                    errorMessage.textContent = 'Failed to store user info.';
-                    // Hide the loader and show the login button
+                    console.error('Error setting authToken:', chrome.runtime.lastError);
+                    errorMessage.textContent = 'Failed to store auth token.';
                     loader.style.display = 'none';
                     loginButton.style.display = 'block';
                     return;
                 }
-  
-                // Redirect to profile.html in full-screen
+                // Redirect to profile.html after successful login
                 window.location.href = 'profile.html';
-  
-                // Open the popup.html for the wallet directly as a popup
-                chrome.runtime.sendMessage({ action: "openPopup" });
             });
-  
+
         } else {
+            // Display the login error message from the response
             errorMessage.textContent = data.message || 'Login failed, please try again.';
         }
     } catch (error) {
@@ -65,12 +58,15 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         // Hide the loader and show the login button
         loader.style.display = 'none';
         loginButton.style.display = 'block';
+        loginButton.disabled = false;  // Re-enable the button
     }
 });
 
+// Check if the user is already logged in (authToken in chrome.storage.sync)
 window.onload = function () {
-    chrome.storage.sync.get(['userInfo'], function (result) {
-        if (result.userInfo) {
+    chrome.storage.sync.get(['authToken'], function (result) {
+        if (result.authToken) {
+            // If auth token is found, redirect to profile
             window.location.href = 'profile.html';
         }
     });

@@ -3,6 +3,7 @@ const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 const TerserPlugin = require('terser-webpack-plugin');
+const { connect } = require('http2');
 
 module.exports = {
   mode: 'production',
@@ -13,7 +14,8 @@ module.exports = {
     login: './scripts/login.js',
     popup: './scripts/popup.js',
     profile: './scripts/profile.js',
-    popupLogin: './scripts/popup-login.js'
+    popupLogin: './scripts/popup-login.js',
+    connectWallet: './scripts/connect-wallet.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -80,6 +82,11 @@ module.exports = {
       template: './components/profile.html',
       filename: 'profile.html',
       chunks: ['profile', 'vendors'] // Include vendor chunk
+    }),
+    new HtmlWebpackPlugin({
+      template: './components/connect-wallet.html',
+      filename: 'connect-wallet.html',
+      chunks: ['connectWallet', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/popup-login.html',
