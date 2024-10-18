@@ -80,6 +80,9 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   width: 40px;
   height: 40px;
 }
+.approve-icon{
+  height: 40px;
+}
 .font-regular{
   font-weight: 500 !important;
 }
