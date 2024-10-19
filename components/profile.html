@@ -7,21 +7,37 @@
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
     <link
-    href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap"
-    rel="stylesheet"
-  />
+      href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+      rel="stylesheet"
+    />
     <link
       rel="stylesheet"
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
+    <style>
+      /* Custom styling for the activity loader */
+      #activities-loader {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        flex-direction: column;
+        margin-top: 20px;
+      }
+      #activities-loader .spinner-border {
+        margin-bottom: 10px;
+      }
+      .card-title.large-font {
+        font-size: 18px;
+      }
+    </style>
   </head>
   <body>
     <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-lg header">
         <div class="container-fluid z-2">
           <a class="navbar-brand m-0 ps-5"
-            ><img src="./icons/white-logo.svg" style="width: 70%;">
-          </a>
+            ><img src="./icons/white-logo.svg" style="width: 70%;"
+          /></a>
           <button
             class="navbar-toggler"
             type="button"
@@ -43,17 +59,38 @@
             </ul>
             <div class="d-flex align-items-center right-nav pe-5">
               <div class="dropdown">
-                <img src="./icons/user-icon.svg" class="user-icon">
-                <button class="btn text-white ps-1 border-0" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                <div class="d-flex">
-                  <div class="text-start">
-                    <span id="username" class="f-14">Username</span>
-                </div>
-                 <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
-                </div>
+                <img src="./icons/user-icon.svg" class="user-icon" />
+                <button
+                  class="btn text-white ps-1 border-0"
+                  type="button"
+                  id="dropdownMenuButton1"
+                  data-bs-toggle="dropdown"
+                  aria-expanded="false"
+                >
+                  <div class="d-flex">
+                    <div class="text-start">
+                      <span id="username" class="f-14">Username</span>
+                    </div>
+                    <i
+                      class="fas fa-chevron-down ms-2 mt-2"
+                      style="font-size: 10px;"
+                    ></i>
+                  </div>
                 </button>
-                <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
-                  <li><button class="dropdown-item btn text-white font-14" data-bs-toggle="modal" data-bs-target="#exampleModal" id ="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
+                <ul
+                  class="dropdown-menu ms-4"
+                  aria-labelledby="dropdownMenuButton1"
+                >
+                  <li>
+                    <button
+                      class="dropdown-item btn text-white font-14"
+                      data-bs-toggle="modal"
+                      data-bs-target="#exampleModal"
+                      id="lock-wallet-btn"
+                    >
+                      <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
+                    </button>
+                  </li>
                 </ul>
               </div>
             </div>
@@ -64,95 +101,173 @@
         <div class="row mt-5">
           <div class="col-lg-7 col-12 mt-4 mt-lg-0">
             <div class="card table-card mb-5" style="max-height: 450px;">
-                <div class="card-body position-relative">
-                    <div class="position-absolute end-0 top-0 p-4">
-                        <div class="dropdown">
-                            <button class="btn text-white dropdown-btn wallet-left-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                                <i class="fas fa-ellipsis-v" style="color: rgba(162, 162, 163, 1);"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="text-center">
-                        <img src="./icons/activity-icon.svg" class="activity-icon">
-                        <h5 class="card-title font-20 text-white mt-2">Activities</h5>
-                    </div>
-                    <div class="p-3">
-                        <div class="card mb-3 shadow-sm border-0 activity-card">
-                            <div class="row g-0 justify-content-center align-items-center">
-                                <div class="col-4 col-md-4 ps-2">
-                                    <div class="card-body text-start activity-card-body p-1">
-                                        <h5 class="card-title font-14 font-regular m-0">Dubai custom</h5>
-                                        <p class="card-text font-12"><small class="light-black">September 5, 2024</small></p>
-                                    </div>
-                                </div>
-                                <div class="col-4 col-md-4 text-center">
-                                    <h5 class="card-title font-14 font-regular mb-4">To
-                                        <a href="#" class="address-link" id="address-link" style="color: rgba(0, 194, 255, 1);"></a>
-                                        <button id="copy-button" class="copy-button" aria-label="Copy Address">
-                                            <img src="./icons/copy.svg">
-                                        </button>
-                                        <span id="copy-message" class="copy-message" style="display: none;">Copied!</span>
-                                    </h5>
-                                </div>
-                                <div class="col-4 col-md-4 text-end padding-right">
-                                    <h5 class="card-title font-14 font-regular m-0">AED 1482.999</h5>
-                                    <p class="card-text font-12"><small class="light-black">11 secs ago</small></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+              <div class="card-body position-relative">
+                <div class="position-absolute end-0 top-0 p-4">
+                  <div class="dropdown">
+                    <button
+                      class="btn text-white dropdown-btn wallet-left-btn"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i
+                        class="fas fa-ellipsis-v"
+                        style="color: rgba(162, 162, 163, 1);"
+                      ></i>
+                    </button>
+                  </div>
                 </div>
+                <div class="text-center">
+                  <img src="./icons/activity-icon.svg" class="activity-icon" />
+                  <h5 class="card-title font-20 text-white mt-2">Activities</h5>
+                </div>
+                <div class="p-3">
+                  <!-- Loader for activity section -->
+                  <div id="activities-loader" class="text-center">
+                    <span class="spinner-border spinner-border-sm text-light"></span>
+                    <p class="text-light">Loading your transactions...</p>
+                  </div>
+                  <!-- Transactions content will be dynamically loaded here -->
+                  <div id="activities-content" style="display: none;">
+                    <div class="card mb-3 shadow-sm border-0 activity-card">
+                      <div
+                        class="row g-0 justify-content-center align-items-center"
+                      >
+                        <div class="col-4 col-md-4 ps-2">
+                          <div class="card-body text-start activity-card-body p-1">
+                            <h5 class="card-title font-14 font-regular m-0"></h5>
+                            <p class="card-text font-12">
+                              <small class="light-black"></small>
+                            </p>
+                          </div>
+                        </div>
+                        <div class="col-4 col-md-4 text-center">
+                          <h5 class="card-title font-14 font-regular mb-4">
+                            <a
+                              href="#"
+                              class="address-link"
+                              id="address-link"
+                              style="color: rgba(0, 194, 255, 1);"
+                            ></a>
+                            <button
+                              id="copy-button"
+                              class="copy-button"
+                              aria-label="Copy Address"
+                            >
+                              <img src="./icons/copy.svg" />
+                            </button>
+                            <span
+                              id="copy-message"
+                              class="copy-message"
+                              style="display: none;"
+                              >Copied!</span
+                            >
+                          </h5>
+                        </div>
+                        <div class="col-4 col-md-4 text-end padding-right">
+                          <h5 class="card-title font-14 font-regular m-0"></h5>
+                          <p class="card-text font-12">
+                            <small class="light-black"></small>
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  <!-- End of loader and content -->
+                </div>
+              </div>
             </div>
-        </div>
+          </div>
           <div class="col-lg-5 col-12">
             <div class="card table-card mb-5" style="max-height: 450px;">
               <div class="card-body position-relative">
-                  <div class="position-absolute end-0 top-0 p-4">
-                      <div class="dropdown">
-                          <button class="btn text-white dropdown-btn wallet-left-btn" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
-                              <i class="fas fa-ellipsis-v" style="color: rgba(162, 162, 163, 1);"></i>
-                          </button>
-                      </div>
+                <div class="position-absolute end-0 top-0 p-4">
+                  <div class="dropdown">
+                    <button
+                      class="btn text-white dropdown-btn wallet-left-btn"
+                      type="button"
+                      id="dropdownMenuButton"
+                      data-bs-toggle="dropdown"
+                      aria-expanded="false"
+                    >
+                      <i
+                        class="fas fa-ellipsis-v"
+                        style="color: rgba(162, 162, 163, 1);"
+                      ></i>
+                    </button>
                   </div>
-                  <div class="text-center">
-                    <img src="./icons/profile-icon.svg" class="activity-icon">
-                    <h5 class="card-title font-20 text-white mt-2">Profile Details</h5>
-                  </div>
-                  <div class="p-3 text-center">
-                    <p>
-                      <span class="font-14 font-regular dark-black">Account Address</span>
-                      <a id="wallet-address" class="font-regular font-14" style="color: rgba(19, 138, 179, 1);">N/A</a>
+                </div>
+                <div class="text-center">
+                  <img src="./icons/profile-icon.svg" class="activity-icon" />
+                  <h5 class="card-title font-20 text-white mt-2">
+                    Profile Details
+                  </h5>
+                </div>
+                <div class="p-3 text-center">
+                  <p>
+                    <span class="font-14 font-regular dark-black"
+                      >Account Address</span
+                    >
+                    <a
+                      id="wallet-address"
+                      class="font-regular font-14"
+                      style="color: rgba(19, 138, 179, 1);"
+                      >N/A</a
+                    >
+                  </p>
+                  <div class="balance-circle">
+                    <p
+                      id="balance"
+                      class="font-20 fw-600 text-white mb-0"
+                    >
+                      <span id="balance-loader"></span>
                     </p>
-                    <div class="balance-circle">
-                      <p id="balance" class="font-20 fw-600 text-white mb-0">
-                        <span id="balance-loader"></span>
-                      </p>
-                      <p class="font-15 mt-2 mb-0 dark-black">Balance</p>
-                    </div>
+                    <p class="font-15 mt-2 mb-0 dark-black">Balance</p>
                   </div>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div
+      class="modal fade"
+      id="exampleModal"
+      tabindex="-1"
+      aria-labelledby="exampleModalLabel"
+      aria-hidden="true"
+    >
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content popup-modal p-4">
           <div class="modal-body text-center text-white pb-0">
             <div class="font-24">Confirm Logout</div>
-             <p class="dark-black pt-2 font-16">Are you sure you want to logout?</p>
+            <p class="dark-black pt-2 font-16">
+              Are you sure you want to logout?
+            </p>
           </div>
           <div class="modal-footer justify-content-between border-0">
             <div class="d-flex w-100">
-              <button type="button" class="btn btn-dark w-50 f-14 border-color text-white" data-bs-dismiss="modal">No</button>
-              <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">Yes</button>
+              <button
+                type="button"
+                class="btn btn-dark w-50 f-14 border-color text-white"
+                data-bs-dismiss="modal"
+              >
+                No
+              </button>
+              <button
+                type="button"
+                class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14"
+              >
+                Yes
+              </button>
             </div>
           </div>
         </div>
       </div>
     </div>
-    <script src="profile.bundle.js"></script>
+    <!-- <script src="profile.bundle.js"></script> -->
     <script src="./js/bootstrap.bundle.min.js"></script>
   </body>
 </html>
