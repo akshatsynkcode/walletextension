@@ -15,18 +15,67 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'unlock_wallet':
             handleUnlockWallet(sendResponse);
             break;
-        case 'request_connection':
-            handleRequestConnection(message, sender, sendResponse);
-            break;
         case 'approve_connection':
             handleApproveConnection(message, sendResponse);
             break;
         case 'reject_connection':
             handleRejectConnection(message, sendResponse);
             break;
+        case 'approve_transaction':
+            handleApproveTransaction(message, sendResponse);
+            break;
+        case 'reject_transaction':
+            handleRejectTransaction(message, sendResponse);
+            break;
     }
     return true; // Keep the message channel open for asynchronous responses
 });
+
+chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+    if (message.action === 'request_connection') {
+        handleRequestConnection(sender, sendResponse);
+    }
+    else if (message.action === 'transaction_request') {
+        // Extract transaction details
+        const { toAddress, amount, fromAddress } = message;
+
+        // Optionally, you could validate the data here
+        if (!toAddress || !amount || !fromAddress) {
+            sendResponse({ success: false, message: 'Invalid transaction data' });
+            return;
+        }
+        
+        // Now, open the internal approveReq.html page for user approval
+        chrome.windows.create({
+            url: chrome.runtime.getURL(`approve-req.html?toAddress=${encodeURIComponent(toAddress)}&amount=${encodeURIComponent(amount)}&fromAddress=${encodeURIComponent(fromAddress)}`),
+            type: 'popup',
+            width: 340,
+            height: 570
+        });
+    }
+    return true;
+});
+
+// Handle approving the transaction
+function handleApproveTransaction(message, sendResponse) {
+    const { toAddress, amount } = message.transaction;
+    console.log(`Transaction Approved: AED ${amount} to ${toAddress}`);
+
+    // Here you would add your transaction approval logic
+
+    sendResponse({ success: true });
+}
+
+// Handle rejecting the transaction
+function handleRejectTransaction(message, sendResponse) {
+    const { amount, toAddress } = message.transaction;
+    console.log(`Rejecting transaction: AED ${amount} to ${toAddress}`);
+
+    // Here you would add your transaction rejection logic
+
+    sendResponse({ success: true });
+}
+
 
 // Listener for extension installation
 function handleLockWallet(sendResponse) {
@@ -79,22 +128,55 @@ function handleUnlockWallet(sendResponse) {
     }
 }
 
-function handleRequestConnection(message, sender, sendResponse) {
+function handleRequestConnection(sender, sendResponse) {
     const request = {
         tabId: sender.tab.id,
-        url: sender.tab.url,
         responseCallback: sendResponse
     };
     pendingRequests.push(request);
 
-    // Open the approval popup
-    chrome.windows.create({
-        url: chrome.runtime.getURL('connect-wallet.html'), // approval.html should have the UI for user consent
-        type: 'popup',
-        width: 400,
-        height: 600
+    chrome.storage.sync.get(['authToken'], function(result) {
+        if (result.authToken) {
+            const authToken = result.authToken;
+
+            fetch('https://log-iam-temp.finloge.com/api/ext-profile', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            })
+            .then(response => {
+                if (response.ok) {
+                    return response.json();
+                } else {
+                    throw new Error('Network response was not ok');
+                }
+            })
+            .then(data => {
+                const fullName = data.fullName;
+                const walletAddress = data.walletAddress;
+
+                // Store data in Chrome storage
+                chrome.storage.sync.set({ fullName, walletAddress }, function() {
+                    chrome.windows.create({
+                        url: chrome.runtime.getURL(`connectWallet.html`), // No data passed
+                        type: 'popup',
+                        width: 340,
+                        height: 570
+                    });
+                });
+            })
+            .catch(error => {
+                console.error('Fetch error:', error);
+                sendResponse({ success: false, error: error.message });
+            });
+        } else {
+            sendResponse({ success: false, error: 'No auth token found' });
+        }
     });
+
+    return true;
 }
+
+
 
 function handleApproveConnection(message, sendResponse) {
     const approveRequest = pendingRequests.shift(); // Get the first pending request
@@ -103,7 +185,7 @@ function handleApproveConnection(message, sendResponse) {
             if (result.authToken) {
                 // Send the address back to the original request
                 approveRequest.responseCallback({ success: true, authToken : result.authToken });
-                sendResponse({ success: true });
+                sendResponse({ success: true, authToken : result.authToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
                 sendResponse({ success: false });
@@ -122,6 +204,8 @@ function handleRejectConnection(message, sendResponse) {
 
 // Listener for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
+    console.log('Extension installed:', details);
+    console.log('Reason:');
     if (details.reason === 'install') {
         chrome.tabs.create({
             url: chrome.runtime.getURL('welcome.html'),

@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Profile Popup</title>
+  <title>Approve Request</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link href="./css/style.css" rel="stylesheet" />
   <link
@@ -16,46 +16,32 @@
       <nav class="navbar navbar-expand-lg">
           <div>
             <img src="./icons/user-icon.svg" class="user-icon">
-            <span id="username" class="f-14 fw-600">Username</span>
+            <span id="username-display" class="f-14 fw-600">Username</span>
           </div>
       </nav>
     <div class="wallet-info mt-3">
       <div>
         <p class="font-regular font-24 mb-0 mt-3">Approve request</p>
-        <p class="f-14 dark-black mt-2">You are approving a request with account  _____  on dubai customs...
+        <p class="f-14 dark-black mt-2">
+            You are approving a request from account 
+            <span id="from-address">_____</span> 
+            to account 
+            <span id="to-address">_____</span> 
+            on Dubai Customs for an amount of AED 
+            <span id="transaction-amount">0.0000</span>.
+        </p>
       </div>
       <div class="text-center mt-4">
-      <img src="./icons/approve-vector.svg" style="width: 60%;">
-    </div>
-    <div class="d-flex justify-content-between mt-4">
-      <span class="dark-black">Estimated fee</span>
-      <span class="dark-black">0.0003 AED</span>
-    </div>
+        <img src="./icons/approve-vector.svg" style="width: 60%;">
+      </div>
       <div class="d-flex w-100 mt-3">
         <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Cancel</button>
-        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button">Approve</button>
+        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 approve-button">Approve</button>
       </div>
     </div> 
     </div>
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content popup-modal p-4">
-        <div class="modal-body text-center  pb-0">
-          <div class="font-24">Confirm Logout</div>
-           <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
-        </div>
-        <div class="modal-footer justify-content-between border-0">
-          <div class="d-flex w-100">
-            <button type="button" class="btn btn-dark w-50 f-14 border-color " data-bs-dismiss="modal">No</button>
-            <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient  border-0 f-14">Yes</button>
-          </div>
-        </div>
-      </div>
-    </div>
-  </div>
-
-  <!-- Include the popup script -->
-  <script src="./js/bootstrap.bundle.min.js"></script>
+  
+    <!-- Include the popup script -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

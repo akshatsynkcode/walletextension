@@ -15,7 +15,8 @@ module.exports = {
     popup: './scripts/popup.js',
     profile: './scripts/profile.js',
     popupLogin: './scripts/popup-login.js',
-    connectWallet: './scripts/connect-wallet.js'
+    connectWallet: './scripts/connectWallet.js',
+    approveReq: './scripts/approve-req.js'
   },
   output: {
     path: path.resolve(__dirname, 'dist'),
@@ -84,9 +85,14 @@ module.exports = {
       chunks: ['profile', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
-      template: './components/connect-wallet.html',
-      filename: 'connect-wallet.html',
+      template: './components/connectWallet.html',
+      filename: 'connectWallet.html',
       chunks: ['connectWallet', 'vendors'] // Include vendor chunk
+    }),
+    new HtmlWebpackPlugin({
+      template: './components/approve-req.html',
+      filename: 'approve-req.html',
+      chunks: ['approveReq', 'vendors'] // Include vendor chunk
     }),
     new HtmlWebpackPlugin({
       template: './components/popup-login.html',
