@@ -89,6 +89,10 @@ function redirectToLogin() {
   
     transactions.forEach(transaction => {
         // Create a new card for each transaction
+        const fullwalletAdress = transaction.debit ? transaction.to_wallet_address : transaction.from_wallet_address;
+        const shortAddress = fullwalletAdress.substring(0, 6) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
+        const colorClass = transaction.debit ? 'text-danger' : 'text-success';
+        const typeText = transaction.debit ? 'To' : 'From';
         const transactionCard = document.createElement('div');
         transactionCard.classList.add('card', 'mb-3', 'shadow-sm', 'border-0', 'activity-card');
   
@@ -96,21 +100,22 @@ function redirectToLogin() {
             <div class="row g-0 justify-content-center align-items-center">
                 <!-- First Column: Transaction to -->
                 <div class="col-4 col-md-4 ps-2">
-                    <div class="card-body text-start activity-card-body p-1">
-                        <h5 class="card-title font-14 font-regular m-0">To</h5>
-                        <a href="#" class="address-link" style="color: rgba(0, 194, 255, 1);">${transaction.to_wallet_address}</a>
+                    <div class="text-start activity-card-body p-1">
+                        <h5 class="card-title font-14 font-regular m-0">${typeText} : </h5>
+                        <a href="#" class="address-link ms-2" style="color: rgba(0, 194, 255, 1);" data-full-address="${fullwalletAdress}" 
+       title="${fullwalletAdress}">${shortAddress}</a>
                     </div>
                 </div>
                 
                 <!-- Second Column: Amount -->
-                <div class="col-4 col-md-4 text-center">
-                    <h5 class="card-title font-14 font-regular m-0">AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
-                    <p class="card-text font-12"><small class="light-black">${transaction.status}</small></p>
+                <div class="col-4 col-md-4 text-center d-flex justify-content-center">
+                    <h5 class="card-title font-14 font-regular m-0 ${colorClass}">AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
+                    <span class="card-text font-12 ms-2"><small class="light-black">${transaction.status}</small></span>
                 </div>
                 
                 <!-- Third Column: Date of the Transaction -->
                 <div class="col-4 col-md-4 text-end padding-right">
-                    <p class="card-text font-12"><small class="light-black">${new Date(transaction.created_at).toLocaleDateString()}</small></p>
+                    <p class="card-text font-12"><small class="light-black">${new Date(transaction.created_at).toLocaleString()}</small></p>
                 </div>
             </div>
         `;
@@ -250,4 +255,3 @@ function redirectToLogin() {
         });
     }
   });
-  
