@@ -52,10 +52,10 @@ document.addEventListener("DOMContentLoaded", () => {
                 }
             }, (response) => {
                 if (response.success) {
-                    alert("Transaction Approved!");
                     window.close(); // Close the popup after approval
                 } else {
                     alert("Approval failed. Please try again.");
+                    window.close();
                 }
             });
         })
