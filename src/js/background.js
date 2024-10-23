@@ -57,21 +57,22 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 });
 
 // Handle approving the transaction
-function handleApproveTransaction(message, sendResponse) {
+async function handleApproveTransaction(message, sendResponse) {
+
     const { authToken, status, transaction_id } = message.transaction;
 
-    const response = fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+    const response = await fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ status, transaction_id: transaction_id })
+        body: JSON.stringify({ status:status, transaction_id: transaction_id })
 
     });
     console.log(response, "response");
-    if (response.ok) {
+    if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
-        sendResponse({ success: true });
+        sendResponse({ success: true,  message : response.message });
     } else {
-        sendResponse({ success: false });
+        sendResponse({ success: false , message : response.message});
     }
 }
 
