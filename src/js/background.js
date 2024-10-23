@@ -37,17 +37,17 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     }
     else if (message.action === 'transaction_request') {
         // Extract transaction details
-        const { toAddress, amount, fromAddress } = message;
+        const { toAddress, amount, fromAddress, transaction_id, username } = message;
 
         // Optionally, you could validate the data here
-        if (!toAddress || !amount || !fromAddress) {
+        if (!toAddress || !amount || !fromAddress || !transaction_id || !username) {
             sendResponse({ success: false, message: 'Invalid transaction data' });
             return;
         }
-        
+        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount });
         // Now, open the internal approveReq.html page for user approval
         chrome.windows.create({
-            url: chrome.runtime.getURL(`approve-req.html?toAddress=${encodeURIComponent(toAddress)}&amount=${encodeURIComponent(amount)}&fromAddress=${encodeURIComponent(fromAddress)}`),
+            url: chrome.runtime.getURL('approve-req.html'),
             type: 'popup',
             width: 340,
             height: 570
@@ -58,22 +58,38 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 
 // Handle approving the transaction
 function handleApproveTransaction(message, sendResponse) {
-    const { toAddress, amount } = message.transaction;
-    console.log(`Transaction Approved: AED ${amount} to ${toAddress}`);
+    const { authToken, status, transaction_id } = message.transaction;
 
-    // Here you would add your transaction approval logic
+    const response = fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify({ status, transaction_id: transaction_id })
 
-    sendResponse({ success: true });
+    });
+    console.log(response, "response");
+    if (response.ok) {
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        sendResponse({ success: true });
+    } else {
+        sendResponse({ success: false });
+    }
 }
 
 // Handle rejecting the transaction
 function handleRejectTransaction(message, sendResponse) {
-    const { amount, toAddress } = message.transaction;
-    console.log(`Rejecting transaction: AED ${amount} to ${toAddress}`);
+    const { status, transaction_id, authToken } = message.transaction;
 
-    // Here you would add your transaction rejection logic
-
-    sendResponse({ success: true });
+    const response = fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+        method: 'PUT',
+        headers: { 'Authorization': `Bearer ${authToken}` },
+        body: JSON.stringify({ status, transaction_id: transaction_id })
+    });
+    if (response.ok) {
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        sendResponse({ success: true });
+    } else {
+        sendResponse({ success: false });
+    }
 }
 
 
@@ -185,6 +201,7 @@ function handleApproveConnection(message, sendResponse) {
             if (result.authToken) {
                 // Send the address back to the original request
                 approveRequest.responseCallback({ success: true, authToken : result.authToken });
+                chrome.storage.sync.remove(['fullName', 'walletAddress']);
                 sendResponse({ success: true, authToken : result.authToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
@@ -198,6 +215,7 @@ function handleRejectConnection(message, sendResponse) {
     const rejectRequest = pendingRequests.shift(); // Get the first pending request
     if (rejectRequest) {
         rejectRequest.responseCallback({ success: false, message: "Connection rejected by the user." });
+        chrome.storage.sync.remove(['fullName', 'walletAddress']);
         sendResponse({ success: true });
     }
 }
