@@ -475,6 +475,7 @@ h1, h4 {
     border: none !important;
     width: 340px;
     max-width: 340px;
+    height: 560px;
     position: relative;
   }
   .popup-login-container{

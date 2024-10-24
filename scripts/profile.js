@@ -216,7 +216,7 @@ function redirectToLogin() {
             navigator.clipboard.writeText(fullwalletAddress).then(() => {
                 setTimeout(() => {
                     copyMessage.style.display = 'none';
-                }, 9000);
+                }, 1000);
             }).catch(err => {
                 console.error('Could not copy text: ', err);
             });
