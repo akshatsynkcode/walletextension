@@ -93,6 +93,16 @@ function redirectToLogin() {
         const shortAddress = fullwalletAdress.substring(0, 6) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
         const colorClass = transaction.debit ? 'text-danger' : 'text-success';
         const typeText = transaction.debit ? 'To' : 'From';
+        const statuscolor = 'text-danger';
+        if(transaction.status === 'pending'){
+            statuscolor = 'text-warning';
+        }
+        else if(transaction.status === 'completed'){
+            statuscolor = 'text-success';
+        }
+        else{
+            statuscolor = 'text-danger';
+        }
         const transactionCard = document.createElement('div');
         transactionCard.classList.add('card', 'mb-3', 'shadow-sm', 'border-0', 'activity-card');
   
@@ -110,7 +120,7 @@ function redirectToLogin() {
                 <!-- Second Column: Amount -->
                 <div class="col-4 col-md-4 text-center d-flex justify-content-center">
                     <h5 class="card-title font-14 font-regular m-0 ${colorClass}">AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
-                    <span class="card-text font-12 ms-2"><small class="light-black">${transaction.status}</small></span>
+                    <span class="card-text font-12 ms-2 ${statuscolor}"><small class="light-black">${transaction.status}</small></span>
                 </div>
                 
                 <!-- Third Column: Date of the Transaction -->

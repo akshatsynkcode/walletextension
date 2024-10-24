@@ -176,8 +176,8 @@ function handleRequestConnection(sender, sendResponse) {
                     chrome.windows.create({
                         url: chrome.runtime.getURL(`connectWallet.html`), // No data passed
                         type: 'popup',
-                        width: 340,
-                        height: 570
+                        width: 330,
+                        height: 560
                     });
                 });
             })

@@ -37,7 +37,18 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                         }
                     } else if (balanceInfoResponse.status === 401) {
                         chrome.storage.sync.remove('authToken', () => {
-                            window.location.href = 'popup-login.html';
+                            chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
+                                if (response.success) {
+                                    window.location.href = 'popup-login.html';
+                                } else {
+                                    chrome.tabs.create({
+                                        url: chrome.runtime.getURL('login.html'),
+                                        active: true
+                                    }, (tab) => {
+                                        fullscreenTabId = tab.id;
+                                    });
+                                }
+                            })
                         });
                     }
                 } else {
@@ -45,7 +56,18 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                 }
             } else if (userInfoResponse.status === 401) {
                 chrome.storage.sync.remove('authToken', () => {
-                    window.location.href = 'popup-login.html';
+                    chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
+                        if (response.success) {
+                            window.location.href = 'popup-login.html';
+                        } else {
+                            chrome.tabs.create({
+                                url: chrome.runtime.getURL('login.html'),
+                                active: true
+                            }, (tab) => {
+                                fullscreenTabId = tab.id;
+                            });
+                        }
+                    })
                 });
             } else {
                 console.error('Failed to fetch user info:', userInfoResponse.status);
