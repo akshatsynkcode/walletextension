@@ -607,3 +607,7 @@ h1, h4 {
 .user-badge{
   background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
 }
+.status-color{
+  border: 1px solid gray;
+  padding: 4px !important;
+}
