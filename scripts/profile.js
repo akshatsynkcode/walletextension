@@ -216,7 +216,7 @@ function redirectToLogin() {
             navigator.clipboard.writeText(fullwalletAddress).then(() => {
                 setTimeout(() => {
                     copyMessage.style.display = 'none';
-                }, 9000);
+                }, 1000);
             }).catch(err => {
                 console.error('Could not copy text: ', err);
             });
@@ -305,4 +305,30 @@ function redirectToLogin() {
             }, { once: true });
         });
     }
+  });
+
+  document.addEventListener('DOMContentLoaded', function() {
+    const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
+    const navbarCollapse = document.getElementById('navbarSupportedContent');
+    const navbarToggler = document.querySelector('.navbar-toggler');
+
+    // Close the navbar when a nav link is clicked
+    navLinks.forEach(link => {
+      link.addEventListener('click', () => {
+        if (navbarCollapse.classList.contains('show')) {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+      });
+    });
+
+    // Close the navbar when clicking outside of it
+    window.addEventListener('click', (event) => {
+      if (!navbarCollapse.contains(event.target) && !navbarToggler.contains(event.target)) {
+        if (navbarCollapse.classList.contains('show')) {
+          navbarCollapse.classList.remove('show');
+          navbarToggler.setAttribute('aria-expanded', 'false');
+        }
+      }
+    });
   });
