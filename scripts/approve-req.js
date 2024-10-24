@@ -6,7 +6,7 @@ document.addEventListener("DOMContentLoaded", () => {
     // const amount = urlParams.get('amount');
     chrome.storage.sync.get(['username', 'fromAddress', 'toAddress', 'amount'], ({ username, fromAddress, toAddress, amount }) => {
         
-        const usernameElement = document.getElementById('username-display');
+        const usernameElement = document.getElementById('username');
         const fromAddressElement = document.getElementById('from-address');
         const toAddressElement = document.getElementById('to-address');
         const amountElement = document.getElementById('transaction-amount');
