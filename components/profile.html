@@ -35,9 +35,9 @@
     <div class="container-fluid p-0">
       <nav class="navbar navbar-expand-lg header">
         <div class="container-fluid z-2">
-          <a class="navbar-brand m-0 ps-5"
-            ><img src="./icons/white-logo.svg" style="width: 70%;"
-          /></a>
+          <a class="navbar-brand m-0 ps-5">
+            <img src="./icons/white-logo.svg" style="width: 70%;"/>
+          </a>
           <button
             class="navbar-toggler"
             type="button"
@@ -59,7 +59,7 @@
             </ul>
             <div class="d-flex align-items-center right-nav pe-5">
               <div class="dropdown">
-                <img src="./icons/user-icon.svg" class="user-icon" />
+                <i class="fa-duotone fa-solid fa-user user-icon"></i>
                 <button
                   class="btn text-white ps-1 border-0"
                   type="button"
@@ -100,7 +100,7 @@
       <div class="container">
         <div class="row mt-5">
           <div class="col-lg-7 col-12 mt-4 mt-lg-0">
-            <div class="card table-card mb-5" style="max-height: 450px;">
+            <div class="card table-card mb-5" style="height: 450px;">
               <div class="card-body position-relative">
                 <div class="position-absolute end-0 top-0 p-4">
                   <div class="dropdown">
@@ -122,7 +122,7 @@
                   <img src="./icons/activity-icon.svg" class="activity-icon" />
                   <h5 class="card-title font-20 text-white mt-2">Activities</h5>
                 </div>
-                <div class="p-3">
+                <div class="p-3 overflow-card">
                   <!-- Loader for activity section -->
                   <div id="activities-loader" class="text-center">
                     <span class="spinner-border spinner-border-sm text-light"></span>
@@ -130,7 +130,7 @@
                   </div>
                   <!-- Transactions content will be dynamically loaded here -->
                   <div id="activities-content" style="display: none;">
-                    <div class="card mb-3 shadow-sm border-0 activity-card">
+                    <div class="card mb-3 border-0 activity-card">
                       <div
                         class="row g-0 justify-content-center align-items-center"
                       >
@@ -180,7 +180,7 @@
             </div>
           </div>
           <div class="col-lg-5 col-12">
-            <div class="card table-card mb-5" style="max-height: 450px;">
+            <div class="card table-card mb-5 profile-card" style="height: 450px;">
               <div class="card-body position-relative">
                 <div class="position-absolute end-0 top-0 p-4">
                   <div class="dropdown">
@@ -215,6 +215,10 @@
                       style="color: rgba(19, 138, 179, 1);"
                       >N/A</a
                     >
+                    <button id="copy-button" class="copy-button" aria-label="Copy Address">
+                      <img src="./icons/copy.svg">
+                    </button>
+                    <span id="copy-message" class="copy-message">Copied!<span>
                   </p>
                   <div class="balance-circle">
                     <p

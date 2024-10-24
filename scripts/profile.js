@@ -90,42 +90,43 @@ function redirectToLogin() {
     transactions.forEach(transaction => {
         // Create a new card for each transaction
         const fullwalletAdress = transaction.debit ? transaction.to_wallet_address : transaction.from_wallet_address;
-        const shortAddress = fullwalletAdress.substring(0, 6) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
+        const shortAddress = fullwalletAdress.substring(0, 5) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
         const colorClass = transaction.debit ? 'text-danger' : 'text-success';
         const typeText = transaction.debit ? 'To' : 'From';
         const statuscolor = 'text-danger';
-        if(transaction.status === 'pending'){
-            statuscolor = 'text-warning';
-        }
-        else if(transaction.status === 'completed'){
-            statuscolor = 'text-success';
-        }
-        else{
-            statuscolor = 'text-danger';
-        }
+        // if(transaction.status === 'pending'){
+        //     statuscolor = 'text-warning';
+        // }
+        // else if(transaction.status === 'completed'){
+        //     statuscolor = 'text-success';
+        // }
+        // else{
+        //     statuscolor = 'text-danger';
+        // }
         const transactionCard = document.createElement('div');
-        transactionCard.classList.add('card', 'mb-3', 'shadow-sm', 'border-0', 'activity-card');
+        transactionCard.classList.add('card', 'mb-3', 'border-0', 'activity-card');
   
         transactionCard.innerHTML = `
             <div class="row g-0 justify-content-center align-items-center">
                 <!-- First Column: Transaction to -->
                 <div class="col-4 col-md-4 ps-2">
                     <div class="text-start activity-card-body p-1">
-                        <h5 class="card-title font-14 font-regular m-0">${typeText} : </h5>
-                        <a href="#" class="address-link ms-2" style="color: rgba(0, 194, 255, 1);" data-full-address="${fullwalletAdress}" 
+                        <h5 class="card-title font-14 font-regular m-0 text-white">${typeText} : </h5>
+                        <a href="#" class="address-link mx-2" style="color: rgba(0, 194, 255, 1);" data-full-address="${fullwalletAdress}" 
        title="${fullwalletAdress}">${shortAddress}</a>
-                    </div>
+       <span class="copy-message" style="display: none;">Copied!</span>
+       </div>
                 </div>
                 
                 <!-- Second Column: Amount -->
                 <div class="col-4 col-md-4 text-center d-flex justify-content-center">
                     <h5 class="card-title font-14 font-regular m-0 ${colorClass}">AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
-                    <span class="card-text font-12 ms-2 ${statuscolor}"><small class="light-black">${transaction.status}</small></span>
+                    <span class="card-text font-12 ms-2 ${statuscolor}"><small>${transaction.status}</small></span>
                 </div>
                 
                 <!-- Third Column: Date of the Transaction -->
                 <div class="col-4 col-md-4 text-end padding-right">
-                    <p class="card-text font-12"><small class="light-black">${new Date(transaction.created_at).toLocaleString()}</small></p>
+                    <p class="card-text font-12 text-white"><small>${new Date(transaction.created_at).toLocaleString()}</small></p>
                 </div>
             </div>
         `;
@@ -200,7 +201,28 @@ function redirectToLogin() {
         alert('An error occurred during logout. Please try again.' + response.status);
     }
   }
-  
+
+  document.querySelector('.p-3').addEventListener('click', (event) => {
+    if (event.target.classList.contains('address-link')) {
+        event.preventDefault();
+        const fullwalletAddress = event.target.getAttribute('data-full-address');
+        const copyMessage = document.createElement('span');
+        copyMessage.className = 'copy-message';
+        copyMessage.style.display = 'inline';
+        copyMessage.textContent = 'Copied!';
+        event.target.parentNode.appendChild(copyMessage);
+
+        if (fullwalletAddress) {
+            navigator.clipboard.writeText(fullwalletAddress).then(() => {
+                setTimeout(() => {
+                    copyMessage.style.display = 'none';
+                }, 9000);
+            }).catch(err => {
+                console.error('Could not copy text: ', err);
+            });
+        }
+    }
+});
   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     const { authToken } = await chrome.storage.sync.get(['authToken']);
@@ -212,6 +234,25 @@ function redirectToLogin() {
   
     const usernameElement = document.getElementById('username');
     const walletAddressElement = document.getElementById('wallet-address');
+    const copyButton1 = document.getElementById('copy-button');
+    const copyMessage = document.getElementById('copy-message');
+  
+    copyButton1.addEventListener('click', () => {
+      const walletAddress = walletAddressElement.textContent;
+  
+      if (walletAddress !== 'N/A') {
+        navigator.clipboard.writeText(walletAddress)
+          .then(() => {
+            copyMessage.style.display = 'inline';
+            setTimeout(() => {
+              copyMessage.style.display = 'none';
+            }, 1000);
+          })
+          .catch(err => {
+            console.error('Could not copy text: ', err);
+          });
+      }
+    });
   
     if (usernameElement && walletAddressElement) {
         // Fetch updated profile

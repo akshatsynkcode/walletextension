@@ -15,26 +15,30 @@
     <div class="popup-container p-4 bg-color border-0">
       <nav class="navbar navbar-expand-lg">
           <div>
-            <img src="./icons/user-icon.svg" class="user-icon">
-            <span id="username-display" class="f-14 fw-600">Username</span>
+            <i class="fa-duotone fa-solid fa-user user-icon"></i>
+            <span id="username" class="f-14 fw-600">Username</span>
           </div>
       </nav>
     <div class="wallet-info mt-3">
       <div>
         <p class="font-regular font-24 mb-0 mt-3">Approve request</p>
-        <p class="f-14 dark-black mt-2">
+        <p class="f-14 dark-black mt-2 text-center">
             You are approving a request from account 
+            <span id="username" class="badge user-badge p-1 my-1">Username</span><br>
             <span id="from-address">_____</span> 
             to account 
-            <span id="to-address">_____</span> 
-            on Dubai Customs for an amount of AED 
-            <span id="transaction-amount">0.0000</span>.
+            <span id="to-address">_____</span>
         </p>
       </div>
       <div class="text-center mt-4">
         <img src="./icons/approve-vector.svg" style="width: 60%;">
       </div>
-      <div class="d-flex w-100 mt-3">
+      <div class="my-3">
+        <span class="font-28 fw-600">
+          <span id="transaction-amount">AED 0.0000</span>
+        </span>
+      </div>
+      <div class="d-flex w-100">
         <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Cancel</button>
         <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 approve-button">Approve</button>
       </div>
