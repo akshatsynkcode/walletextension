@@ -21,7 +21,7 @@ body{
 .img-login-container {
   position: relative;
   overflow: hidden;
-  background-image: url(../icons/bg-frame.png);
+  background-image: url(../icons/bg-frame.svg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -29,7 +29,7 @@ body{
 .img-container {
   position: relative;
   overflow: hidden;
-  background-image: url(../icons/bg-frame.png);
+  background-image: url(../icons/bg-frame.svg);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
