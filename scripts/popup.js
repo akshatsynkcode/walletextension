@@ -143,3 +143,19 @@ async function lockWallet() {
         alert('An error occurred during logout. Please try again.');
     }
 }
+
+
+const copyButton = document.getElementById('copy-button');
+    if (copyButton) {
+        copyButton.addEventListener('click', () => {
+            const walletAddressElement = document.getElementById('address');
+            const copyMessageElement = document.getElementById('copy-message');
+  
+            if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
+                navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+                    copyMessageElement.style.display = 'inline';
+                    setTimeout(() => (copyMessageElement.style.display = 'none'), 1000);
+                });
+            }
+        });
+    }
