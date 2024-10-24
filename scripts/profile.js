@@ -2,15 +2,15 @@
 function redirectToLogin() {
     chrome.storage.sync.remove('authToken');
     window.location.href = 'login.html';
-  }
-  
-  // Fetch and update balance
-  async function fetchAndUpdateBalance() {
+}
+
+// Fetch and update balance
+async function fetchAndUpdateBalance() {
     const loader = document.getElementById('balance-loader');
     if (loader) {
         loader.style.display = 'inline-block'; // Show loader before fetching balance
     }
-  
+
     try {
         const { authToken } = await chrome.storage.sync.get('authToken');
         if (!authToken) {
@@ -18,12 +18,12 @@ function redirectToLogin() {
             redirectToLogin();
             return;
         }
-  
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-balance', {
+
+        const response = await fetch('http://13.233.172.115:3000/api/ext-balance', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-  
+
         if (response.ok) {
             const { balance } = await response.json();
             document.getElementById('balance').textContent = `AED ${parseFloat(balance).toFixed(3)}`;
@@ -40,10 +40,10 @@ function redirectToLogin() {
             loader.style.display = 'none'; // Hide loader after balance is fetched
         }
     }
-  }
-  
-  // Fetch and update transaction history
-  async function fetchAndUpdateTransactionHistory() {
+}
+
+// Fetch and update transaction history
+async function fetchAndUpdateTransactionHistory() {
     const loader = document.getElementById('balance-loader');
     const activityContainer = document.querySelector('.p-3');
     if (loader) {
@@ -74,7 +74,7 @@ function redirectToLogin() {
             return;
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+        const response = await fetch('http://13.233.172.115:3000/api/ext-transaction', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -161,9 +161,8 @@ function updateTransactionHistoryUI(transactions) {
     });
 }
 
-  
-  // Fetch updated user profile from the API
-  async function fetchUpdatedUserProfile() {
+// Fetch updated user profile from the API
+async function fetchUpdatedUserProfile() {
     try {
         const { authToken } = await chrome.storage.sync.get('authToken');
         if (!authToken) {
@@ -171,12 +170,12 @@ function updateTransactionHistoryUI(transactions) {
             redirectToLogin();
             return;
         }
-  
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-profile', {
+
+        const response = await fetch('http://13.233.172.115:3000/api/ext-profile', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-  
+
         if (response.ok) {
             const data = await response.json();
             return data;
@@ -189,22 +188,22 @@ function updateTransactionHistoryUI(transactions) {
     } catch (error) {
         console.error('Error fetching user profile:', error);
     }
-  }
-  
-  // Lock wallet and redirect to login
-  async function lockWallet() {
+}
+
+// Lock wallet and redirect to login
+async function lockWallet() {
     const { authToken } = await chrome.storage.sync.get('authToken');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
         return;
     }
-  
+
     try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-logout', {
+        const response = await fetch('http://13.233.172.115:3000/api/ext-logout', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-  
+
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
@@ -227,8 +226,9 @@ function updateTransactionHistoryUI(transactions) {
         console.error('Error during logout:', error);
         alert('An error occurred during logout. Please try again.' + response.status);
     }
-  }
+}
 
+// Remaining unchanged code for copy wallet address and DOM loading logic follows
   document.querySelector('.p-3').addEventListener('click', (event) => {
     if (event.target.classList.contains('address-link')) {
         event.preventDefault();

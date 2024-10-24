@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'block';
 
         try {
-            const response = await fetch('https://log-iam-temp.finloge.com/api/ext-login', {
+            const response = await fetch('http://13.233.172.115:3000/api/ext-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

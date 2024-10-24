@@ -9,7 +9,8 @@
     "activeTab"
   ],
   "host_permissions": [
-    "*://*/*"
+    "*://*/*",
+    "http://13.233.172.115:3000/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -56,10 +57,11 @@
     "matches": [
       "*://*/*",
       "https://*.finloge.com/*",
-      "https://*.dubai-customs.gov/*"
+      "https://*.dubai-customs.gov/*",
+      "http://13.233.172.115:3000/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://log-iam-temp.finloge.com http://13.233.172.115:3000; frame-src 'none';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' http://13.233.172.115:3000; frame-src 'none';"
   }
 }
