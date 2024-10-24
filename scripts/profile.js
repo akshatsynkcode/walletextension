@@ -45,10 +45,27 @@ function redirectToLogin() {
   // Fetch and update transaction history
   async function fetchAndUpdateTransactionHistory() {
     const loader = document.getElementById('balance-loader');
+    const activityContainer = document.querySelector('.p-3');
     if (loader) {
         loader.style.display = 'inline-block'; // Show loader before fetching
     }
-  
+
+    let timeoutFlag = false;
+
+    // Set a timeout to show "No Transactions Found" if no data is fetched within 5 seconds
+    const noDataTimeout = setTimeout(() => {
+        timeoutFlag = true;
+        if (activityContainer.innerHTML.trim() === '') {
+            activityContainer.innerHTML = `
+                <div class="no-transactions-message text-center text-white">
+                    <p>No transactions found</p>
+                </div>`;
+        }
+        if (loader) {
+            loader.style.display = 'none'; // Hide loader after timeout
+        }
+    }, 5000);
+
     try {
         const { authToken } = await chrome.storage.sync.get('authToken');
         if (!authToken) {
@@ -56,16 +73,24 @@ function redirectToLogin() {
             redirectToLogin();
             return;
         }
-  
+
         const response = await fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-  
+
+        clearTimeout(noDataTimeout); // Clear the timeout if data is fetched successfully
+
         if (response.ok) {
             const { data: transactions } = await response.json();
             if (transactions.length > 0) {
                 updateTransactionHistoryUI(transactions); // Pass the transactions array
+            } else if (!timeoutFlag) {
+                // If no transactions and the timeout hasn't already occurred
+                activityContainer.innerHTML = `
+                    <div class="no-transactions-message text-center text-white">
+                        <p>No transactions found</p>
+                    </div>`;
             }
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -80,32 +105,30 @@ function redirectToLogin() {
             loader.style.display = 'none'; // Hide loader after transactions are fetched
         }
     }
-  }
-  
-  // Function to update the UI with the fetched transaction history
-  function updateTransactionHistoryUI(transactions) {
+}
+
+// Function to update the UI with the fetched transaction history
+function updateTransactionHistoryUI(transactions) {
     const activityContainer = document.querySelector('.p-3');
     activityContainer.innerHTML = ''; // Clear any existing content
-  
+
     transactions.forEach(transaction => {
         // Create a new card for each transaction
         const fullwalletAdress = transaction.debit ? transaction.to_wallet_address : transaction.from_wallet_address;
         const shortAddress = fullwalletAdress.substring(0, 5) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
         const colorClass = transaction.debit ? 'text-danger' : 'text-success';
         const typeText = transaction.debit ? 'To' : 'From';
-        const statuscolor = 'text-danger';
-        // if(transaction.status === 'pending'){
-        //     statuscolor = 'text-warning';
-        // }
-        // else if(transaction.status === 'completed'){
-        //     statuscolor = 'text-success';
-        // }
-        // else{
-        //     statuscolor = 'text-danger';
-        // }
+        let statuscolor = 'text-danger';
+
+        if (transaction.status === 'pending') {
+            statuscolor = 'text-warning';
+        } else if (transaction.status === 'completed') {
+            statuscolor = 'text-success';
+        }
+
         const transactionCard = document.createElement('div');
         transactionCard.classList.add('card', 'mb-3', 'border-0', 'activity-card');
-  
+
         transactionCard.innerHTML = `
             <div class="row g-0 justify-content-center align-items-center">
                 <!-- First Column: Transaction to -->
@@ -130,10 +153,11 @@ function redirectToLogin() {
                 </div>
             </div>
         `;
-  
+
         activityContainer.appendChild(transactionCard);
     });
-  }
+}
+
   
   // Fetch updated user profile from the API
   async function fetchUpdatedUserProfile() {
