@@ -7,7 +7,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
     } else {
         try {
             // Fetch User Profile Information
-            const userInfoResponse = await fetch('http://13.233.172.115:3000/api/ext-profile', {
+            const userInfoResponse = await fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
@@ -23,7 +23,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     addressElement.textContent = userInfoData.walletAddress || 'N/A';
 
                     // Fetch Balance Information
-                    const balanceInfoResponse = await fetch('http://13.233.172.115:3000/api/ext-balance', {
+                    const balanceInfoResponse = await fetch('https://wallet-api.dubaicustoms.network/api/ext-balance', {
                         method: 'GET',
                         headers: { 'Authorization': `Bearer ${authToken}` }
                     });
@@ -113,7 +113,7 @@ async function lockWallet() {
 
     try {
         // The logout API is a GET request
-        const response = await fetch('http://13.233.172.115:3000/api/ext-logout', {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-logout', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authToken}`

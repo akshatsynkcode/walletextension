@@ -4,13 +4,12 @@
   "description": "A Chrome extension for connecting with Dubai Customs Blockchain",
   "version": "1.2",
   "permissions": [
-    "tabs",
     "storage",
     "activeTab"
   ],
   "host_permissions": [
     "*://*/*",
-    "http://13.233.172.115:3000/*"
+    "https://wallet-api.dubaicustoms.network/*"
   ],
   "action": {
     "default_popup": "popup.html",
@@ -56,12 +55,10 @@
   "externally_connectable": {
     "matches": [
       "*://*/*",
-      "https://*.finloge.com/*",
-      "https://*.dubai-customs.gov/*",
-      "http://13.233.172.115:3000/*"
+      "https://wallet-api.dubaicustoms.network/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' http://13.233.172.115:3000; frame-src 'none';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://wallet-api.dubaicustoms.network; frame-src 'none';"
   }
 }

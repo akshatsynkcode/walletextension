@@ -61,7 +61,7 @@ async function handleApproveTransaction(message, sendResponse) {
 
     const { authToken, status, transaction_id } = message.transaction;
 
-    const response = await fetch('http://13.233.172.115:3000/api/ext-transaction', {
+    const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ status:status, transaction_id: transaction_id })
@@ -80,7 +80,7 @@ async function handleApproveTransaction(message, sendResponse) {
 function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = fetch('http://13.233.172.115:3000/api/ext-transaction', {
+    const response = fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ status, transaction_id: transaction_id })
@@ -156,7 +156,7 @@ function handleRequestConnection(sender, sendResponse) {
         if (result.authToken) {
             const authToken = result.authToken;
 
-            fetch('http://13.233.172.115:3000/api/ext-profile', {
+            fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             })
