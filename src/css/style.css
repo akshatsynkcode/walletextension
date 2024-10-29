@@ -21,7 +21,7 @@ body{
 .img-login-container {
   position: relative;
   overflow: hidden;
-  background-image: url(../icons/bg-frame.svg);
+  background-image: url(../icons/bg-frame.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -29,7 +29,7 @@ body{
 .img-container {
   position: relative;
   overflow: hidden;
-  background-image: url(../icons/bg-frame.svg);
+  background-image: url(../icons/bg-frame.png);
   background-size: cover;
   background-position: center;
   background-repeat: no-repeat;
@@ -109,7 +109,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   background: linear-gradient(90deg, rgba(65, 89, 185, 1) 20%, rgba(29, 40, 83, 1) 100%);
 }
 .header{
-  background-image: url(../icons/bg-frame.svg);
+  background-image: url(../icons/bg-frame.png);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
