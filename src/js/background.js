@@ -78,8 +78,30 @@ async function handleApproveTransaction(message, sendResponse) {
     console.log(response, "response");
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        chrome.tabs.query({ url: "http://127.0.0.1:8002/create-declaration/" }, (tabs) => {
+            if (tabs.length > 0) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    function: (message) => {
+                        window.postMessage(message, '*'); // Use '*' for any origin or specify the exact origin
+                    },
+                    args: [{ type: 'showAlert', message: 'Request approved' }]
+                });
+            }
+        });
         sendResponse({ success: true,  message : response.message });
     } else {
+        chrome.tabs.query({ url: "http://127.0.0.1:8002/create-declaration/" }, (tabs) => {
+            if (tabs.length > 0) {
+                chrome.scripting.executeScript({
+                    target: { tabId: tabs[0].id },
+                    function: (message) => {
+                        window.postMessage(message, '*'); // Use '*' for any origin or specify the exact origin
+                    },
+                    args: [{ type: 'showAlert', message: 'Transaction Failed' }]
+                });
+            }
+        });
         sendResponse({ success: false , message : response.message});
     }
 }
