@@ -27,52 +27,100 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         case 'reject_transaction':
             handleRejectTransaction(message, sendResponse);
             break;
+        default:
+            console.warn('Unknown action:', message.action);
+            sendResponse({ success: false, error: 'Unknown action' });
+            break;
     }
     return true; // Keep the message channel open for asynchronous responses
 });
 
+// Listener for external messages from an external webpage
 chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
-    if (message.action === 'request_connection') {
-        handleRequestConnection(sender, sendResponse);
-    }
-    else if (message.action === 'transaction_request') {
-        // Extract transaction details
-        const { toAddress, amount, fromAddress, transaction_id, username } = message;
+    console.log('External message received:', message); // Log the received message
 
-        // Optionally, you could validate the data here
-        if (!toAddress || !amount || !fromAddress || !transaction_id || !username) {
-            sendResponse({ success: false, message: 'Invalid transaction data' });
-            return;
-        }
-        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount });
-        // Now, open the internal approveReq.html page for user approval
-        chrome.windows.create({
-            url: chrome.runtime.getURL('approve-req.html'),
-            type: 'popup',
-            width: 340,
-            height: 570
-        });
+    if (message.action === 'request_connection') {
+        console.log('Handling request connection...');
+        handleRequestConnection(sender, sendResponse);
+    } else if (message.action === 'detect_extension') {
+        console.log('Detect extension message received');
+        sendResponse({ success: true });
+    } else {
+        console.warn('Unknown action received:', message.action);
+        sendResponse({ success: false, error: 'Unknown action' });
     }
+
     return true;
 });
 
+function handleRequestConnection(sender, sendResponse) {
+    const request = {
+        tabId: sender.tab.id,
+        responseCallback: sendResponse
+    };
+    pendingRequests.push(request);
+
+    chrome.storage.sync.get(['authToken'], function (result) {
+        if (result.authToken) {
+            const authToken = result.authToken;
+
+            fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            })
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    const fullName = data.fullName;
+                    const walletAddress = data.walletAddress;
+
+                    // Store data in Chrome storage
+                    chrome.storage.sync.set({ fullName, walletAddress }, () => {
+                        sendResponse({
+                            success: true,
+                            authToken: authToken,
+                            fullName: fullName,
+                            walletAddress: walletAddress
+                        });
+                    });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    sendResponse({ success: false, error: error.message });
+                });
+        } else {
+            sendResponse({ success: false, error: 'No auth token found' });
+        }
+    });
+
+    return true;
+}
+
 // Handle approving the transaction
 async function handleApproveTransaction(message, sendResponse) {
-
     const { authToken, status, transaction_id } = message.transaction;
 
-    const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
-        method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ status:status, transaction_id: transaction_id })
+    try {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
+            method: 'PUT',
+            headers: { 'Authorization': `Bearer ${authToken}` },
+            body: JSON.stringify({ status, transaction_id })
+        });
 
-    });
-    console.log(response, "response");
-    if (response.status == 200) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
-        sendResponse({ success: true,  message : response.message });
-    } else {
-        sendResponse({ success: false , message : response.message});
+        if (response.status === 200) {
+            chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+            sendResponse({ success: true, message: 'Transaction approved successfully.' });
+        } else {
+            const data = await response.json();
+            sendResponse({ success: false, message: data.message || 'Transaction approval failed.' });
+        }
+    } catch (error) {
+        console.error('Error approving transaction:', error);
+        sendResponse({ success: false, message: error.message });
     }
 }
 
@@ -80,29 +128,35 @@ async function handleApproveTransaction(message, sendResponse) {
 function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
+    fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ status, transaction_id: transaction_id })
-    });
-    if (response.ok) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
-        sendResponse({ success: true });
-    } else {
-        sendResponse({ success: false });
-    }
+        body: JSON.stringify({ status, transaction_id })
+    })
+        .then(response => {
+            if (response.ok) {
+                chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+                sendResponse({ success: true, message: 'Transaction rejected successfully.' });
+            } else {
+                return response.json().then(data => {
+                    sendResponse({ success: false, message: data.message || 'Transaction rejection failed.' });
+                });
+            }
+        })
+        .catch(error => {
+            console.error('Error rejecting transaction:', error);
+            sendResponse({ success: false, message: error.message });
+        });
 }
 
-
-// Listener for extension installation
+// Handle wallet lock
 function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
-        chrome.tabs.get(fullscreenTabId, function(tab) {
+        chrome.tabs.get(fullscreenTabId, (tab) => {
             if (chrome.runtime.lastError || !tab) {
-                // If tab doesn't exist, reset the fullscreenTabId
                 fullscreenTabId = null;
                 isLoggedIn = false;
-                chrome.action.setPopup({popup: "popup-login.html"});
+                chrome.action.setPopup({ popup: "popup-login.html" });
                 sendResponse({ success: true });
             } else {
                 chrome.tabs.remove(fullscreenTabId, () => {
@@ -112,7 +166,7 @@ function handleLockWallet(sendResponse) {
                     } else {
                         fullscreenTabId = null;
                         isLoggedIn = false;
-                        chrome.action.setPopup({popup: "popup-login.html"});
+                        chrome.action.setPopup({ popup: "popup-login.html" });
                         sendResponse({ success: true });
                     }
                 });
@@ -123,16 +177,17 @@ function handleLockWallet(sendResponse) {
     }
 }
 
+// Handle wallet unlock
 function handleUnlockWallet(sendResponse) {
     isLoggedIn = true;
-    chrome.action.setPopup({popup: "popup.html"}); // Enable popup after unlocking
+    chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
     if (!fullscreenTabId) {
         chrome.tabs.create({
             url: chrome.runtime.getURL('profile.html'),
             active: true
         }, (tab) => {
             if (tab && tab.id) {
-                fullscreenTabId = tab.id; // Ensure the tab ID is stored
+                fullscreenTabId = tab.id;
                 console.log("Tab opened:", tab);
                 sendResponse({ success: true });
             } else {
@@ -145,86 +200,9 @@ function handleUnlockWallet(sendResponse) {
     }
 }
 
-function handleRequestConnection(sender, sendResponse) {
-    const request = {
-        tabId: sender.tab.id,
-        responseCallback: sendResponse
-    };
-    pendingRequests.push(request);
-
-    chrome.storage.sync.get(['authToken'], function(result) {
-        if (result.authToken) {
-            const authToken = result.authToken;
-
-            fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            })
-            .then(data => {
-                const fullName = data.fullName;
-                const walletAddress = data.walletAddress;
-
-                // Store data in Chrome storage
-                chrome.storage.sync.set({ fullName, walletAddress }, function() {
-                    chrome.windows.create({
-                        url: chrome.runtime.getURL(`connectWallet.html`), // No data passed
-                        type: 'popup',
-                        width: 330,
-                        height: 560
-                    });
-                });
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                sendResponse({ success: false, error: error.message });
-            });
-        } else {
-            sendResponse({ success: false, error: 'No auth token found' });
-        }
-    });
-
-    return true;
-}
-
-
-
-function handleApproveConnection(message, sendResponse) {
-    const approveRequest = pendingRequests.shift(); // Get the first pending request
-    if (approveRequest) {
-        chrome.storage.sync.get(['authToken'], function(result) {
-            if (result.authToken) {
-                // Send the address back to the original request
-                approveRequest.responseCallback({ success: true, authToken : result.authToken });
-                chrome.storage.sync.remove(['fullName', 'walletAddress']);
-                sendResponse({ success: true, authToken : result.authToken });
-            } else {
-                approveRequest.responseCallback({ success: false, message: "No user logged in." });
-                sendResponse({ success: false });
-            }
-        });
-    }
-}
-
-function handleRejectConnection(message, sendResponse) {
-    const rejectRequest = pendingRequests.shift(); // Get the first pending request
-    if (rejectRequest) {
-        rejectRequest.responseCallback({ success: false, message: "Connection rejected by the user." });
-        chrome.storage.sync.remove(['fullName', 'walletAddress']);
-        sendResponse({ success: true });
-    }
-}
-
 // Listener for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed:', details);
-    console.log('Reason:');
     if (details.reason === 'install') {
         chrome.tabs.create({
             url: chrome.runtime.getURL('welcome.html'),
