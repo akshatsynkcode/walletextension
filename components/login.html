@@ -20,7 +20,7 @@
       </div>
     </nav>
     <div class="container-fluid d-flex flex-column align-items-center min-vh-100 gap-2">
-      <div class="login-container z-2">
+      <div class="login-container z-2" id = "login-screen">
         <div class="logo">
           <div class="font-40">Login</div>
           <div class="font-16 mt-1">
@@ -47,10 +47,37 @@
         </div>
         <div class="login-btn">
           <button id="login-btn" class="login-button mt-3">Login</button>
-          <div id="loader" class="mt-4"></div>
+          <div id="login-loader" class="mt-4"></div>
         </div>
     
         <p id="error-message" class="error"></p>
+      </div>
+      <div class="login-container z-2" id = "otp-screen" style="display: none;">
+        <div class="logo">
+          <div class="font-40">Login</div>
+          <div class="font-16 mt-1">
+            Dubai Customs <span style="color: #bb9753">Wallet</span>
+          </div>
+        </div>
+        <div class="mb-4 mt-3">
+          <label for="otp" class="form-label text-white font-14 font-regular">ENTER OTP</label>
+          <input
+            type="text"
+            id="otp"
+            class="form-control input"
+            placeholder="Enter OTP"
+            maxlength="6"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            required
+          />
+        </div>
+        <div class="login-btn">
+          <button id="verify-otp-btn" class="login-button mt-3">Verify OTP</button>
+          <div id="otp-loader" class="mt-4"></div>
+        </div>
+    
+        <p id="otp-error-message" class="error"></p>
       </div>
     </div>
   </div>

@@ -44,8 +44,8 @@ module.exports = {
     minimizer: [new TerserPlugin({
       terserOptions: {
         compress: {
-          drop_console: true, // Remove console logs
-          drop_debugger: true // Remove debugger statements
+          drop_console: false, // Remove console logs
+          drop_debugger: false // Remove debugger statements
         },
         output: {
           comments: false // Remove comments

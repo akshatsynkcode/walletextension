@@ -18,7 +18,7 @@
         <a class="navbar-brand"><img src="./icons/white-logo.svg" style="width: 60%;"></a>
       </div>
     </nav>
-      <div class="pop-login-container my-3">
+      <div class="pop-login-container my-3" id = "login-screen">
         <div class="logo">
           <div class="font-30">Login</div>
           <div class="font-16 mt-1">
@@ -45,10 +45,37 @@
         </div>
         <div class="login-btn">
           <button id="login-btn" class="login-button mt-3">Login</button>
-          <div id="loader" class=" mt-4"></div>
+          <div id="login-loader" class=" mt-4"></div>
         </div>
     
         <p id="error-message" class="error"></p>
+      </div>
+      <div class="pop-login-container my-3" id = "otp-screen" style="display: none;">
+        <div class="logo">
+          <div class="font-30">Login</div>
+          <div class="font-16 mt-1">
+            Dubai Customs <span style="color: #bb9753">Wallet</span>
+          </div>
+        </div>
+        <div class="mb-4 mt-3">
+          <label for="otp" class="form-label text-white font-14 font-regular">Enter OTP</label>
+          <input
+            type="text"
+            id="otp"
+            class="form-control input"
+            placeholder="Enter OTP"
+            maxlength="6"
+            pattern="[0-9]*"
+            inputmode="numeric"
+            required
+          />
+        </div>
+        <div class="login-btn">
+          <button id="verify-otp-btn" class="login-button mt-3">Verify OTP</button>
+          <div id="otp-loader" class=" mt-4"></div>
+        </div>
+    
+        <p id="otp-error-message" class="error"></p>
       </div>
 
   <!-- <script src="popupLogin.bundle.js"></script> -->
