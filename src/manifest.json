@@ -4,6 +4,7 @@
   "description": "A Chrome extension for connecting with Dubai Customs Blockchain",
   "version": "1.3",
   "permissions": [
+    "tabs",
     "storage",
     "activeTab",
     "scripting"
