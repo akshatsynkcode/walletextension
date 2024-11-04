@@ -194,7 +194,12 @@ function handleRequestConnection(sender, sendResponse) {
                 sendResponse({ success: false, error: error.message });
             });
         } else {
-            sendResponse({ success: false, error: 'No auth token found' });
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('login.html'),
+                active: true
+            }, (tab) => {
+                fullscreenTabId = tab.id;
+            });
         }
     });
 
