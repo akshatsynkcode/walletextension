@@ -3,11 +3,12 @@ chrome.storage.sync.get(['authToken'], async function(result) {
     const authToken = result.authToken;
 
     if (!authToken) {
-        window.close(); // Close if no authToken is found
+        window.location.href = 'popup-login.html';
+        // window.close(); // Close if no authToken is found
     } else {
         try {
             // Fetch User Profile Information
-            const userInfoResponse = await fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
+            const userInfoResponse = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             });
@@ -23,7 +24,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     addressElement.textContent = userInfoData.walletAddress || 'N/A';
 
                     // Fetch Balance Information
-                    const balanceInfoResponse = await fetch('https://wallet-api.dubaicustoms.network/api/ext-balance', {
+                    const balanceInfoResponse = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
                         method: 'GET',
                         headers: { 'Authorization': `Bearer ${authToken}` }
                     });
@@ -113,7 +114,7 @@ async function lockWallet() {
 
     try {
         // The logout API is a GET request
-        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-logout', {
+        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
             method: 'GET',
             headers: {
                 'Authorization': `Bearer ${authToken}`

@@ -51,7 +51,7 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
         chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount });
         // Now, open the internal approveReq.html page for user approval
         chrome.windows.create({
-            url: chrome.runtime.getURL('approve-req.html'),
+            url: chrome.runtime.getURL(`approve-req.html?tabId=${sender.tab.id}`),
             type: 'popup',
             width: 340,
             height: 570
@@ -67,9 +67,9 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 // Handle approving the transaction
 async function handleApproveTransaction(message, sendResponse) {
 
-    const { authToken, status, transaction_id } = message.transaction;
+    const { authToken, status, transaction_id, tabId} = message.transaction;
 
-    const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ status:status, transaction_id: transaction_id })
@@ -78,30 +78,30 @@ async function handleApproveTransaction(message, sendResponse) {
     console.log(response, "response");
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
-        chrome.tabs.query({ url: "http://127.0.0.1:8002/create-declaration/" }, (tabs) => {
-            if (tabs.length > 0) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tabs[0].id },
-                    function: (message) => {
-                        window.postMessage(message, '*'); // Use '*' for any origin or specify the exact origin
-                    },
-                    args: [{ type: 'showAlert', message: 'Request approved' }]
-                });
-            }
-        });
+        if (tabId) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                function: (message) => {
+                    window.postMessage(message, '*'); // '*' for any origin, or specify the origin
+                },
+                args: [{ type: 'showAlert', message: 'Transaction Approved' }]
+            });
+        } else {
+            console.error("tab_id not found");
+        }
         sendResponse({ success: true,  message : response.message });
     } else {
-        chrome.tabs.query({ url: "http://127.0.0.1:8002/create-declaration/" }, (tabs) => {
-            if (tabs.length > 0) {
-                chrome.scripting.executeScript({
-                    target: { tabId: tabs[0].id },
-                    function: (message) => {
-                        window.postMessage(message, '*'); // Use '*' for any origin or specify the exact origin
-                    },
-                    args: [{ type: 'showAlert', message: 'Transaction Failed' }]
-                });
-            }
-        });
+        if (tabId) {
+            chrome.scripting.executeScript({
+                target: { tabId: tabId },
+                function: (message) => {
+                    window.postMessage(message, '*'); // '*' for any origin, or specify the origin
+                },
+                args: [{ type: 'showAlert', message: 'Transaction Failed' }]
+            });
+        } else {
+            console.error("tab_id not found");
+        }
         sendResponse({ success: false , message : response.message});
     }
 }
@@ -110,7 +110,7 @@ async function handleApproveTransaction(message, sendResponse) {
 function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ status, transaction_id: transaction_id })
@@ -186,7 +186,7 @@ function handleRequestConnection(sender, sendResponse) {
         if (result.authToken) {
             const authToken = result.authToken;
 
-            fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
+            fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             })

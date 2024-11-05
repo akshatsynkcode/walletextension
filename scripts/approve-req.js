@@ -1,4 +1,8 @@
 document.addEventListener("DOMContentLoaded", () => {
+    // Extract the `tabId` parameter
+    const urlParams = new URLSearchParams(window.location.search);
+    const tabId = parseInt(urlParams.get('tabId'));
+
     // const urlParams = new URLSearchParams(window.location.search);
     // const username = urlParams.get('username');
     // const fromAddress = urlParams.get('fromAddress');
@@ -48,7 +52,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 transaction: {
                     authToken,
                     transaction_id,
-                    status:"completed"
+                    status:"completed",
+                    tabId:tabId
                 }
             }, (response) => {
                 if (response.success) {
@@ -70,7 +75,8 @@ document.addEventListener("DOMContentLoaded", () => {
                 transaction: {
                     transaction_id: transaction_id,
                     authToken: authToken,
-                    status:"failed"
+                    status:"failed",
+                    tabId:tabId
                 }
             }, (response) => {
                 if (response.success) {
