@@ -57,6 +57,11 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
             height: 570
         });
     }
+    else if (message.action === 'check_auth') {
+        chrome.storage.sync.get(['authToken'], (result) => {
+            sendResponse({ success: true, authToken: result.authToken });
+        });
+    }
     else {
         console.warn('Unknown action received:', message.action);
         sendResponse({ success: false, error: 'Unknown action' });
@@ -68,13 +73,14 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 async function handleApproveTransaction(message, sendResponse) {
 
     const { authToken, status, transaction_id } = message.transaction;
-
+    console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 'Authorization': `Bearer ${authToken}` },
         body: JSON.stringify({ status:status, transaction_id: transaction_id })
 
     });
+    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id }));
     console.log(response, "response");
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
