@@ -3,7 +3,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
     const authToken = result.authToken;
 
     if (!authToken) {
-        window.close(); // Close if no authToken is found
+        window.location.href = 'popup-login.html';
     } else {
         try {
             // Fetch User Profile Information
@@ -33,7 +33,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     if (balanceInfoResponse.ok) {
                         const balanceElement = document.getElementById('balance');
                         if (balanceElement) {
-                            balanceElement.textContent = `AED ${balanceInfoData.balance.toFixed(3)}`;
+                            balanceElement.textContent = `AED ${formatAmount(balanceInfoData.balance.toFixed(3))}`;
                         }
                     } else if (balanceInfoResponse.status === 401) {
                         chrome.storage.sync.remove('authToken', () => {
@@ -74,7 +74,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
             }
         } catch (error) {
             console.error('Error fetching user info:', error);
-            alert('An error occurred while fetching user info. Please try again.');
+            alert('An error occurred while fetching user info. Please try again.' + userInfoResponse.status);
         }
     }
 });
@@ -103,21 +103,16 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function lockWallet() {
-    const result = await chrome.storage.sync.get('authToken');
-    const authToken = result.authToken;
-
+    const { authToken } = await chrome.storage.sync.get('authToken');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
         return;
     }
 
     try {
-        // The logout API is a GET request
         const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
             method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${authToken}`
-            }
+            headers: { 'Authorization': `Bearer ${authToken}` }
         });
 
         if (response.ok) {
@@ -140,7 +135,7 @@ async function lockWallet() {
         }
     } catch (error) {
         console.error('Error during logout:', error);
-        alert('An error occurred during logout. Please try again.');
+        alert('An error occurred during logout. Please try again.' + response.status);
     }
 }
 
@@ -158,4 +153,20 @@ const copyButton = document.getElementById('copy-button');
                 });
             }
         });
+    }
+
+    function formatAmount(amount) {
+        // Check if the amount is a number
+        if (isNaN(amount)) return amount;
+    
+        // Handle numbers greater than 1,000 and format them accordingly
+        if (amount >= 1e9) {
+            return (amount / 1e9).toFixed(1) + 'B'; // Billion
+        } else if (amount >= 1e6) {
+            return (amount / 1e6).toFixed(1) + 'M'; // Million
+        } else if (amount >= 1e3) {
+            return (amount / 1e3).toFixed(1) + 'K'; // Thousand
+        } else {
+            return amount.toFixed(2); // If it's less than 1,000, just show the number with two decimals
+        }
     }

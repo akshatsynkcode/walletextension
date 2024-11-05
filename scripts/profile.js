@@ -4,6 +4,21 @@ function redirectToLogin() {
     window.location.href = 'login.html';
 }
 
+function formatAmount(amount) {
+    // Check if the amount is a number
+    if (isNaN(amount)) return amount;
+
+    // Handle numbers greater than 1,000 and format them accordingly
+    if (amount >= 1e9) {
+        return (amount / 1e9).toFixed(1) + 'B'; // Billion
+    } else if (amount >= 1e6) {
+        return (amount / 1e6).toFixed(1) + 'M'; // Million
+    } else if (amount >= 1e3) {
+        return (amount / 1e3).toFixed(1) + 'K'; // Thousand
+    } else {
+        return amount.toFixed(2); // If it's less than 1,000, just show the number with two decimals
+    }
+}
 // Fetch and update balance
 async function fetchAndUpdateBalance() {
     const loader = document.getElementById('balance-loader');
@@ -26,7 +41,7 @@ async function fetchAndUpdateBalance() {
 
         if (response.ok) {
             const { balance } = await response.json();
-            document.getElementById('balance').textContent = `AED ${parseFloat(balance).toFixed(3)}`;
+            document.getElementById('balance').textContent = `AED ${formatAmount(parseFloat(balance).toFixed(3))}`;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
             redirectToLogin();
