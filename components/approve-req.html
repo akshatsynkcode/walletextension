@@ -11,8 +11,8 @@
       href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
     />
 </head>
-<body>
-    <div class="popup-container p-4 bg-color border-0">
+<body style="overflow: hidden;">
+    <div class="p-4 bg-color border-0" style="height: 100vh;">
       <nav class="navbar navbar-expand-lg">
           <div>
             <i class="fa-duotone fa-solid fa-user user-icon"></i>
@@ -20,21 +20,24 @@
           </div>
       </nav>
     <div class="wallet-info mt-3">
+      <div class="text-center">
+        <i class="fas fa-horse-head user-icon"></i>
+      </div>
       <div>
-        <p class="font-regular font-24 mb-0 mt-3">Approve request</p>
+        <p class="font-regular f-24 mb-0 mt-3 text-center">Allow https://app.uniswap.org to spend your YAM?</p>
         <p class="f-14 dark-black mt-2 text-center">
-            You are approving a request from account 
-            <span id="username" class="badge user-badge p-1 my-1">Username</span><br>
-            <span id="from-address">_____</span> 
-            to account 
-            <span id="to-address">_____</span>
+            Do you trust this site? By granting this permission, you're allowing https://app.uniswap.org to withdraw your YAM and automate transaction for you.
         </p>
       </div>
-      <div class="text-center mt-4">
-        <img src="./icons/approve-vector.svg" style="width: 60%;">
-      </div>
-      <div class="my-3">
-        <span class="font-28 fw-600">
+      <div class="my-4">
+        <span class="d-flex justify-content-between">
+          <h5>To</h5>
+          <div>
+          <span id="to-address" style="color: rgba(0, 194, 255, 1); cursor: pointer;">_____</span>
+          <span class="copy-message" style="display: none;">Copied!</span></div>
+        </span>
+        <span class="d-flex justify-content-between">
+          <h5>Amount</h5>
           <span id="transaction-amount">AED 0.0000</span>
         </span>
       </div>
