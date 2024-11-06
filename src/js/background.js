@@ -42,13 +42,14 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     }
     else if (message.action === 'transaction_request') {
         // Extract transaction details
-        const { toAddress, amount, fromAddress, transaction_id, username } = message;
+        const { toAddress, amount, fromAddress, transaction_id, username, url } = message;
         // Optionally, you could validate the data here
-        if (!toAddress || !amount || !fromAddress || !transaction_id || !username) {
+        console.log("url is this", url);
+        if (!toAddress || !amount || !fromAddress || !transaction_id || !username || !url) {
             sendResponse({ success: false, message: 'Invalid transaction data' });
             return;
         }
-        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount });
+        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount, url });
         // Now, open the internal approveReq.html page for user approval
         chrome.windows.create({
             url: chrome.runtime.getURL('approve-req.html'),
@@ -83,7 +84,7 @@ async function handleApproveTransaction(message, sendResponse) {
     console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id }));
     console.log(response, "response");
     if (response.status == 200) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true,  message : response.message });
     } else {
         sendResponse({ success: false , message : response.message});
@@ -100,7 +101,7 @@ function handleRejectTransaction(message, sendResponse) {
         body: JSON.stringify({ status, transaction_id: transaction_id })
     });
     if (response.ok) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true });
     } else {
         sendResponse({ success: false });
