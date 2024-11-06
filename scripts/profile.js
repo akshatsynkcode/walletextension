@@ -135,6 +135,7 @@ function updateTransactionHistoryUI(transactions) {
         const typeText = transaction.debit ? 'To' : 'From';
         let statuscolor = 'text-secondary';
         let borderClass = '';
+        const sign = transaction.debit ? '-' : '+';
 
         if (transaction.status === 'pending') {
         statuscolor = 'text-warning';
@@ -161,7 +162,7 @@ function updateTransactionHistoryUI(transactions) {
                 
                 <!-- Second Column: Amount -->
                 <div class="col-4 col-md-4 text-center d-flex justify-content-center">
-                    <h5 class="card-title font-14 font-regular m-0 ${colorClass}">AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
+                    <h5 class="card-title font-14 font-regular m-0 ${colorClass}">${sign} AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
                     <span class="card-text font-12 ms-2"><small class="badge status-color ${statuscolor} ${borderClass}">${transaction.status}</small></span>
                 </div>
                 
