@@ -73,16 +73,21 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 // Handle approving the transaction
 async function handleApproveTransaction(message, sendResponse) {
 
-    const { authToken, status, transaction_id } = message.transaction;
+    const { authToken, transaction_id, status } = message.transaction;
     console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}` },
+        headers: { 
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ status:status, transaction_id: transaction_id })
 
     });
-    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id }));
-    console.log(response, "response");
+    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id, authToken: authToken }));
+    console.log(response.status, "response");
+    console.log(response.message, "response");
+    console.log(response.headers, "response");
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true,  message : response.message });
@@ -97,7 +102,7 @@ function handleRejectTransaction(message, sendResponse) {
 
     const response = fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}` },
+        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
         body: JSON.stringify({ status, transaction_id: transaction_id })
     });
     if (response.ok) {
