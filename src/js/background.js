@@ -97,13 +97,17 @@ async function handleApproveTransaction(message, sendResponse) {
 }
 
 // Handle rejecting the transaction
-function handleRejectTransaction(message, sendResponse) {
+async function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}`, 'Content-Type': 'application/json' },
-        body: JSON.stringify({ status, transaction_id: transaction_id })
+        headers: { 
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status:status, transaction_id: transaction_id })
+
     });
     if (response.ok) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
