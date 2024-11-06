@@ -42,13 +42,14 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
     }
     else if (message.action === 'transaction_request') {
         // Extract transaction details
-        const { toAddress, amount, fromAddress, transaction_id, username } = message;
+        const { toAddress, amount, fromAddress, transaction_id, username, url } = message;
         // Optionally, you could validate the data here
-        if (!toAddress || !amount || !fromAddress || !transaction_id || !username) {
+        console.log("url is this", url);
+        if (!toAddress || !amount || !fromAddress || !transaction_id || !username || !url) {
             sendResponse({ success: false, message: 'Invalid transaction data' });
             return;
         }
-        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount });
+        chrome.storage.sync.set({ username, transaction_id, fromAddress, toAddress, amount, url });
         // Now, open the internal approveReq.html page for user approval
         chrome.windows.create({
             url: chrome.runtime.getURL('approve-req.html'),
@@ -72,18 +73,23 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
 // Handle approving the transaction
 async function handleApproveTransaction(message, sendResponse) {
 
-    const { authToken, status, transaction_id } = message.transaction;
+    const { authToken, transaction_id, status } = message.transaction;
     console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}` },
+        headers: { 
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
         body: JSON.stringify({ status:status, transaction_id: transaction_id })
 
     });
-    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id }));
-    console.log(response, "response");
+    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id, authToken: authToken }));
+    console.log(response.status, "response");
+    console.log(response.message, "response");
+    console.log(response.headers, "response");
     if (response.status == 200) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true,  message : response.message });
     } else {
         sendResponse({ success: false , message : response.message});
@@ -91,16 +97,20 @@ async function handleApproveTransaction(message, sendResponse) {
 }
 
 // Handle rejecting the transaction
-function handleRejectTransaction(message, sendResponse) {
+async function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 'Authorization': `Bearer ${authToken}` },
-        body: JSON.stringify({ status, transaction_id: transaction_id })
+        headers: { 
+            'Authorization': `Bearer ${authToken}`,
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ status:status, transaction_id: transaction_id })
+
     });
     if (response.ok) {
-        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount']);
+        chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true });
     } else {
         sendResponse({ success: false });
