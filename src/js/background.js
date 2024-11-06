@@ -91,7 +91,9 @@ async function handleApproveTransaction(message, sendResponse) {
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
         sendResponse({ success: true,  message : response.message });
-    } else {
+    } else if(response.status == 401){
+        sendResponse({ success: false , message : response.message, statusCode:response.status });
+    }else{
         sendResponse({ success: false , message : response.message});
     }
 }

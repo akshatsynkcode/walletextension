@@ -62,7 +62,13 @@ document.addEventListener("DOMContentLoaded", () => {
         return `${start}....`;
     }
 
-    document.querySelector(".approve-button").addEventListener("click", () => {
+    document.querySelector(".approve-button").addEventListener("click", function() {
+        const approveButton = document.querySelector(".approve-button");
+    
+        // Disable the button and add a loader text
+        approveButton.disabled = true;
+        approveButton.innerHTML = 'Processing... <span class="approve-loader"></span>'; // Adding loader
+    
         chrome.storage.sync.get(['authToken', 'transaction_id'], ({ authToken, transaction_id }) => {
             chrome.runtime.sendMessage({
                 action: "approve_transaction",
@@ -72,10 +78,14 @@ document.addEventListener("DOMContentLoaded", () => {
                     status: "completed"
                 }
             }, (response) => {
+                // Remove loader and re-enable button based on response
+                approveButton.disabled = false;
+                approveButton.innerHTML = 'Approve';
+    
                 if (response.success) {
                     window.close();
-                } else {
-                    alert("Approval failed. Please try again.");
+                } else if ('statusCode' in response && response.statusCode == 401) {
+                    alert("Please login through extension first.");
                     window.close();
                 }
             });
