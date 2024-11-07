@@ -12,7 +12,7 @@
     />
 </head>
 <body style="overflow: hidden;">
-    <div class="p-4 bg-color border-0" style="height: 100vh;">
+    <div class="p-4 bg-color border-0" style="min-height: 100vh;">
       <nav class="navbar navbar-expand-lg">
           <div>
             <i class="fa-duotone fa-solid fa-user user-icon"></i>
@@ -21,11 +21,12 @@
       </nav>
     <div class="wallet-info mt-3">
       <div class="text-center">
-        <i class="fas fa-horse-head user-icon"></i>
+        <img src="./icons/icon48.png">
+        <!-- <i class="fas fa-horse-head user-icon"></i> -->
       </div>
       <div>
-        <p class="font-regular f-24 mb-0 mt-3 text-center" id="site-url"> </p>
-        <p class="f-14 dark-black mt-2 text-center" id="site-description">
+        <p class="font-regular f-24 mb-0 mt-4 text-center" id="site-url"> </p>
+        <p class="f-14 dark-black mt-4 text-center" id="site-description">
             Do you trust this site? By granting this permission, you're allowing https://app.uniswap.org to withdraw your YAM and automate transaction for you.
         </p>
       </div>
@@ -42,7 +43,7 @@
         </span>
       </div>
       <div class="d-flex w-100">
-        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Cancel</button>
+        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button">Reject</button>
         <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 approve-button">Approve</button>
       </div>
     </div> 
