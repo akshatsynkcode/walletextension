@@ -34,7 +34,7 @@ async function fetchAndUpdateBalance() {
             return;
         }
 
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-balance', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -89,7 +89,7 @@ async function fetchAndUpdateTransactionHistory() {
             return;
         }
 
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -187,7 +187,7 @@ async function fetchUpdatedUserProfile() {
             return;
         }
 
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -215,7 +215,7 @@ async function lockWallet() {
     }
 
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-logout', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -316,7 +316,6 @@ async function lockWallet() {
         await fetchAndUpdateTransactionHistory();
   
         // Periodic balance update
-        setInterval(fetchAndUpdateBalance, 4000);
     }
   
     // Copy wallet address functionality

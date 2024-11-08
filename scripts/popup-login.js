@@ -33,7 +33,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'block';
 
         try {
-            const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-login', {
+            const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-login', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

@@ -75,7 +75,7 @@ async function handleApproveTransaction(message, sendResponse) {
 
     const { authToken, transaction_id, status } = message.transaction;
     console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
-    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 
             'Authorization': `Bearer ${authToken}`,
@@ -102,7 +102,7 @@ async function handleApproveTransaction(message, sendResponse) {
 async function handleRejectTransaction(message, sendResponse) {
     const { status, transaction_id, authToken } = message.transaction;
 
-    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
+    const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: { 
             'Authorization': `Bearer ${authToken}`,
@@ -182,7 +182,7 @@ function handleRequestConnection(sender, sendResponse) {
         if (result.authToken) {
             const authToken = result.authToken;
 
-            fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
+            fetch('https://wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authToken}` }
             })

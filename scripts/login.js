@@ -21,7 +21,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
     loginButton.style.display = 'none';
 
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-login', {  // Updated to proxy server URL
+        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-login', {  // Updated to proxy server URL
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
