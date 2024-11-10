@@ -1,3 +1,9 @@
+
+let currentPage = 1;
+let totalPages = 1;
+const prevButton = document.getElementById("prev-button");
+const nextButton = document.getElementById("next-button");
+
 // Redirect to login if no token or token is invalid
 function redirectToLogin() {
     chrome.storage.sync.remove('authToken');
@@ -57,8 +63,26 @@ async function fetchAndUpdateBalance() {
     }
 }
 
+
+prevButton.addEventListener("click",async () => {
+    if (currentPage > 1) {
+        await fetchAndUpdateTransactionHistory(currentPage - 1);
+    }
+});
+
+nextButton.addEventListener("click",async () => {
+    if (currentPage < totalPages) {
+        await fetchAndUpdateTransactionHistory(currentPage + 1);
+    }
+});
 // Fetch and update transaction history
-async function fetchAndUpdateTransactionHistory() {
+async function fetchAndUpdateTransactionHistory(page) {
+    
+    const paginationInfo = document.getElementById("pagination-info");
+    const pageNumbers = document.getElementById("page-numbers");
+    const activitiesContent = document.getElementById("activities-content");
+    // const loader = document.getElementById("activities-loader");
+    
     const loader = document.getElementById('balance-loader');
     const activityContainer = document.querySelector('.p-3');
     if (loader) {
@@ -89,7 +113,7 @@ async function fetchAndUpdateTransactionHistory() {
             return;
         }
 
-        const response = await fetch('https://wallet-api.dubaicustoms.network/api/ext-transaction', {
+        const response = await fetch(`https://wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -97,9 +121,24 @@ async function fetchAndUpdateTransactionHistory() {
         clearTimeout(noDataTimeout); // Clear the timeout if data is fetched successfully
 
         if (response.ok) {
-            const { data: transactions } = await response.json();
-            if (transactions.length > 0) {
-                updateTransactionHistoryUI(transactions); // Pass the transactions array
+            const data = await response.json();
+            if (data.data.length > 0) {
+                updateTransactionHistoryUI(data.data); // Pass the transactions array
+                
+                console.log('abcd')
+                console.log(data)
+                console.log(currentPage)
+                console.log(totalPages)
+                // Update pagination info
+                currentPage = data.page;
+                totalPages = data.page_count;
+
+                paginationInfo.textContent = `${(currentPage - 1) * 5 + 1}-${currentPage * 5} of ${data.count}`;
+                pageNumbers.textContent = `Page ${currentPage} of ${totalPages}`;
+                
+                // Enable/disable buttons based on page info
+                prevButton.disabled = data.previous === null;
+                nextButton.disabled = data.next === null;
             } else if (!timeoutFlag) {
                 // If no transactions and the timeout hasn't already occurred
                 activityContainer.innerHTML = `
@@ -313,7 +352,7 @@ async function lockWallet() {
         await fetchAndUpdateBalance();
   
         // Fetch transaction history
-        await fetchAndUpdateTransactionHistory();
+        await fetchAndUpdateTransactionHistory(currentPage);
   
         // Periodic balance update
     }
@@ -374,3 +413,91 @@ async function lockWallet() {
       }
     });
   });
+
+
+  document.addEventListener("DOMContentLoaded", () => {
+    // const prevButton = document.getElementById("prev-button");
+    // const nextButton = document.getElementById("next-button");
+    // const paginationInfo = document.getElementById("pagination-info");
+    // const pageNumbers = document.getElementById("page-numbers");
+    // const activitiesContent = document.getElementById("activities-content");
+    // const loader = document.getElementById("activities-loader");
+
+    
+
+    function fetchData(page) {
+        loader.style.display = "block";
+        activitiesContent.style.display = "none";
+        
+        fetch(`http://127.0.0.1:8005/api/ext-transaction?page=${page}`)
+            .then(response => response.json())
+            .then(data => {
+                loader.style.display = "none";
+                activitiesContent.style.display = "block";
+                
+                // Render your data
+                updateTransactionHistoryUI(data.data);
+
+                // Update pagination info
+                currentPage = data.page;
+                totalPages = data.page_count;
+
+                paginationInfo.textContent = `${(currentPage - 1) * 10 + 1}-${currentPage * 10} of ${data.count}`;
+                pageNumbers.textContent = `Page ${currentPage} of ${totalPages}`;
+                
+                // Enable/disable buttons based on page info
+                prevButton.disabled = data.previous === null;
+                nextButton.disabled = data.next === null;
+            })
+            .catch(error => {
+                console.error("Error fetching data:", error);
+            });
+    }
+
+    // function renderActivities(activities) {
+    //     activitiesContent.innerHTML = ""; // Clear current content
+
+    //     activities.forEach(activity => {
+    //         // Create a new card based on your template, filling in data as needed
+    //         const activityCard = document.createElement("div");
+    //         activityCard.classList.add("card", "mb-3", "border-0", "activity-card");
+
+    //         // Insert activity data (adjust to match the structure you want)
+    //         activityCard.innerHTML = `
+    //             <div class="row g-0 justify-content-center align-items-center">
+    //                 <div class="col-4 col-md-4 ps-2">
+    //                     <div class="card-body text-start activity-card-body p-1">
+    //                         <h5 class="card-title font-14 font-regular m-0">${activity.title}</h5>
+    //                         <p class="card-text font-12">
+    //                             <small class="light-black">${activity.date}</small>
+    //                         </p>
+    //                     </div>
+    //                 </div>
+    //                 <!-- Add additional columns and data as needed -->
+    //             </div>
+    //         `;
+
+    //         activitiesContent.appendChild(activityCard);
+    //     });
+    // }
+
+
+    // Event listeners for pagination buttons
+    
+    // Initial fetch
+    
+    
+    // fetchData(currentPage);
+
+    // prevButton.addEventListener("click", () => {
+    //     if (currentPage > 1) {
+    //         fetchData(currentPage - 1);
+    //     }
+    // });
+
+    // nextButton.addEventListener("click", () => {
+    //     if (currentPage < totalPages) {
+    //         fetchData(currentPage + 1);
+    //     }
+    // });
+});
