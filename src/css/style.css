@@ -110,10 +110,10 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 }
 .header{
   background-image: url(../icons/bg-frame.svg);
-    background-size: cover;
+    background-size: 600%;
     background-position: center;
     background-repeat: no-repeat;
-  height: 80px;
+    height: 80px;
     display: flex;
     align-items: center;
     justify-content: space-between;
@@ -618,17 +618,20 @@ h1, h4 {
   border: 1px solid gray;
   padding: 4px !important;
 }
-.approve-loader {
-  border: 2px solid #f3f3f3;
-  border-top: 2px solid #3498db;
-  border-radius: 50%;
-  width: 12px;
-  height: 12px;
-  animation: spin 1s linear infinite;
-  display: inline-block;
+.eye-icon {
+  position: absolute;
+  right: 10px;
+  top: 73%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  font-size: 15px;
+  color: #fff;
 }
 
-@keyframes spin {
-  0% { transform: rotate(0deg); }
-  100% { transform: rotate(360deg); }
+.eye-icon i {
+  color: #bbb;
+}
+
+.input[type="password"] {
+  padding-right: 30px;
 }

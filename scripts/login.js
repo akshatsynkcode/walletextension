@@ -71,3 +71,23 @@ window.onload = function () {
         }
     });
 };
+
+  const togglePassword = document.getElementById('toggle-password');
+  const passwordInput = document.getElementById('password');
+
+  togglePassword.addEventListener('click', function() {
+    // Toggle the type between password and text
+    const type = passwordInput.type === 'password' ? 'text' : 'password';
+    passwordInput.type = type;
+
+    // Change the eye icon based on password visibility
+    const icon = togglePassword.querySelector('i');
+    if (type === 'password') {
+      icon.classList.remove('fa-eye-slash');
+      icon.classList.add('fa-eye');
+    } else {
+      icon.classList.remove('fa-eye');
+      icon.classList.add('fa-eye-slash');
+    }
+  });
+
