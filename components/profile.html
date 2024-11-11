@@ -118,16 +118,22 @@
                     </button>
                   </div>
                 </div> -->
-                <div class="text-center">
-                  <img src="./icons/activity-icon.svg" class="activity-icon" />
+                <div class="d-flex align-items-center justify-content-between mb-4">
+                  <div class="d-flex align-items-center">
+                  <img src="./icons/activity-icon.svg" class="activity-icon me-2" />
                   <h5 class="card-title font-20 text-white mt-2">Activities</h5>
                 </div>
-                <div class="p-3 overflow-card">
+                  <div>
+                    <input class="form-control me-2 input" type="search" placeholder="Search" aria-label="Search" style="height: 35px;">
+                  </div>
+                </div>
+                <div class="p-3 overflow-card m-2">
                   <!-- Loader for activity section -->
                   <div id="activities-loader" class="text-center">
                     <span class="spinner-border spinner-border-sm text-light"></span>
                     <p class="text-light">Loading your transactions...</p>
                   </div>
+      
                   <!-- Transactions content will be dynamically loaded here -->
                   <div id="activities-content" style="display: none;">
                     <div class="card mb-3 border-0 activity-card">
@@ -180,11 +186,11 @@
                   <span id="pagination-info" class="d-flex align-items-center me-2 font-12">
                       0-0 of 0
                   </span>
-                  <div class="pagination">
+                  <div class="pagination d-flex align-items-center">
                      <button id="prev-button" class="btn border-0 btn-arrow" disabled>
                        <i class="fas fa-arrow-left font-12"></i>
                      </button>
-                     <span id="page-numbers" class="font-12">1</span>
+                     <span id="page-numbers" class="btn border-0 font-12 btn-link">1</span>
                      <button id="next-button" class="btn border-0 btn-arrow">
                        <i class="fas fa-arrow-right font-12"></i>
                      </button>
@@ -214,7 +220,7 @@
                   </div>
                 </div> -->
                 <div class="text-center">
-                  <img src="./icons/profile1.png" class="activity-icon" />
+                  <img src="./icons/profile1.png" class="profile-icon" />
                   <h5 class="card-title font-20 text-white mt-2">
                     Profile Details
                   </h5>

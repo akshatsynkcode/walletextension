@@ -72,9 +72,13 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   border-radius: 30px;
   background-color: rgba(20, 20, 20, 1);
 }
-.activity-icon{
+.profile-icon{
   width: 60px;
   height: 60px;
+}
+.activity-icon{
+  width: 30px;
+  height: 30px;
 }
 .approve-icon{
   height: 40px;
@@ -599,7 +603,7 @@ h1, h4 {
 }
 .overflow-card{
   overflow-y: scroll;
-  height: 270px;
+  height: 300px;
   scrollbar-width: none;
 }
 .user-icon{
@@ -635,3 +639,4 @@ h1, h4 {
 .input[type="password"] {
   padding-right: 30px;
 }
+
