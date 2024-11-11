@@ -429,7 +429,7 @@ async function lockWallet() {
         loader.style.display = "block";
         activitiesContent.style.display = "none";
         
-        fetch(`http://127.0.0.1:8005/api/ext-transaction?page=${page}`)
+        fetch(`https://wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}`)
             .then(response => response.json())
             .then(data => {
                 loader.style.display = "none";
