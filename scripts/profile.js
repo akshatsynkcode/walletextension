@@ -9,10 +9,12 @@ function redirectToLogin() {
     chrome.storage.sync.remove('authToken');
     window.location.href = 'login.html';
 }
-
 function formatAmount(amount) {
-    // Check if the amount is a number
-    if (isNaN(amount)) return amount;
+    // Convert the amount to a number
+    amount = parseFloat(amount);
+
+    // Check if the amount is a number after conversion
+    if (isNaN(amount)) return '0'; // Return default if it's not a valid number
 
     // Handle numbers greater than 1,000 and format them accordingly
     if (amount >= 1e9) {
@@ -22,9 +24,10 @@ function formatAmount(amount) {
     } else if (amount >= 1e3) {
         return (amount / 1e3).toFixed(1) + 'K'; // Thousand
     } else {
-        return amount.toFixed(2); // If it's less than 1,000, just show the number with two decimals
+        return amount.toFixed(2); // If it's less than 1,000, show the number with two decimals
     }
 }
+
 // Fetch and update balance
 async function fetchAndUpdateBalance() {
     const loader = document.getElementById('balance-loader');
@@ -64,27 +67,28 @@ async function fetchAndUpdateBalance() {
 }
 
 
-prevButton.addEventListener("click",async () => {
+
+
+prevButton.addEventListener("click", async () => {
     if (currentPage > 1) {
         await fetchAndUpdateTransactionHistory(currentPage - 1);
     }
 });
 
-nextButton.addEventListener("click",async () => {
+nextButton.addEventListener("click", async () => {
     if (currentPage < totalPages) {
         await fetchAndUpdateTransactionHistory(currentPage + 1);
     }
 });
-// Fetch and update transaction history
-async function fetchAndUpdateTransactionHistory(page) {
-    
+
+// Fetch and update transaction history with pagination support
+async function fetchAndUpdateTransactionHistory(page = 1) {
     const paginationInfo = document.getElementById("pagination-info");
     const pageNumbers = document.getElementById("page-numbers");
     const activitiesContent = document.getElementById("activities-content");
-    // const loader = document.getElementById("activities-loader");
-    
     const loader = document.getElementById('balance-loader');
     const activityContainer = document.querySelector('.p-3');
+    
     if (loader) {
         loader.style.display = 'inline-block'; // Show loader before fetching
     }
@@ -124,21 +128,17 @@ async function fetchAndUpdateTransactionHistory(page) {
             const data = await response.json();
             if (data.data.length > 0) {
                 updateTransactionHistoryUI(data.data); // Pass the transactions array
-                
-                console.log('abcd')
-                console.log(data)
-                console.log(currentPage)
-                console.log(totalPages)
+
                 // Update pagination info
                 currentPage = data.page;
                 totalPages = data.page_count;
 
-                paginationInfo.textContent = `${(currentPage - 1) * 5 + 1}-${currentPage * 5} of ${data.count}`;
+                paginationInfo.textContent = `${(currentPage - 1) * 5 + 1}-${Math.min(currentPage * 5, data.count)} of ${data.count}`;
                 pageNumbers.textContent = `Page ${currentPage} of ${totalPages}`;
-                
+
                 // Enable/disable buttons based on page info
-                prevButton.disabled = data.previous === null;
-                nextButton.disabled = data.next === null;
+                prevButton.disabled = currentPage <= 1;
+                nextButton.disabled = currentPage >= totalPages;
             } else if (!timeoutFlag) {
                 // If no transactions and the timeout hasn't already occurred
                 activityContainer.innerHTML = `
@@ -160,6 +160,7 @@ async function fetchAndUpdateTransactionHistory(page) {
         }
     }
 }
+
 
 // Function to update the UI with the fetched transaction history
 function updateTransactionHistoryUI(transactions) {

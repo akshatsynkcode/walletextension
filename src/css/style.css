@@ -640,3 +640,6 @@ h1, h4 {
   padding-right: 30px;
 }
 
+.input-group-text{
+  background-color: rgba(36, 36, 36, 1);
+}

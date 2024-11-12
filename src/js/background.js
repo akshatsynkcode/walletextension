@@ -62,8 +62,32 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
         chrome.storage.sync.get(['authToken'], (result) => {
             sendResponse({ success: true, authToken: result.authToken });
         });
-    }
-    else {
+    } else if (message.action === 'getbalance') {
+        chrome.storage.sync.get(['authToken'], (result) => {
+            if (result.authToken) {
+                fetch('https://wallet-api.dubaicustoms.network/api/ext-balance', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${result.authToken}` }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    sendResponse({ success: true, balance: data.balance });
+                })
+                .catch(error => {
+                    console.error('Error fetching balance:', error);
+                    sendResponse({ success: false, error: 'Failed to fetch balance' }); 
+                });
+            } else {
+                sendResponse({ success: false, error: 'Auth token not found' });
+            }
+        });
+    } else {
         console.warn('Unknown action received:', message.action);
         sendResponse({ success: false, error: 'Unknown action' });
     }

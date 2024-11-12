@@ -156,8 +156,11 @@ const copyButton = document.getElementById('copy-button');
     }
 
     function formatAmount(amount) {
-        // Check if the amount is a number
-        if (isNaN(amount)) return amount;
+        // Convert the amount to a number
+        amount = parseFloat(amount);
+    
+        // Check if the amount is a number after conversion
+        if (isNaN(amount)) return '0'; // Return default if it's not a valid number
     
         // Handle numbers greater than 1,000 and format them accordingly
         if (amount >= 1e9) {
@@ -167,6 +170,6 @@ const copyButton = document.getElementById('copy-button');
         } else if (amount >= 1e3) {
             return (amount / 1e3).toFixed(1) + 'K'; // Thousand
         } else {
-            return amount.toFixed(2); // If it's less than 1,000, just show the number with two decimals
+            return amount.toFixed(2); // If it's less than 1,000, show the number with two decimals
         }
     }

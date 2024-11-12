@@ -9,6 +9,7 @@
   ],
   "host_permissions": [
     "*://*/*",
+    "https://wallet-api.dubaicustoms.network/*",
     "https://wallet-api.dubaicustoms.network/*"
   ],
   "action": {
@@ -55,10 +56,11 @@
   "externally_connectable": {
     "matches": [
       "*://*/*",
+      "https://wallet-api.dubaicustoms.network/*",
       "https://wallet-api.dubaicustoms.network/*"
     ]
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://wallet-api.dubaicustoms.network; frame-src 'none';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://wallet-api.dubaicustoms.network https://wallet-api.dubaicustoms.network; frame-src 'none';"
   }
 }
