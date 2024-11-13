@@ -93,3 +93,10 @@ togglePassword.addEventListener('click', function() {
     icon.classList.add('fa-eye-slash');
   }
 });
+
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("forgot-password").addEventListener("click", function (event) {
+        event.preventDefault();
+        window.open("https://ime.dubaicustoms.network/forgot-password/", "_blank", "noopener,noreferrer");
+    });
+});
