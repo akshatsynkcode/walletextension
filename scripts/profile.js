@@ -146,6 +146,8 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
                     <div class="no-transactions-message text-center text-white">
                         <p>No transactions found</p>
                     </div>`;
+                    paginationInfo.textContent = `0-0 of 0`;
+                    pageNumbers.textContent = `1`;
             }
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
