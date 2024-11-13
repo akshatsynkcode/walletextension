@@ -5,25 +5,29 @@ let fetch;
 
 import('node-fetch').then(mod => {
     fetch = mod.default;
-}).catch(err => console.log('Failed to load node-fetch:', err)); // Make sure to have node-fetch installed
+}).catch(err => console.error('Failed to load node-fetch:', err)); // Make sure to have node-fetch installed
 
 const app = express();
+const PORT = 3000; // Change this if you prefer a different port
+
+// Middleware
 app.use(cors());
 app.use(bodyParser.json());
 
-app.post('/api/mobile-login', async (req, res) => {
+// Proxy route for /ext-login
+app.post('/api/ext-login', async (req, res) => {
     try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/mobile-login/', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
             },
-            body: JSON.stringify(req.body) // Forward the body from the request
+            body: JSON.stringify(req.body) // Forward the body from the incoming request
         });
 
         if (response.ok) {
             const data = await response.json();
-            res.status(200).json(data); // Forward the response from the backend API
+            res.status(200).json(data);
         } else {
             if (response.headers.get('content-type')?.includes('application/json')) {
                 const errorData = await response.json();
@@ -35,106 +39,101 @@ app.post('/api/mobile-login', async (req, res) => {
         }
     } catch (error) {
         console.error('Error during login proxy:', error);
-        res.status(500).json({ error: 'Internal server error' });
+        res.status(500).json({ error: 'Internal server error during login' });
     }
 });
 
-
-// Proxy endpoint to fetch user profile
-app.get('/api/user-profile', async (req, res) => {
-    const authToken = req.header('Authorization');
-    const cookie = req.header('Cookie');
-
-    if (!authToken) {
-        return res.status(401).json({ error: 'Authorization token is required' });
-    }
-
+// Proxy route for /ext-balance
+app.get('/api/ext-balance', async (req, res) => {
     try {
-        const userProfileResponse = await fetch('https://log-iam-temp.finloge.com/api/user-profile/', {
-            method: 'GET',
-            headers: {
-                'Authorization': authToken,
-                'Cookie': cookie,
-                'Content-Type': 'application/json'
-            }
-        });
-
-        const data = await userProfileResponse.json();
-
-        if (userProfileResponse.ok) {
-            res.json(data);
-        } else {
-            res.status(userProfileResponse.status).json(data);
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
         }
-    } catch (error) {
-        console.error('Error fetching user profile:', error);
-        res.status(500).json({ error: 'Internal server error while fetching user profile' });
-    }
-});
 
-app.get('/api/wallet-balance', async (req, res) => {
-    const authToken = req.header('Authorization');
-    const cookie = req.header('Cookie');
-
-    if (!authToken) {
-        return res.status(401).json({ error: 'Authorization token is required' });
-    }
-
-    try {
-        const balanceResponse = await fetch('https://log-iam-temp.finloge.com/api/wallet-balance/', {
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-balance', {
             method: 'GET',
             headers: {
-                'Authorization': authToken,
-                'Cookie': cookie
+                'Authorization': authToken
             }
         });
 
-        if (balanceResponse.ok) {
-            const data = await balanceResponse.json();
-            res.json(data);
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
         } else {
-            // Handle non-200 responses
-            if (balanceResponse.headers.get('content-type')?.includes('application/json')) {
-                const errorData = await balanceResponse.json();
-                res.status(balanceResponse.status).json(errorData);
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
             } else {
-                const errorData = await balanceResponse.text();
-                res.status(balanceResponse.status).send(errorData);
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
             }
         }
     } catch (error) {
-        console.error('Error fetching wallet balance:', error);
-        res.status(500).json({ error: 'Internal server error while fetching wallet balance' });
+        console.error('Error fetching balance:', error);
+        res.status(500).json({ error: 'Internal server error during balance fetch' });
     }
 });
-app.post('/api/mobile-logout', async (req, res) => {
-    const authToken = req.header('Authorization');
-    const cookie = req.header('Cookie');
 
-    if (!authToken) {
-        return res.status(401).json({ error: 'Authorization token is required' });
-    }
-
+// Proxy route for /ext-profile
+app.get('/api/ext-profile', async (req, res) => {
     try {
-        const logoutResponse = await fetch('https://log-iam-temp.finloge.com/api/mobile-logout/', {
-            method: 'POST',
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
+
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-profile', {
+            method: 'GET',
             headers: {
-                'Authorization': authToken,
-                'Cookie': cookie
+                'Authorization': authToken
             }
         });
 
-        if (logoutResponse.ok) {
-            const data = await logoutResponse.json();
-            res.json(data);
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
         } else {
-            // Handle non-200 responses
-            if (logoutResponse.headers.get('content-type')?.includes('application/json')) {
-                const errorData = await logoutResponse.json();
-                res.status(logoutResponse.status).json(errorData);
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
             } else {
-                const errorData = await logoutResponse.text();
-                res.status(logoutResponse.status).send(errorData);
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching profile:', error);
+        res.status(500).json({ error: 'Internal server error during profile fetch' });
+    }
+});
+
+// Proxy route for /ext-logout
+app.get('/api/ext-logout', async (req, res) => {
+    try {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
+
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-logout', {
+            method: 'GET',
+            headers: {
+                'Authorization': authToken
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
+        } else {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
+            } else {
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
             }
         }
     } catch (error) {
@@ -143,6 +142,82 @@ app.post('/api/mobile-logout', async (req, res) => {
     }
 });
 
-app.listen(3000, () => {
-    console.log('Server is running on port 3000');
+// Proxy route for /ext-transaction with pagination support
+app.get('/api/ext-transaction', async (req, res) => {
+    try {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
+
+        // Extract page number from the query parameters
+        const page = req.query.page || 1; // Default to page 1 if not provided
+
+        // Add page parameter to the API URL
+        const apiUrl = `https://log-iam-temp.finloge.com/api/ext-transaction?page=${page}`;
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Authorization': authToken
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
+        } else {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
+            } else {
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching transactions:', error);
+        res.status(500).json({ error: 'Internal server error during transactions fetch' });
+    }
+});
+
+// Proxy route for updating /ext-transaction
+app.put('/api/ext-transaction', async (req, res) => {
+    try {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
+
+        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                'Authorization': authToken
+            },
+            body: JSON.stringify(req.body) // Forward the body from the incoming request
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
+        } else {
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
+            } else {
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error updating transaction:', error);
+        res.status(500).json({ error: 'Internal server error during transaction update' });
+    }
+});
+
+
+// Start the server
+app.listen(PORT, () => {
+    console.log(`Proxy server running on port ${PORT}`);
 });

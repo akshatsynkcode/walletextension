@@ -139,6 +139,9 @@ async function lockWallet() {
     }
 }
 
+document.getElementById('buy-aed-btn').addEventListener('click', () => {
+    window.open('https://ime.dubaicustoms.network/payment/');
+});
 
 const copyButton = document.getElementById('copy-button');
     if (copyButton) {

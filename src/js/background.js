@@ -87,7 +87,17 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
                 sendResponse({ success: false, error: 'Auth token not found' });
             }
         });
-    } else {
+    }  
+    else if (message.action === 'get_auth') {  // New case for getauth
+        chrome.storage.sync.get(['authToken'], (result) => {
+            if (result.authToken) {
+                sendResponse({ success: true, authToken: result.authToken });
+            } else {
+                sendResponse({ success: false, error: 'Auth token not found' });
+            }
+        });
+    }
+    else {
         console.warn('Unknown action received:', message.action);
         sendResponse({ success: false, error: 'Unknown action' });
     }
