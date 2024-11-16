@@ -299,3 +299,18 @@ chrome.runtime.onInstalled.addListener((details) => {
         });
     }
 });
+
+chrome.action.onClicked.addListener(() => {
+    chrome.storage.sync.get(['authToken'], (result) => {
+        if (result.authToken) {
+            chrome.action.setPopup({popup: "popup.html"});
+        } else {
+            chrome.tabs.create({
+                url: chrome.runtime.getURL('welcome.html'),
+                active: true
+            }, (tab) => {
+                fullscreenTabId = tab.id;
+            });
+        }
+    });
+});
