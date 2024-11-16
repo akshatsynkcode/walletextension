@@ -2,6 +2,7 @@
 let currentPage = 1;
 let totalPages = 1;
 let query = '';
+let filter = '';
 const prevButton = document.getElementById("prev-button");
 const nextButton = document.getElementById("next-button");
 
@@ -118,10 +119,20 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
             return;
         }
 
-        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
+        let response = null;
+
+        if (filter != ''){
+            response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}&filter=${filter}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+        }else{
+            response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authToken}` }
+            });
+        }
+        
 
         clearTimeout(noDataTimeout); // Clear the timeout if data is fetched successfully
 
@@ -436,5 +447,18 @@ async function lockWallet() {
         } else {
             fetchAndUpdateTransactionHistory(currentPage);
         }
+    });
+});
+document.addEventListener("DOMContentLoaded", () => {
+    document.getElementById('transaction-filter').addEventListener('change', function() {
+        // Get the current URL
+        const value = document.getElementById('transaction-filter').value;
+        filter = value;
+        if (value != ''){
+            currentPage = 1;
+            totalPages = 1;
+            fetchAndUpdateTransactionHistory(currentPage)
+        }
+        
     });
 });
