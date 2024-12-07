@@ -4,7 +4,8 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "webpack --config webpack.config.js",
+    "build": "node build-manifest.js chrome && webpack --config webpack.config.js",
+    "build:firefox": "node build-manifest.js firefox && webpack --config webpack.config.js",
     "watch": "webpack --watch"
   },
   "keywords": [],
