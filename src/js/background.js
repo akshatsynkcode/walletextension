@@ -7,41 +7,34 @@ let authCheckIntervalId = null; // To store the interval ID
 const servicePopups = {};
 
 // Listener for messages from popup and content scripts
+// chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+//     console.log("Message received:", message); // Debugging log
+
+//     switch (message.action) {
+//         case 'lock_wallet':
+//             handleLockWallet(sendResponse);
+//             break;
+//         case 'unlock_wallet':
+//             handleUnlockWallet(sendResponse);
+//             break;
+//         case 'approve_connection':
+//             handleApproveConnection(message, sendResponse);
+//             break;
+//         case 'reject_connection':
+//             handleRejectConnection(message, sendResponse);
+//             break;
+//         case 'approve_transaction':
+//             handleApproveTransaction(message, sendResponse);
+//             break;
+//         case 'reject_transaction':
+//             handleRejectTransaction(message, sendResponse);
+//             break;
+//     }
+//     return true; // Keep the message channel open for asynchronous responses
+// });
+
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Message received:", message); // Debugging log
-
-    switch (message.action) {
-        case 'lock_wallet':
-            handleLockWallet(sendResponse);
-            break;
-        case 'unlock_wallet':
-            handleUnlockWallet(sendResponse);
-            break;
-        case 'approve_connection':
-            handleApproveConnection(message, sendResponse);
-            break;
-        case 'reject_connection':
-            handleRejectConnection(message, sendResponse);
-            break;
-        case 'approve_transaction':
-            handleApproveTransaction(message, sendResponse);
-            break;
-        case 'reject_transaction':
-            handleRejectTransaction(message, sendResponse);
-            break;
-        case 'login':
-            console.log("Starting auth check after login.");
-            startAuthCheck();
-            break;
-        case 'logout':
-            console.log("Stopping auth check after logout.");
-            stopAuthCheck();
-            break;
-    }
-    return true; // Keep the message channel open for asynchronous responses
-});
-
-chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => {
+    console.log("abcd");
     console.log('External message received:', message); // Log the received message
     if (message.action === 'request_connection') {
         console.log('Handling request connection...');
@@ -108,10 +101,41 @@ chrome.runtime.onMessageExternal.addListener((message, sender, sendResponse) => 
         });
     }
     else {
-        console.warn('Unknown action received:', message.action);
-        sendResponse({ success: false, error: 'Unknown action' });
+        switch (message.action) {
+            case 'lock_wallet':
+                handleLockWallet(sendResponse);
+                break;
+            case 'unlock_wallet':
+                handleUnlockWallet(sendResponse);
+                break;
+            case 'approve_connection':
+                handleApproveConnection(message, sendResponse);
+                break;
+            case 'reject_connection':
+                handleRejectConnection(message, sendResponse);
+                break;
+            case 'approve_transaction':
+                handleApproveTransaction(message, sendResponse);
+                break;
+            case 'reject_transaction':
+                handleRejectTransaction(message, sendResponse);
+                break;
+            case 'login':
+                console.log("Starting auth check after login.");
+                startAuthCheck();
+                break;
+            case 'logout':
+                console.log("Stopping auth check after logout.");
+                stopAuthCheck();
+                break;
+            default:
+                console.warn('Unknown action received:', message.action);
+                sendResponse({ success: false, error: 'Unknown action' });
+                break;
+        }
     }
     return true;
+    
 });
 
 // Handle approving the transaction

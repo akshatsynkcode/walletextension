@@ -28,3 +28,35 @@ function connectWallet(sendResponse) {
       }
   });
 }
+
+window.addEventListener("message", (event) => {
+    console.log("mesg");
+    console.log(event);
+    if (
+      event.source !== window ||
+      !event.data ||
+      event.data.type !== "TO_EXTENSION"
+    ) {
+      return;
+    }
+
+    console.log("mesg1");
+
+    const { action, payload } = event.data;
+    console.log(action);
+    console.log(payload);
+    chrome.runtime.sendMessage(
+      { action, ...payload },
+      (response) => {
+        window.postMessage(
+          {
+            type: "FROM_EXTENSION",
+            payload: response,
+            error: chrome.runtime.lastError?.message,
+          },
+          "*"
+        );
+      }
+    );
+  });
+  
