@@ -234,7 +234,7 @@ function handleRequestConnection(sender, sendResponse) {
                 // Store data in Chrome storage
                 chrome.storage.sync.set({ fullName, walletAddress }, function() {
                     chrome.windows.create({
-                        url: chrome.runtime.getURL(`connectWallet.html`), // No data passed
+                        url: chrome.runtime.getURL(`connectWallet.html?tabId=${sender.tab.id}`), // No data passed
                         type: 'popup',
                         width: 340,
                         height: 570
@@ -261,19 +261,24 @@ function handleRequestConnection(sender, sendResponse) {
 
 
 function handleApproveConnection(message, sendResponse) {
-    const approveRequest = pendingRequests.shift(); // Get the first pending request
+    const { tabId } = message; // Use tabId from the message
+    const approveRequest = pendingRequests.find((req) => req.tabId === tabId);
     if (approveRequest) {
         chrome.storage.sync.get(['authToken'], function(result) {
             if (result.authToken) {
                 // Send the address back to the original request
                 approveRequest.responseCallback({ success: true, authToken : result.authToken });
+                pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the approved request
                 chrome.storage.sync.remove(['fullName', 'walletAddress']);
                 sendResponse({ success: true, authToken : result.authToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
+                pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the denied request
                 sendResponse({ success: false });
             }
         });
+    } else {
+        sendResponse({ success: false, message: "No matching request found for this tab." });
     }
 }
 
