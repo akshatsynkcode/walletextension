@@ -34,7 +34,7 @@ body{
   background-position: center;
   background-repeat: no-repeat;
 }
-.img-container::before {
+/* .img-container::before {
   content: "";
   position: absolute;
   top: 0;
@@ -47,16 +47,16 @@ body{
 }
 @keyframes gradientAnimation {
 0% {
-background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
+background: linear-gradient(270deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.1));
 }
 20% {
-background: linear-gradient(180deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+background: linear-gradient(180deg, rgba(0, 0, 0, 0.3), rgba(0, 0, 0, 0.2));
 }
 40% {
-background: linear-gradient(90deg, rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.3));
+background: linear-gradient(90deg, rgba(0, 0, 0, 0.1), rgba(0, 0, 0, 0.3));
 }
 60% {
-background: linear-gradient(0deg, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.2));
+background: linear-gradient(0deg, rgba(0, 0, 0, 0.2), rgba(0, 0, 0, 0.2));
 }
 80% {
 background: linear-gradient(360deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
@@ -64,7 +64,7 @@ background: linear-gradient(360deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 100% {
 background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 }
-}
+} */
 .z-2 {
   z-index: 2;
 }
@@ -642,4 +642,10 @@ h1, h4 {
 
 .input-group-text{
   background-color: rgba(36, 36, 36, 1);
+}
+
+.main-logo{
+  position: absolute;
+  top: 20px;
+  left: 20px;
 }
