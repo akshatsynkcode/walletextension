@@ -46,6 +46,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
                 // Redirect to profile.html after successful login
                 window.location.href = 'profile.html';
             });
+            chrome.runtime.sendMessage({ action: 'login' });
 
         } else {
             // Display the login error message from the response

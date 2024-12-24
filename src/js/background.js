@@ -3,6 +3,7 @@ let fullscreenTabId = null;
 let pendingRequests = [];
 let connectedSites = [];
 let isLoggedIn = false; // Flag to indicate login status
+let authCheckIntervalId = null; // To store the interval ID
 
 // Listener for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -26,6 +27,14 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             break;
         case 'reject_transaction':
             handleRejectTransaction(message, sendResponse);
+            break;
+        case 'login':
+            console.log("Starting auth check after login.");
+            startAuthCheck();
+            break;
+        case 'logout':
+            console.log("Stopping auth check after logout.");
+            stopAuthCheck();
             break;
     }
     return true; // Keep the message channel open for asynchronous responses
@@ -319,3 +328,47 @@ chrome.action.onClicked.addListener(() => {
         }
     });
 });
+
+// Function to start the periodic auth check
+function startAuthCheck() {
+    if (authCheckIntervalId) {
+        console.log("Auth check is already running.");
+        return;
+    }
+
+    authCheckIntervalId = setInterval(() => {
+        chrome.storage.sync.get('authToken', async ({ authToken }) => {
+            if (!authToken) {
+                console.log('No auth token found. Stopping auth check.');
+                stopAuthCheck(); // Stop if no token is found
+                return;
+            }
+
+            try {
+                const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${authToken}` },
+                });
+
+                if (response.status === 401) {
+                    console.log("Auth token invalid. Logging out.");
+                    chrome.storage.sync.remove('authToken', () => {
+                        stopAuthCheck(); // Stop the check
+                        // chrome.runtime.sendMessage({ action: 'lock_wallet' });
+                    });
+                }
+            } catch (error) {
+                console.error('Error during auth token validation:', error);
+            }
+        });
+    },  10*60*1000); // Run every 10 minutes
+}
+
+// Function to stop the periodic auth check
+function stopAuthCheck() {
+    if (authCheckIntervalId) {
+        clearInterval(authCheckIntervalId);
+        authCheckIntervalId = null;
+        console.log("Auth check stopped.");
+    }
+}

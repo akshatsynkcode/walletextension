@@ -59,6 +59,7 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to popup.html after successful login
                     window.location.href = 'popup.html';
                 });
+                chrome.runtime.sendMessage({ action: 'login' });
 
             } else {
                 errorMessage.textContent = data.message || 'Login failed, please try again.';
