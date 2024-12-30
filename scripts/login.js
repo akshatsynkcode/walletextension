@@ -1,3 +1,5 @@
+const baseApiUrl = 'https://dev-wallet-api.dubaicustoms.network';
+
 document.getElementById('login-btn').addEventListener('click', async function login(event) {
     event.preventDefault();  // Prevent default form submission behavior
 
@@ -92,3 +94,16 @@ window.onload = function () {
     }
   });
 
+document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("forgot-password").addEventListener("click", function (event) {
+        event.preventDefault();
+        let IAM_URL = "";
+        if (baseApiUrl.includes('dev')){
+            IAM_URL = "https://log-iam-temp.finloge.com/forgot-password/";
+        }
+        else{
+            IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";
+        }
+        window.open(IAM_URL, "_blank", "noopener,noreferrer");
+    });
+});
