@@ -4,6 +4,7 @@ let pendingRequests = [];
 let connectedSites = [];
 let isLoggedIn = false; // Flag to indicate login status
 let authCheckIntervalId = null; // To store the interval ID
+const servicePopups = {};
 
 // Listener for messages from popup and content scripts
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
@@ -215,6 +216,7 @@ function handleUnlockWallet(sendResponse) {
 }
 
 function handleRequestConnection(sender, sendResponse) {
+    let senderTabId = sender.tab.id;
     const request = {
         tabId: sender.tab.id,
         responseCallback: sendResponse
@@ -222,52 +224,79 @@ function handleRequestConnection(sender, sendResponse) {
     pendingRequests.push(request);
 
     chrome.storage.sync.get(['authToken'], function(result) {
-        if (result.authToken) {
-            const authToken = result.authToken;
+        if (!servicePopups[senderTabId]) {
+            if (result.authToken) {
+                const authToken = result.authToken;
 
-            fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${authToken}` }
-            })
-            .then(response => {
-                if (response.ok) {
-                    return response.json();
-                } else {
-                    throw new Error('Network response was not ok');
-                }
-            })
-            .then(data => {
-                const fullName = data.fullName;
-                const walletAddress = data.walletAddress;
+                fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${authToken}` }
+                })
+                .then(response => {
+                    if (response.ok) {
+                        return response.json();
+                    } else {
+                        throw new Error('Network response was not ok');
+                    }
+                })
+                .then(data => {
+                    const fullName = data.fullName;
+                    const walletAddress = data.walletAddress;
 
-                // Store data in Chrome storage
-                chrome.storage.sync.set({ fullName, walletAddress }, function() {
-                    chrome.windows.create({
-                        url: chrome.runtime.getURL(`connectWallet.html?tabId=${sender.tab.id}`), // No data passed
-                        type: 'popup',
-                        width: 340,
-                        height: 570
+                    // Store data in Chrome storage
+                    chrome.storage.sync.set({ fullName, walletAddress }, function() {
+                        chrome.windows.create({
+                            url: chrome.runtime.getURL(`connectWallet.html?tabId=${sender.tab.id}`), // No data passed
+                            type: 'popup',
+                            width: 340,
+                            height: 570
+                        }, (window) => {
+                            servicePopups[senderTabId] = window.id; // Save the window ID
+                        });
                     });
+                })
+                .catch(error => {
+                    console.error('Fetch error:', error);
+                    sendResponse({ success: false, error: error.message });
                 });
-            })
-            .catch(error => {
-                console.error('Fetch error:', error);
-                sendResponse({ success: false, error: error.message });
-            });
-        } else {
-            chrome.tabs.create({
-                url: chrome.runtime.getURL('login.html'),
-                active: true
-            }, (tab) => {
-                fullscreenTabId = tab.id;
-            });
+            } else {
+                chrome.tabs.create({
+                    url: chrome.runtime.getURL('login.html'),
+                    active: true
+                }, (tab) => {
+                    fullscreenTabId = tab.id;
+                });
+            }
+        }
+        else {
+            chrome.windows.update(servicePopups[senderTabId], { focused: true });
         }
     });
 
     return true;
 }
 
+// Clean up when a popup window is closed
+chrome.windows.onRemoved.addListener((windowId) => {
+    for (const [tabId, popupWindowId] of Object.entries(servicePopups)) {
+        if (popupWindowId === windowId) {
+            delete servicePopups[tabId];
+            break;
+        }
+    }
+});
 
+// Clean up when a tab is closed or navigates away
+chrome.tabs.onRemoved.addListener((tabId) => {
+    if (servicePopups[tabId]) {
+        chrome.windows.remove(servicePopups[tabId], () => {
+            if (chrome.runtime.lastError) {
+                console.warn('Error closing popup window:', chrome.runtime.lastError);
+            }
+        });
+        delete servicePopups[tabId];
+    }
+});
 
 function handleApproveConnection(message, sendResponse) {
     const { tabId } = message; // Use tabId from the message
@@ -289,14 +318,31 @@ function handleApproveConnection(message, sendResponse) {
     } else {
         sendResponse({ success: false, message: "No matching request found for this tab." });
     }
+    if (servicePopups[tabId]) {
+        chrome.windows.remove(servicePopups[tabId], () => {
+            if (chrome.runtime.lastError) {
+                console.warn('Error closing popup window:', chrome.runtime.lastError);
+            }
+        });
+        delete servicePopups[tabId]; // Remove the entry from servicePopups
+    }
 }
 
 function handleRejectConnection(message, sendResponse) {
+    const { tabId } = message;
     const rejectRequest = pendingRequests.shift(); // Get the first pending request
     if (rejectRequest) {
         rejectRequest.responseCallback({ success: false, message: "Connection rejected by the user." });
         chrome.storage.sync.remove(['fullName', 'walletAddress']);
         sendResponse({ success: true });
+    }
+    if (servicePopups[tabId]) {
+        chrome.windows.remove(servicePopups[tabId], () => {
+            if (chrome.runtime.lastError) {
+                console.warn('Error closing popup window:', chrome.runtime.lastError);
+            }
+        });
+        delete servicePopups[tabId]; // Remove the entry from servicePopups
     }
 }
 
