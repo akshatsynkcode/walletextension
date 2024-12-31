@@ -407,7 +407,7 @@ function startAuthCheck() {
                 console.error('Error during auth token validation:', error);
             }
         });
-    },  10*60*1000); // Run every 10 minutes
+    },  24*60*60*1000); // Run every 24 hours
 }
 
 // Function to stop the periodic auth check
