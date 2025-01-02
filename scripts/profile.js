@@ -286,6 +286,7 @@ async function lockWallet() {
                         }
                     });
                 });
+                chrome.runtime.sendMessage({ action: 'logout' });
             } else {
                 alert('Logout failed. Please try again.');
             }
@@ -449,16 +450,16 @@ async function lockWallet() {
         }
     });
 });
-document.addEventListener("DOMContentLoaded", () => {
-    document.getElementById('transaction-filter').addEventListener('change', function() {
-        // Get the current URL
-        const value = document.getElementById('transaction-filter').value;
-        filter = value;
-        if (value != ''){
-            currentPage = 1;
-            totalPages = 1;
-            fetchAndUpdateTransactionHistory(currentPage)
-        }
+// document.addEventListener("DOMContentLoaded", () => {
+//     document.getElementById('transaction-filter').addEventListener('change', function() {
+//         // Get the current URL
+//         const value = document.getElementById('transaction-filter').value;
+//         filter = value;
+//         if (value != ''){
+//             currentPage = 1;
+//             totalPages = 1;
+//             fetchAndUpdateTransactionHistory(currentPage)
+//         }
         
-    });
-});
+//     });
+// });

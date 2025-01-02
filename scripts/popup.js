@@ -127,6 +127,7 @@ async function lockWallet() {
                         }
                     });
                 });
+                chrome.runtime.sendMessage({ action: 'logout' });
             } else {
                 alert('Logout failed. Please try again.');
             }
