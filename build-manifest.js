@@ -8,7 +8,7 @@ const firefoxSettings = `
   },
   "browser_specific_settings": {
     "gecko": {
-      "id": "email@temporary.com",
+      "id": "dubaicustoms@temporary.com",
       "strict_min_version": "91.0"
     }
   },
