@@ -1,5 +1,5 @@
 # Dubai Customs Wallet Extension 
-  ![Dubai Customs Wallet Icon](./src/icons/icon128.png)
+![Dubai Customs Wallet Icon](./src/icons/icon128.png)
 
 ## Overview
 
@@ -14,6 +14,16 @@ The **Dubai Customs Wallet Extension** is a Chrome extension designed to interac
 - **Secure Storage**: Wallet information is securely stored using local browser storage.
 - **Lock and Unlock Wallet**: Users can lock the wallet for additional security and unlock it with a password.
 
+## How to Install in Firefox
+
+1. Clone the repository and navigate to the root directory.
+2. Run `npm install` to install all dependencies.
+3. After the installation is complete, build the extension with `npm run build:firefox`.
+4. A `dist` folder will be generated, and the `manifest.json` file will be inside that folder.
+5. Open `about:debugging#/runtime/this-firefox` in your Firefox browser.
+6. Click on **Load Temporary Add-on** and select the `manifest.json` file inside the `dist` folder.
+
+
 ## Permissions
 
 The extension requests the following permissions:
@@ -24,22 +34,22 @@ The extension requests the following permissions:
 - **Tabs**: To manage and monitor multiple browser tabs during wallet interactions.
 - **Web Navigation**: To navigate to dApps and handle interactions with blockchain-enabled websites.
 
-## How to Install
+
+
+## How to Install in Chrome
 
 1. Download the latest version of the **Dubai Customs Wallet Extension**.
-2. Go to `chrome://extensions/` in your Chrome browser.
+2. Open `chrome://extensions/` in your Chrome browser.
 3. Enable **Developer Mode**.
 4. Click on **Load Unpacked** and select the `dist` folder of the extension.
 5. The extension will be installed and available in your browser.
 
 ## How to Use
 
-1. **Create a Wallet**: Use the "Create Wallet" option to generate a new mnemonic phrase and Polkadot address.
-2. **Import a Wallet**: If you already have a wallet, use the "Import Wallet" feature to restore it.
-3. **Connect to dApps**: Use the wallet extension to connect to Polkadot.js and other dApps by approving connection requests.
-4. **Send Funds**: Enter the recipient's address and the amount of funds you want to transfer securely through the blockchain.
+1. **Login to the wallet**: Use the "Login" option to dive inside the World of dubai customs.
+3. **Connect to dApps**: Use the wallet extension to connect to all the dubai customs applications by approving connection requests.
+4. **View Funds**: You can View all the transaction history and funds inside the wallet of that particular user.
 
 ## License
 
 This project is licensed under the MIT License. See the [LICENSE](./LICENSE) file for more details.
-
