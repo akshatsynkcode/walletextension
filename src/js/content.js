@@ -53,6 +53,7 @@ window.addEventListener("message", (event) => {
             type: "FROM_EXTENSION",
             payload: response,
             error: chrome.runtime.lastError?.message,
+            requestId: event.data.requestId
           },
           "*"
         );
