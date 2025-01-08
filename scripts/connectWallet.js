@@ -29,7 +29,10 @@ document.getElementById('approve-btn').addEventListener('click', function() {
 });
 
 document.getElementById('reject-btn').addEventListener('click', function() {
-    chrome.runtime.sendMessage({ action: 'reject_connection' }, function(response) {
+    chrome.runtime.sendMessage({
+        action: 'reject_connection',
+        tabId: parseInt(tabId, 10)
+    }, function(response) {
         if (response.success) {
             window.close(); // Close the approval popup
         } else {
