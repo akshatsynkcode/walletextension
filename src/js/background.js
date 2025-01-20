@@ -354,9 +354,10 @@ function handleApproveConnection(message, sendResponse) {
 
 function handleRejectConnection(message, sendResponse) {
     const { tabId } = message;
-    const rejectRequest = pendingRequests.shift(); // Get the first pending request
+    const rejectRequest = pendingRequests.find((req) => req.tabId === tabId);
     if (rejectRequest) {
         rejectRequest.responseCallback({ success: false, message: "Connection rejected by the user." });
+        pendingRequests.splice(pendingRequests.indexOf(rejectRequest), 1);
         chrome.storage.sync.remove(['fullName', 'walletAddress']);
         sendResponse({ success: true });
     }
