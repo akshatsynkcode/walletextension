@@ -34,6 +34,10 @@ The extension requests the following permissions:
 - **Tabs**: To manage and monitor multiple browser tabs during wallet interactions.
 - **Web Navigation**: To navigate to dApps and handle interactions with blockchain-enabled websites.
 
+## How to Install On Windows
+1. change the package.json change the build command with "build" : "node build-manifest.js chrome && cross-env TARGET=chrome webpack --config webpack.config.js" ,
+2. npm install --save-dev cross-env
+
 
 
 ## How to Install in Chrome
