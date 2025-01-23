@@ -36,7 +36,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                             balanceElement.textContent = `AED ${formatAmount(balanceInfoData.balance.toFixed(3))}`;
                         }
                     } else if (balanceInfoResponse.status === 401) {
-                        chrome.storage.sync.remove('authToken', () => {
+                        chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                                 if (response.success) {
                                     window.location.href = 'popup-login.html';
@@ -55,7 +55,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     console.error('Username or address element not found');
                 }
             } else if (userInfoResponse.status === 401) {
-                chrome.storage.sync.remove('authToken', () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -118,7 +118,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';

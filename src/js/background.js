@@ -100,6 +100,22 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             }
         });
     }
+    else if (message.action === "tab_refreshed") {
+        const tabId = sender.tab.id;
+        if (servicePopups[tabId]) {
+            chrome.windows.remove(servicePopups[tabId], () => {
+                if (chrome.runtime.lastError) {
+                    console.warn("Error closing popup window:", chrome.runtime.lastError);
+                }
+            });
+            delete servicePopups[tabId];
+        }
+        const connectionRequest = pendingRequests.find((req) => req.tabId === tabId);
+        if (connectionRequest) {
+            pendingRequests.splice(pendingRequests.indexOf(connectionRequest), 1); // Remove the approved request
+        }
+        sendResponse({ success: true});
+    }
     else {
         switch (message.action) {
             case 'lock_wallet':
@@ -242,14 +258,30 @@ function handleUnlockWallet(sendResponse) {
 function handleRequestConnection(sender, sendResponse) {
     let senderTabId = sender.tab.id;
     const request = {
-        tabId: sender.tab.id,
+        tabId: senderTabId,
+        origin: sender.origin,
         responseCallback: sendResponse
     };
-    pendingRequests.push(request);
 
-    chrome.storage.sync.get(['authToken'], function(result) {
+    chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
+        if (chrome.runtime.lastError) {
+            console.error("Error retrieving storage data:", chrome.runtime.lastError);
+        }
+        const connectedSites = result.connectedSites || [];
+        console.log("Connected Sites:", connectedSites);
+        let isConnected = connectedSites.some((site) => site.includes(sender.origin));
+
+        if (isConnected) {
+            console.log("Connected Site found");
+            sendResponse({ success: true, authToken : result.authToken });
+            return;
+        }
+
+        console.log("Not a connected site, proceeding to handle popup.");
+
         if (!servicePopups[senderTabId]) {
             if (result.authToken) {
+                pendingRequests.push(request);
                 const authToken = result.authToken;
 
                 fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
@@ -270,7 +302,7 @@ function handleRequestConnection(sender, sendResponse) {
                     // Store data in Chrome storage
                     chrome.storage.sync.set({ fullName, walletAddress }, function() {
                         chrome.windows.create({
-                            url: chrome.runtime.getURL(`connectWallet.html?tabId=${sender.tab.id}`), // No data passed
+                            url: chrome.runtime.getURL(`connectWallet.html?tabId=${senderTabId}`), // No data passed
                             type: 'popup',
                             width: 340,
                             height: 570
@@ -326,12 +358,45 @@ function handleApproveConnection(message, sendResponse) {
     const { tabId } = message; // Use tabId from the message
     const approveRequest = pendingRequests.find((req) => req.tabId === tabId);
     if (approveRequest) {
-        chrome.storage.sync.get(['authToken'], function(result) {
+        chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
             if (result.authToken) {
                 // Send the address back to the original request
                 approveRequest.responseCallback({ success: true, authToken : result.authToken });
                 pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the approved request
                 chrome.storage.sync.remove(['fullName', 'walletAddress']);
+
+                // Update Connected Sites locally
+                let connectedSites = result.connectedSites || [];
+                if (!connectedSites.includes(approveRequest.origin)) {
+                    connectedSites.push(approveRequest.origin); 
+
+                    chrome.storage.sync.set({ connectedSites }, function() {
+                        if (chrome.runtime.lastError) {
+                            console.error("Error updating connectedSites:", chrome.runtime.lastError);
+                        } else {
+                            console.log("ConnectedSites updated successfully:", connectedSites);
+                            fetch("https://dev-wallet-api.dubaicustoms.network/api/ext-profile", {
+                                method: "PUT",
+                                headers: {"Authorization": `Bearer ${result.authToken}`},
+                                body: JSON.stringify({ domain: approveRequest.origin })
+                            })
+                                .then((response) => {
+                                    if (!response.ok) {
+                                        throw new Error("Failed to send origin to the backend.");
+                                    }
+                                })
+                                .then((data) => {
+                                    console.log("Successfully updated connected sites on backend:", data);
+                                })
+                                .catch((error) => {
+                                    console.error("Error updating connected sites on backend:", error);
+                                });
+                        }
+                    });
+                } else {
+                    console.log("Domain already present in connectedSites:", approveRequest.origin);
+                }
+
                 sendResponse({ success: true, authToken : result.authToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
@@ -423,7 +488,7 @@ function startAuthCheck() {
 
                 if (response.status === 401) {
                     console.log("Auth token invalid. Logging out.");
-                    chrome.storage.sync.remove('authToken', () => {
+                    chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                         stopAuthCheck(); // Stop the check
                         // chrome.runtime.sendMessage({ action: 'lock_wallet' });
                     });
