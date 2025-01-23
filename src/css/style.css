@@ -1,13 +1,14 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
 body{
     margin: 0;
     padding: 0;
     height: 100%;
     font-family: "Poppins", sans-serif !important;
     font-style: normal;
-    font-size: 16px;
+    font-size: 1rem;
     font-weight: 400;
     background-color: black;
-    overflow: hidden;
+    /* overflow: hidden; */
     color: rgba(255, 255, 255, 1) !important;
 }
 @media screen and (max-width: 992px) {
@@ -113,14 +114,12 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   background: linear-gradient(90deg, rgba(65, 89, 185, 1) 20%, rgba(29, 40, 83, 1) 100%);
 }
 .header{
-  background-image: url(../icons/bg-frame.svg);
-    background-size: 600%;
-    background-position: center;
-    background-repeat: no-repeat;
-    height: 80px;
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
+  height: 80px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background-color: #111111 !important;
+  border-bottom: 1px solid #4B4B4B;
 }
 #middle-div {
   display: flex;
@@ -642,4 +641,168 @@ h1, h4 {
 
 .input-group-text{
   background-color: rgba(36, 36, 36, 1);
+}
+
+/* Admin With Sidebar */
+@import url('https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap');
+
+.app-sidebar-menu .menu>.menu-item{
+     margin-bottom: 20px;
+}
+
+.app-sidebar-menu .menu>.menu-item.here{
+     background-color: #3964FF;
+     border-radius: 8px;
+}
+
+.span-success{
+     position: absolute;
+     height: 70%;
+     display: block;
+     left: -10px;
+     top: 15%;
+     border-left:2px solid #14BE63;
+     color:#717171;
+}
+
+.span-danger{
+     position: absolute;
+     height: 70%;
+     display: block;
+     left: -10px;
+     top: 15%;
+     border-left:2px solid #E93143;
+     color:#717171;
+}
+
+.span-warning{
+     position: absolute;
+     height: 70%;
+     display: block;
+     left: -10px;
+     top: 15%;
+     border-left:2px solid #F19A31;
+     color:#717171;
+}
+
+th, td{
+     vertical-align: middle;
+     font-size: 14px;
+}
+
+.font-12{
+     font-size: 12px;
+}
+.card-bordered .card-header{
+     min-height: auto !important;
+}
+
+.card-bordered, 
+.card-bordered .card-header, 
+.table:not(.table-bordered)>:not(:last-child)>:last-child>*{
+     border-color: #717171 !important;
+} 
+
+.table:not(.table-bordered) th, .table:not(.table-bordered) td{
+     border-bottom: 1px solid #5C5C5C !important;
+}
+
+.sidebar{
+  background-color: #111111;
+  padding: 20px;
+  border-right: 1px solid #4B4B4B;
+}
+
+button.btn-link{
+  background-color: transparent !important;
+  color: white !important;
+}
+
+.font-28{
+  font-size: 28px;
+  line-height: 33.6px;
+  font-weight: 600;
+}
+
+h1, h2, h3, h4, h5, h6, p{
+  margin-bottom: 0px;
+}
+
+.bg-dark, .table-dark{
+  background-color: #111111 !important;
+  --bs-table-bg: #111111 !important;
+}
+
+.cta-action-link{
+  text-decoration: none;
+  color: #717171;
+  font-size: 14px;
+}
+
+.cta-action-link:hover{
+  text-decoration: underline;
+  color: white;
+  cursor: pointer;
+}
+
+.text-gray-600{
+  color: #8A9393;
+  font-size: 14px;
+}
+
+.logo{
+  width: 140px;
+}
+
+.border-dashed{
+  border-style: dashed !important;
+  border-color: #8A9393 !important;
+}
+
+.table-dark th{
+  color: #717171 !important;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.siderbar-nav .nav-item{
+  margin-bottom: 20px;
+}
+
+.siderbar-nav .nav-item .nav-link{
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  font-size: 14px;
+  display: flex;
+  justify-content: space-between;
+}
+
+.siderbar-nav .nav-item .nav-link.active{
+  background-color: #3964FF;
+  color: white;
+  border-radius: 8px;
+}
+
+.siderbar-nav .nav-item:hover .nav-link{
+  background-color: #3964FF;
+  color: white;
+  border-radius: 8px;
+  transition: all 0.3s ease-in-out;
+}
+
+/* End */
+
+@media screen and (min-width: 250px) and (max-width: 768px) {
+	th, td{
+          white-space: nowrap;
+          font-size: 12px;
+          padding: 10px 25px;
+          border-bottom: 1px solid #5C5C5C;
+      }
+
+     .type-img{
+          min-width: 24px !important;
+          min-height: 24px;
+     }
 }
