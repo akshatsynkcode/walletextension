@@ -183,7 +183,7 @@ const copyButton = document.getElementById('copy-button');
         // Other existing event listeners
         // ...
     });
-    
+
     document.addEventListener('DOMContentLoaded', function() {
         displayConnectedSites();
     });
@@ -198,7 +198,7 @@ const copyButton = document.getElementById('copy-button');
                 if (Object.keys(connectedSites).length) {
                     Object.keys(connectedSites).forEach(site => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = site;
+                        listItem.textContent = `${connectedSites[site]}`;
                         listItem.className = 'list-group-item';
                         sitesContainer.appendChild(listItem);
                     });
