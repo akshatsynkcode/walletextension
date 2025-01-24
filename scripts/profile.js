@@ -8,7 +8,7 @@ const nextButton = document.getElementById("next-button");
 
 // Redirect to login if no token or token is invalid
 function redirectToLogin() {
-    chrome.storage.sync.remove('authToken');
+    chrome.storage.sync.remove(['authToken', 'connectedSites']);
     window.location.href = 'login.html';
 }
 function formatAmount(amount) {
@@ -277,7 +277,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';

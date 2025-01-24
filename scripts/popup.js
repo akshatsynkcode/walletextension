@@ -36,7 +36,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                             balanceElement.textContent = `AED ${formatAmount(balanceInfoData.balance.toFixed(3))}`;
                         }
                     } else if (balanceInfoResponse.status === 401) {
-                        chrome.storage.sync.remove('authToken', () => {
+                        chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                                 if (response.success) {
                                     window.location.href = 'popup-login.html';
@@ -55,7 +55,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     console.error('Username or address element not found');
                 }
             } else if (userInfoResponse.status === 401) {
-                chrome.storage.sync.remove('authToken', () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -118,7 +118,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -177,3 +177,50 @@ const copyButton = document.getElementById('copy-button');
             return amount.toFixed(2); // If it's less than 1,000, show the number with two decimals
         }
     }
+
+    document.addEventListener('DOMContentLoaded', async () => { displayConnectedSites();
+
+        // Other existing event listeners
+        // ...
+    });
+
+    document.addEventListener('DOMContentLoaded', function() {
+        displayConnectedSites();
+    });
+    
+    function displayConnectedSites() {
+        chrome.storage.sync.get(['connectedSites'], function(result) {
+            const sitesContainer = document.getElementById('connected-sites-list');
+            if (sitesContainer) {
+                sitesContainer.innerHTML = ''; // Clear existing content
+    
+                const connectedSites = result.connectedSites || {};
+                if (Object.keys(connectedSites).length) {
+                    Object.keys(connectedSites).forEach(site => {
+                        const listItem = document.createElement('li');
+                        listItem.textContent = `${connectedSites[site]}`;
+                        listItem.className = 'list-group-item';
+                        sitesContainer.appendChild(listItem);
+                    });
+                } else {
+                    sitesContainer.innerHTML = '<li class="list-group-item">No connected sites</li>';
+                }
+            } else {
+                console.error("Connected sites list container not found.");
+            }
+        });
+    }
+    
+    
+    
+    function disconnectSite(site) {
+        chrome.storage.sync.get(['connectedSites'], function(result) {
+            const updatedSites = result.connectedSites;
+            if (updatedSites && updatedSites[site]) {
+                delete updatedSites[site];
+                chrome.storage.sync.set({connectedSites: updatedSites}, function() {
+                    displayConnectedSites(); // Refresh the list
+                });
+            }
+        });
+    }  
