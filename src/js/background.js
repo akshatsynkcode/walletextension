@@ -375,15 +375,13 @@ function handleApproveConnection(message, sendResponse) {
                             console.error("Error updating connectedSites:", chrome.runtime.lastError);
                         } else {
                             console.log("ConnectedSites updated successfully:", connectedSites);
-                            console.log( "Authtoken",{"Authorization": `Bearer ${result.authToken}`})
-                            console.log(" body data ",JSON.stringify({ domain: approveRequest.origin }));
                             fetch("https://dev-wallet-api.dubaicustoms.network/api/ext-profile", {
                                 method: "PUT",
                                 headers: {
                                     "Authorization": `Bearer ${result.authToken}`,
                                     "Content-Type": "application/json"
                                   },
-                                body: JSON.stringify({ domain: approveRequest.origin })
+                                body: JSON.stringify({ domain: approveRequest.origin, operation: "add" })
                             })
                                 .then((response) => {
                                     console.log("Response from backend:", response.text());
