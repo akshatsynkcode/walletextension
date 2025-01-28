@@ -24,6 +24,14 @@ const chromeSettings = `
   },
   "content_security_policy": {
     "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://ime.dubaicustoms.network https://dev-wallet-api.dubaicustoms.network; frame-src 'none';"
+  },
+
+  "externally_connectable": {
+    "matches": [
+      "*://*/*",
+      "https://dev-wallet-api.dubaicustoms.network/*",
+      "https://ime.dubaicustoms.network/*"
+    ]
   }
 `;
 
@@ -46,6 +54,8 @@ let manifest = fs.readFileSync(inputFilePath, 'utf8');
 // Replace the placeholder with the appropriate settings
 if (targetBrowser === 'firefox') {
   manifest = manifest.replace('{{BROWSER_SPECIFIC_SETTINGS}}', firefoxSettings);
+  // Remove externally_connectable for Firefox
+  delete manifest.externally_connectable;
 } else if (targetBrowser === 'chrome') {
   manifest = manifest.replace('{{BROWSER_SPECIFIC_SETTINGS}}', chromeSettings);
 } else {

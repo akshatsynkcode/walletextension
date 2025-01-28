@@ -49,12 +49,5 @@
       ]
     }
   ],
-  "externally_connectable": {
-    "matches": [
-      "*://*/*",
-      "https://dev-wallet-api.dubaicustoms.network/*",
-      "https://ime.dubaicustoms.network/*"
-    ]
-  },
   {{BROWSER_SPECIFIC_SETTINGS}}
 }
