@@ -157,6 +157,7 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
                 prevButton.disabled = currentPage <= 1;
                 nextButton.disabled = currentPage >= totalPages;
             } else if (!timeoutFlag) {
+                //Removed the innerHTML and used textContent
                 const noTransactionsMessage = document.createElement('div');
                 noTransactionsMessage.classList.add('no-transactions-message', 'text-center', 'text-white');
                 const noTransactionsText = document.createElement('p');
