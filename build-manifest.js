@@ -9,7 +9,7 @@ const firefoxSettings = `
   "browser_specific_settings": {
     "gecko": {
       "id": "dubaicustoms@temporary.com",
-      "strict_min_version": "91.0"
+      "strict_min_version": "109.0"
     }
   },
   "content_security_policy": {

@@ -100,11 +100,16 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
     // Set a timeout to show "No Transactions Found" if no data is fetched within 5 seconds
     const noDataTimeout = setTimeout(() => {
         timeoutFlag = true;
-        if (activityContainer.innerHTML.trim() === '') {
-            activityContainer.innerHTML = `
-                <div class="no-transactions-message text-center text-white">
-                    <p>No transactions found</p>
-                </div>`;
+        if (activityContainer.childElementCount === 0) {
+            const noTransactionsMessage = document.createElement('div');
+            noTransactionsMessage.classList.add('no-transactions-message', 'text-center', 'text-white');
+            const noTransactionsText = document.createElement('p');
+            noTransactionsText.textContent = "No transactions found";
+            noTransactionsMessage.appendChild(noTransactionsText);
+            while (activityContainer.firstChild) {
+                activityContainer.removeChild(activityContainer.firstChild);
+            }
+            activityContainer.appendChild(noTransactionsMessage);
         }
         if (loader) {
             loader.style.display = 'none'; // Hide loader after timeout
@@ -152,13 +157,17 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
                 prevButton.disabled = currentPage <= 1;
                 nextButton.disabled = currentPage >= totalPages;
             } else if (!timeoutFlag) {
-                // If no transactions and the timeout hasn't already occurred
-                activityContainer.innerHTML = `
-                    <div class="no-transactions-message text-center text-white">
-                        <p>No transactions found</p>
-                    </div>`;
-                    paginationInfo.textContent = `0-0 of 0`;
-                    pageNumbers.textContent = `1`;
+                const noTransactionsMessage = document.createElement('div');
+                noTransactionsMessage.classList.add('no-transactions-message', 'text-center', 'text-white');
+                const noTransactionsText = document.createElement('p');
+                noTransactionsText.textContent = "No transactions found";
+                noTransactionsMessage.appendChild(noTransactionsText);
+                while (activityContainer.firstChild) {
+                    activityContainer.removeChild(activityContainer.firstChild);
+                }
+                activityContainer.appendChild(noTransactionsMessage);
+                paginationInfo.textContent = "0-0 of 0";
+                pageNumbers.textContent = "1";
             }
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -179,7 +188,9 @@ async function fetchAndUpdateTransactionHistory(page = 1) {
 // Function to update the UI with the fetched transaction history
 function updateTransactionHistoryUI(transactions) {
     const activityContainer = document.querySelector('.p-3');
-    activityContainer.innerHTML = ''; // Clear any existing content
+    while (activityContainer.firstChild) {
+        activityContainer.removeChild(activityContainer.firstChild);
+    } // Clear any existing content
 
     transactions.forEach(transaction => {
         // Create a new card for each transaction
@@ -201,31 +212,53 @@ function updateTransactionHistoryUI(transactions) {
 
         const transactionCard = document.createElement('div');
         transactionCard.classList.add('card', 'mb-3', 'border-0', 'activity-card');
-
-        transactionCard.innerHTML = `
-            <div class="row g-0 justify-content-center align-items-center">
-                <!-- First Column: Transaction to -->
-                <div class="col-4 col-md-4 ps-2">
-                    <div class="text-start activity-card-body p-1">
-                        <h5 class="card-title font-14 font-regular m-0 text-white">${typeText} : </h5>
-                        <a href="#" class="address-link mx-2" style="color: rgba(0, 194, 255, 1);" data-full-address="${fullwalletAdress}" 
-       title="${fullwalletAdress}">${shortAddress}</a>
-       <span class="copy-message" style="display: none;">Copied!</span>
-       </div>
-                </div>
-                
-                <!-- Second Column: Amount -->
-                <div class="col-4 col-md-4 text-center d-flex justify-content-center">
-                    <h5 class="card-title font-14 font-regular m-0 ${colorClass}">${sign} AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
-                    <span class="card-text font-12 ms-2"><small class="badge status-color ${statuscolor} ${borderClass}">${transaction.status}</small></span>
-                </div>
-                
-                <!-- Third Column: Date of the Transaction -->
-                <div class="col-4 col-md-4 text-end padding-right">
-                    <p class="card-text font-12 text-white"><small>${new Date(transaction.created_at).toLocaleString()}</small></p>
-                </div>
-            </div>
-        `;
+        const col1 = document.createElement('div');
+        col1.classList.add('col-4', 'col-md-4', 'ps-2');
+        const col1Body = document.createElement('div');
+        col1Body.classList.add('text-start', 'activity-card-body', 'p-1');
+        const col1Title = document.createElement('h5');
+        col1Title.classList.add('card-title', 'font-14', 'font-regular', 'm-0', 'text-white');
+        col1Title.textContent = `${typeText} : `;
+        const col1Link = document.createElement('a');
+        col1Link.classList.add('address-link', 'mx-2');
+        col1Link.style.color = 'rgba(0, 194, 255, 1)';
+        col1Link.href = '#';
+        col1Link.setAttribute('data-full-address', fullwalletAdress);
+        col1Link.setAttribute('title', fullwalletAdress);
+        col1Link.textContent = shortAddress;
+        const col1CopyMessage = document.createElement('span');
+        col1CopyMessage.classList.add('copy-message');
+        col1CopyMessage.style.display = 'none';
+        col1CopyMessage.textContent = 'Copied!';
+        col1Body.appendChild(col1Title);
+        col1Body.appendChild(col1Link);
+        col1Body.appendChild(col1CopyMessage);
+        col1.appendChild(col1Body);
+        const col2 = document.createElement('div');
+        col2.classList.add('col-4', 'col-md-4', 'text-center', 'd-flex', 'justify-content-center');
+        const col2Title = document.createElement('h5');
+        col2Title.classList.add('card-title', 'font-14', 'font-regular', 'm-0', colorClass);
+        col2Title.textContent = `${sign} AED ${parseFloat(transaction.amount).toFixed(2)}`;
+        const col2Status = document.createElement('span');
+        col2Status.classList.add('card-text', 'font-12', 'ms-2');
+        const col2StatusText = document.createElement('small');
+        col2StatusText.classList.add('badge', 'status-color', statuscolor, borderClass);
+        col2StatusText.textContent = transaction.status;
+        col2Status.appendChild(col2StatusText);
+        col2.appendChild(col2Title);
+        col2.appendChild(col2Status);
+        const col3 = document.createElement('div');
+        col3.classList.add('col-4', 'col-md-4', 'text-end', 'padding-right');
+        const col3Text = document.createElement('p');
+        col3Text.classList.add('card-text', 'font-12', 'text-white');
+        const col3Small = document.createElement('small');
+        col3Small.textContent = new Date(transaction.created_at).toLocaleString();
+        col3Text.appendChild(col3Small);
+        col3.appendChild(col3Text);
+        transactionCard.appendChild(col1);
+        transactionCard.appendChild(col2);
+        transactionCard.appendChild(col3);
+        document.getElementById('parentElementId').appendChild(transactionCard);
 
         activityContainer.appendChild(transactionCard);
     });
