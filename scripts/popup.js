@@ -1,4 +1,7 @@
 // Fetch user info and update UI
+
+const baseApiUrl = 'https://dev-wallet-api.dubaicustoms.network';
+
 chrome.storage.sync.get(['authToken'], async function(result) {
     const authToken = result.authToken;
 
@@ -140,8 +143,16 @@ async function lockWallet() {
     }
 }
 
-document.getElementById('buy-aed-btn').addEventListener('click', () => {
-    window.open('https://ime.dubaicustoms.network/payment/');
+document.getElementById('buy-aed-btn').addEventListener('click', function(event)  {
+    event.preventDefault();
+        let IAM_URL = "";
+        if (baseApiUrl.includes('dev')){
+            IAM_URL = "https://ime.finloge.com/payment/";
+        }
+        else{
+            IAM_URL = "https://ime.dubaicustoms.network/payment/";
+        }
+        window.open(IAM_URL);
 });
 
 const copyButton = document.getElementById('copy-button');
