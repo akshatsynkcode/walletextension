@@ -42,7 +42,7 @@ window.addEventListener("message", (event) => {
 
     console.log("mesg1");
 
-    const { action, payload } = event.data;
+    const { action, payload, requestId } = event.data;
     console.log(action);
     console.log(payload);
     chrome.runtime.sendMessage(
@@ -53,7 +53,7 @@ window.addEventListener("message", (event) => {
             type: "FROM_EXTENSION",
             payload: response,
             error: chrome.runtime.lastError?.message,
-            requestId: event.data.requestId
+            requestId: requestId !== undefined ? requestId : null
           },
           "*"
         );
