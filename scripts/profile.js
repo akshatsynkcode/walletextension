@@ -199,68 +199,84 @@ function updateTransactionHistoryUI(transactions) {
         const shortAddress = fullwalletAdress.substring(0, 5) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
         const colorClass = transaction.debit ? 'text-danger' : 'text-success';
         const typeText = transaction.debit ? 'To' : 'From';
-        let statuscolor = 'text-secondary';
-        let borderClass = '';
         const sign = transaction.debit ? '-' : '+';
-
-        if (transaction.status === 'pending') {
-        statuscolor = 'text-warning';
-        borderClass = 'border border-warning';
-        } else if (transaction.status === 'completed') {
-        statuscolor = 'text-success';
-        borderClass = 'border border-success';
-        }
 
         const transactionCard = document.createElement('div');
         transactionCard.classList.add('card', 'mb-3', 'border-0', 'activity-card');
-        const col1 = document.createElement('div');
-        col1.classList.add('col-4', 'col-md-4', 'ps-2');
-        const col1Body = document.createElement('div');
-        col1Body.classList.add('text-start', 'activity-card-body', 'p-1');
-        const col1Title = document.createElement('h5');
-        col1Title.classList.add('card-title', 'font-14', 'font-regular', 'm-0', 'text-white');
-        col1Title.textContent = `${typeText} : `;
-        const col1Link = document.createElement('a');
-        col1Link.classList.add('address-link', 'mx-2');
-        col1Link.style.color = 'rgba(0, 194, 255, 1)';
-        col1Link.href = '#';
-        col1Link.setAttribute('data-full-address', fullwalletAdress);
-        col1Link.setAttribute('title', fullwalletAdress);
-        col1Link.textContent = shortAddress;
-        const col1CopyMessage = document.createElement('span');
-        col1CopyMessage.classList.add('copy-message');
-        col1CopyMessage.style.display = 'none';
-        col1CopyMessage.textContent = 'Copied!';
-        col1Body.appendChild(col1Title);
-        col1Body.appendChild(col1Link);
-        col1Body.appendChild(col1CopyMessage);
-        col1.appendChild(col1Body);
-        const col2 = document.createElement('div');
-        col2.classList.add('col-4', 'col-md-4', 'text-center', 'd-flex', 'justify-content-center');
-        const col2Title = document.createElement('h5');
-        col2Title.classList.add('card-title', 'font-14', 'font-regular', 'm-0', colorClass);
-        col2Title.textContent = `${sign} AED ${parseFloat(transaction.amount).toFixed(2)}`;
-        const col2Status = document.createElement('span');
-        col2Status.classList.add('card-text', 'font-12', 'ms-2');
-        const col2StatusText = document.createElement('small');
-        col2StatusText.classList.add('badge', 'status-color', statuscolor, borderClass);
-        col2StatusText.textContent = transaction.status;
-        col2Status.appendChild(col2StatusText);
-        col2.appendChild(col2Title);
-        col2.appendChild(col2Status);
-        const col3 = document.createElement('div');
-        col3.classList.add('col-4', 'col-md-4', 'text-end', 'padding-right');
-        const col3Text = document.createElement('p');
-        col3Text.classList.add('card-text', 'font-12', 'text-white');
-        const col3Small = document.createElement('small');
-        col3Small.textContent = new Date(transaction.created_at).toLocaleString();
-        col3Text.appendChild(col3Small);
-        col3.appendChild(col3Text);
-        transactionCard.appendChild(col1);
-        transactionCard.appendChild(col2);
-        transactionCard.appendChild(col3);
-        document.getElementById('parentElementId').appendChild(transactionCard);
 
+        const rowDiv = document.createElement("div");
+        rowDiv.classList.add("row", "g-0", "justify-content-center", "align-items-center");
+
+        const firstCol = document.createElement("div");
+        firstCol.classList.add("col-4", "col-md-4", "ps-2");
+
+        const firstColBody = document.createElement("div");
+        firstColBody.classList.add("text-start", "activity-card-body", "p-1");
+
+        const h5TypeText = document.createElement("h5");
+        h5TypeText.classList.add("card-title", "font-14", "font-regular", "m-0", "text-white");
+        h5TypeText.textContent = `${typeText} : `;
+
+        const walletLink = document.createElement("a");
+        walletLink.href = "#";
+        walletLink.classList.add("address-link", "mx-2");
+        walletLink.style.color = "rgba(0, 194, 255, 1)";
+        walletLink.dataset.fullAddress = fullwalletAdress;
+        walletLink.title = fullwalletAdress;
+        walletLink.textContent = shortAddress;
+
+        const copyMessage = document.createElement("span");
+        copyMessage.classList.add("copy-message");
+        copyMessage.style.display = "none";
+        copyMessage.textContent = "Copied!";
+
+        firstColBody.appendChild(h5TypeText);
+        firstColBody.appendChild(walletLink);
+        firstColBody.appendChild(copyMessage);
+        firstCol.appendChild(firstColBody);
+
+        const secondCol = document.createElement("div");
+        secondCol.classList.add("col-4", "col-md-4", "text-center", "d-flex", "justify-content-center");
+
+        const h5Amount = document.createElement("h5");
+        h5Amount.classList.add("card-title", "font-14", "font-regular", "m-0", colorClass);
+        h5Amount.textContent = `${sign} AED ${parseFloat(transaction.amount).toFixed(2)}`;
+
+        const statusBadge = document.createElement("small");
+
+        if (transaction.status === 'pending') {
+            statusBadge.classList.add("badge", "status-color", "text-warning", "border", "border-warning");
+        } else if (transaction.status === 'completed') {
+            statusBadge.classList.add("badge", "status-color", "text-success", "border", "border-success");
+        } else{
+            statusBadge.classList.add("badge", "status-color", "text-secondary");
+        }
+        statusBadge.textContent = transaction.status;
+
+        const spanStatus = document.createElement("span");
+        spanStatus.classList.add("card-text", "font-12", "ms-2");
+        spanStatus.appendChild(statusBadge);
+
+        secondCol.appendChild(h5Amount);
+        secondCol.appendChild(spanStatus);
+
+        const thirdCol = document.createElement("div");
+        thirdCol.classList.add("col-4", "col-md-4", "text-end", "padding-right");
+
+        const transactionDate = document.createElement("p");
+        transactionDate.classList.add("card-text", "font-12", "text-white");
+
+        const smallDate = document.createElement("small");
+        smallDate.textContent = new Date(transaction.created_at).toLocaleString();
+
+        transactionDate.appendChild(smallDate);
+        thirdCol.appendChild(transactionDate);
+
+        rowDiv.appendChild(firstCol);
+        rowDiv.appendChild(secondCol);
+        rowDiv.appendChild(thirdCol);
+
+        transactionCard.appendChild(rowDiv);
         activityContainer.appendChild(transactionCard);
     });
 }
