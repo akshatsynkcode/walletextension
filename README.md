@@ -22,6 +22,7 @@ The **Dubai Customs Wallet Extension** is a Chrome extension designed to interac
 4. A `dist` folder will be generated, and the `manifest.json` file will be inside that folder.
 5. Open `about:debugging#/runtime/this-firefox` in your Firefox browser.
 6. Click on **Load Temporary Add-on** and select the `manifest.json` file inside the `dist` folder.
+7. To Check on how to submit it firstly go to the `dist` folder created and inside that please select all the files and folders with the help of ctrl+A or select all and then create a compressed zip of that and then upload it in the "about:debugging#/runtime/this-firefox" add on page
 
 
 ## Permissions
