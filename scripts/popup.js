@@ -1,4 +1,7 @@
 // Fetch user info and update UI
+
+const baseApiUrl = 'https://dev-wallet-api.dubaicustoms.network';
+
 chrome.storage.sync.get(['authToken'], async function(result) {
     const authToken = result.authToken;
 
@@ -140,8 +143,16 @@ async function lockWallet() {
     }
 }
 
-document.getElementById('buy-aed-btn').addEventListener('click', () => {
-    window.open('https://ime.dubaicustoms.network/payment/');
+document.getElementById('buy-aed-btn').addEventListener('click', function(event)  {
+    event.preventDefault();
+        let IAM_URL = "";
+        if (baseApiUrl.includes('dev')){
+            IAM_URL = "https://ime.finloge.com/payment/";
+        }
+        else{
+            IAM_URL = "https://ime.dubaicustoms.network/payment/";
+        }
+        window.open(IAM_URL);
 });
 
 const copyButton = document.getElementById('copy-button');
@@ -189,17 +200,36 @@ const copyButton = document.getElementById('copy-button');
     });
     
     function displayConnectedSites() {
-        chrome.storage.sync.get(['connectedSites'], function(result) {
+        chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
             const sitesContainer = document.getElementById('connected-sites-list');
             if (sitesContainer) {
                 sitesContainer.innerHTML = ''; // Clear existing content
-    
+                
+                const authToken = result.authToken;
                 const connectedSites = result.connectedSites || {};
                 if (Object.keys(connectedSites).length) {
                     Object.keys(connectedSites).forEach(site => {
                         const listItem = document.createElement('li');
-                        listItem.textContent = `${connectedSites[site]}`;
-                        listItem.className = 'list-group-item';
+                        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+
+                        // Text for the site
+                        const siteText = document.createElement('span');
+                        siteText.textContent = `${connectedSites[site]}`;
+                        listItem.appendChild(siteText);
+
+                        // Cross button
+                        const deleteButton = document.createElement('button');
+                        deleteButton.textContent = 'x';
+                        deleteButton.className = 'btn btn-danger btn-sm';
+                        deleteButton.style.marginLeft = '10px';
+
+                        deleteButton.addEventListener('click', function() {
+                            deleteSite(connectedSites[site], authToken,  () => {
+                                removeSiteFromStorage(connectedSites[site]);
+                                sitesContainer.removeChild(listItem);
+                            });
+                        });
+                        listItem.appendChild(deleteButton);
                         sitesContainer.appendChild(listItem);
                     });
                 } else {
@@ -213,14 +243,50 @@ const copyButton = document.getElementById('copy-button');
     
     
     
-    function disconnectSite(site) {
+    function deleteSite(site, authToken, callback) {
+        // Replace the URL with your API endpoint
+        const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-profile`;
+    
+        const requestBody = {
+            domain: site,
+            operation: "remove", // Example of passing the second variable
+        };
+    
+        fetch(apiUrl, {
+            method: 'PUT',
+            headers: {
+                'Content-Type': 'application/json',
+                "Authorization": `Bearer ${authToken}`,
+            },
+            body: JSON.stringify(requestBody),
+        })
+            .then(response => {
+                if (response.ok) {
+                    console.log(`Successfully updated site: ${site}`);
+                    callback(); // Call the callback function
+                } else {
+                    console.error(`Failed to update site: ${site}`);
+                }
+            })
+            .catch(error => {
+                console.error(`Error updating site: ${site}`, error);
+            });
+    }
+
+    function removeSiteFromStorage(site) {
         chrome.storage.sync.get(['connectedSites'], function(result) {
-            const updatedSites = result.connectedSites;
-            if (updatedSites && updatedSites[site]) {
-                delete updatedSites[site];
-                chrome.storage.sync.set({connectedSites: updatedSites}, function() {
-                    displayConnectedSites(); // Refresh the list
+            const connectedSites = result.connectedSites || [];
+            
+            const index = connectedSites.indexOf(site);
+            if (index !== -1) {
+                connectedSites.splice(index, 1);
+                console.log(`Site removed from storage: ${site}`);
+                
+                chrome.storage.sync.set({ connectedSites }, function() {
+                    console.log('Updated connectedSites saved to storage:', connectedSites);
                 });
+            } else {
+                console.warn(`Site not found in connectedSites: ${site}`);
             }
         });
-    }  
+    }
