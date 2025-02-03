@@ -133,6 +133,16 @@ module.exports = (env, argv) => {
         filename: 'popup-login.html',
         chunks: ['popupLogin', 'vendors'] // Include vendor chunk
       }),
+      new HtmlWebpackPlugin({
+        template: './components/transactions.html',
+        filename: 'transactions.html',
+        chunks: ['transactions', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/connected-sites.html',
+        filename: 'connected-sites.html',
+        chunks: ['connected-sites', 'vendors'] // Include vendor chunk
+      }),
       new CopyWebpackPlugin({
         patterns: [
           { from: './src/manifest.json', to: 'manifest.json' },
