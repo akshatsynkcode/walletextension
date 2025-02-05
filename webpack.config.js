@@ -9,7 +9,9 @@ const webpack = require("webpack");
 module.exports = (env, argv) => {
   
   const target = process.env.TARGET
+  const server = process.env.SERVER
   const isFirefox = target === "firefox";
+  const isStaging = server === "stg";
   return {
     mode: 'production',
     entry: {
@@ -50,11 +52,20 @@ module.exports = (env, argv) => {
             {
               loader: "string-replace-loader",
               options: {
-                search: "chrome.",
-                replace: isFirefox
-                  ? "browser."
-                  : "chrome.",
-                flags: "g", 
+                multiple: [
+                  {
+                    search: "chrome.",
+                    replace: isFirefox ? "browser." : "chrome.",
+                    flags: "g",
+                  },
+                  {
+                    search: "https://dev-wallet-api.dubaicustoms.network",
+                    replace: isStaging
+                      ? "https://wallet-api.dubaicustoms.network"
+                      : "https://dev-wallet-api.dubaicustoms.network",
+                    flags: "g",
+                  },
+                ]
               }
             }
           ]

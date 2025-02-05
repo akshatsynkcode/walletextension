@@ -8,7 +8,7 @@ import('node-fetch').then(mod => {
 }).catch(err => console.error('Failed to load node-fetch:', err)); // Make sure to have node-fetch installed
 
 const app = express();
-const PORT = 3000; // Change this if you prefer a different port
+const PORT = 6000; // Change this if you prefer a different port
 
 // Middleware
 app.use(cors());
@@ -17,7 +17,7 @@ app.use(bodyParser.json());
 // Proxy route for /ext-login
 app.post('/api/ext-login', async (req, res) => {
     try {
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-login', {
+        const response = await fetch('https://ime.finloge.com/api/ext-login', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'
@@ -51,7 +51,7 @@ app.get('/api/ext-balance', async (req, res) => {
             return res.status(401).json({ error: 'Authorization token is required' });
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-balance', {
+        const response = await fetch('https://ime.finloge.com/api/ext-balance', {
             method: 'GET',
             headers: {
                 'Authorization': authToken
@@ -77,6 +77,7 @@ app.get('/api/ext-balance', async (req, res) => {
 });
 
 // Proxy route for /ext-profile
+// Proxy route for /api/ext-profile to handle PUT requests
 app.get('/api/ext-profile', async (req, res) => {
     try {
         const authToken = req.header('Authorization');
@@ -84,7 +85,7 @@ app.get('/api/ext-profile', async (req, res) => {
             return res.status(401).json({ error: 'Authorization token is required' });
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-profile', {
+        const response = await fetch('https://ime.finloge.com/api/ext-profile', {
             method: 'GET',
             headers: {
                 'Authorization': authToken
@@ -109,6 +110,10 @@ app.get('/api/ext-profile', async (req, res) => {
     }
 });
 
+
+
+
+
 // Proxy route for /ext-logout
 app.get('/api/ext-logout', async (req, res) => {
     try {
@@ -117,7 +122,7 @@ app.get('/api/ext-logout', async (req, res) => {
             return res.status(401).json({ error: 'Authorization token is required' });
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-logout', {
+        const response = await fetch('https://ime.finloge.com/api/ext-logout', {
             method: 'GET',
             headers: {
                 'Authorization': authToken
@@ -154,7 +159,7 @@ app.get('/api/ext-transaction', async (req, res) => {
         const page = req.query.page || 1; // Default to page 1 if not provided
 
         // Add page parameter to the API URL
-        const apiUrl = `https://log-iam-temp.finloge.com/api/ext-transaction?page=${page}`;
+        const apiUrl = `https://ime.finloge.com/api/ext-transaction?page=${page}`;
 
         const response = await fetch(apiUrl, {
             method: 'GET',
@@ -189,7 +194,7 @@ app.put('/api/ext-transaction', async (req, res) => {
             return res.status(401).json({ error: 'Authorization token is required' });
         }
 
-        const response = await fetch('https://log-iam-temp.finloge.com/api/ext-transaction', {
+        const response = await fetch('https://ime.finloge.com/api/ext-transaction', {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
@@ -216,7 +221,64 @@ app.put('/api/ext-transaction', async (req, res) => {
     }
 });
 
+// Proxy route for /api/ext-profile to handle PUT requests
+app.put('/api/ext-profile', async (req, res) => {
+    try {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            console.log('No Authorization token found in request headers.');
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
 
+        // Validate request body for required field 'domain'
+        if (!req.body.domain) {
+            console.log('Missing "domain" field in request body.');
+            return res.status(400).json({ error: 'Domain is required' });
+        }
+
+        console.log('Received PUT request to /api/ext-profile');
+        console.log('Request Body:', req.body); 
+
+        // Set the options for the fetch request to perform a PUT operation
+        const options = {
+            method: 'PUT',
+            headers: {
+                'Authorization': authToken,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(req.body) 
+        };
+
+        console.log('Sending request to external API:', 'https://ime.finloge.com/api/ext-profile');
+        const response = await fetch('https://ime.finloge.com/api/ext-profile', options);
+
+        // Handle the response based on its success
+        if (response.ok) {
+            console.log('External API responded with success.');
+            const data = await response.json();
+            res.status(200).json({
+                success: true,
+                message: 'Profile updated successfully',
+                data: data
+            });
+        } else {
+            console.error(`Failed to update profile. Status: ${response.status}`);
+            // Detailed error handling based on content type
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                console.error('Error response from external API:', errorData); 
+                res.status(response.status).json(errorData);
+            } else {
+                const errorText = await response.text();
+                console.error('Error response from external API:', errorText); 
+                res.status(response.status).send(errorText);
+            }
+        }
+    } catch (error) {
+        console.error('Error updating profile:', error);
+        res.status(500).json({ error: 'Internal server error during profile update' });
+    }
+});
 // Start the server
 app.listen(PORT, () => {
     console.log(`Proxy server running on port ${PORT}`);
