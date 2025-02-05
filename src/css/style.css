@@ -348,11 +348,6 @@ background-color: rgba(20, 20, 20, 1);
   color: #060677;
   font-size: 1rem;
 }
-.logo {
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
 h1, h4 {
     text-align: center;
     position: relative;
@@ -713,7 +708,7 @@ th, td{
 
 .sidebar{
   background-color: #2369930D;
-  padding: 20px;
+  padding: 12px;
   border-right: 1px solid #4B4B4B;
 }
 
@@ -752,10 +747,6 @@ h1, h2, h3, h4, h5, h6, p{
 .text-gray-600{
   color: #8A9393;
   font-size: 14px;
-}
-
-.logo{
-  width: 140px;
 }
 
 .border-dashed{
