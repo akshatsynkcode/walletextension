@@ -27,76 +27,81 @@
 
 		.card-title.large-font {
 			font-size: 18px;
-		}
-	</style>
-</head>
-
-<body>
-	<div class="container-fluid p-0">
-		<div class="row g-0">
-			<div class="col-lg-2 col-12 ">
-				<div class="sidebar sticky-lg-top h-100 custom-border-color">
-					<div class="row g-0">
-						<div class="col-lg-12 col-12">
-							<a class="navbar-brand m-0">
-								<img src="./icons/logo-dark.svg" class="img-fluid logo" />
-							</a>
-							<hr class="custom-border-color">
-							<ul class="nav flex-column siderbar-nav">
-								<li class="nav-item">
-									<a class="nav-link active" aria-current="page" href="#">
-										<div>
-											<img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
-											Dashboard
-										</div>
-										<div>
-											<img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
-										</div>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<div>
-											<img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
-											Transitions
-										</div>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<div>
-											<img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
-											Connected Sites
-										</div>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<div>
-											<img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
-											Settings
-										</div>
-									</a>
-								</li>
-								<li class="nav-item">
-									<a class="nav-link" href="#">
-										<div>
-											<img src="./icons/help-icon.svg" alt="" class="img-fluid me-2">
-											Help
-										</div>
-									</a>
-								</li>
-							</ul>
+			}
+		</style>
+	</head>
+	<body>
+		<div class="container-fluid p-0">
+			<div class="row g-0">
+				<div class="col-lg-2 col-12">
+					<div class="sidebar sticky-lg-top h-100">
+						<div class="row g-0">
+							<div class="col-lg-12 col-12">
+								<a class="navbar-brand m-0">
+									<img src="./icons/logo-dark.svg" class="img-fluid logo"/>
+								</a>
+								<hr>
+								<ul class="nav flex-column siderbar-nav">
+									<li class="nav-item">
+									  	<a class="nav-link active" aria-current="page" href="profile.html">
+											<div>
+												<img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
+												Dashboard
+											</div>
+											<div>
+												<img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
+											</div>
+										</a>
+									</li>
+									<li class="nav-item">
+									  	<a class="nav-link" href="transactions.html">
+											<div>
+												<img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
+												Transactions
+											</div>
+										</a>
+									</li>
+									<li class="nav-item">
+									  	<a class="nav-link" href="connectedSites.html">
+											<div>
+												<img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
+												Linked Sites
+											</div>
+										</a>
+									</li>
+									<li class="nav-item">
+									  	<a class="nav-link" href="#">
+											<div>
+												<img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
+												Settings
+											</div>
+										</a>
+									</li>
+									<li class="nav-item">
+									  	<a class="nav-link" href="#">
+											<div>
+												<img src="./icons/help-icon.svg" alt="" class="img-fluid me-2">
+												Help
+											</div>
+										</a>
+									</li>
+								</ul>
+							</div>
 						</div>
 					</div>
 				</div>
-			</div>
-			<div class="col-lg-10 col-12">
-				<nav class="navbar navbar-expand-sm header custom-border-color">
-					<div class="container-fluid z-2">
-						<button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-							data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-							aria-expanded="false" aria-label="Toggle navigation">
+				<div class="col-lg-10 col-12">					
+					<nav class="navbar navbar-expand-sm header">
+						<div class="container-fluid z-2">
+							<button
+								class="navbar-toggler"
+								type="button"
+								data-bs-toggle="collapse"
+								data-bs-target="#navbarSupportedContent"
+								aria-controls="navbarSupportedContent"
+								aria-expanded="false"
+								aria-label="Toggle navigation"
+								>
 							<span class="navbar-toggler-icon"></span>
 						</button>
 						<div class="collapse navbar-collapse" id="navbarSupportedContent">
@@ -111,13 +116,14 @@
 										<div class="d-flex align-items-center">
 											<div class="ms-2">
 												<storng class="font-16 text-white">Wallet ID</storng>
-												<span
+												<span id="wallet-address"
 													class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
 											</div>
 											<div class="ms-5">
-												<a href="">
+												<a href="#" id="copy-button">
 													<img src="./icons/copy-icon.svg" alt="" class="img-fluid">
 												</a>
+												<span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
 											</div>
 										</div>
 									</div>
@@ -198,7 +204,7 @@
 									<div class="row g-3 d-flex align-items-end mt-2">
 										<div class="col-md-9 col-8">
 											<p class="text-gray-600">Balance</p>
-											<p class="font-28 mt-2">AED 20,345 </p>
+											<p id="balance" class="font-28 mt-2">AED 20,345 </p>
 										</div>
 										<div class="col-md-3 col-4 text-end">
 											<img src="./icons/wallet-icon.svg" alt="" class="img-fluid">
@@ -221,23 +227,7 @@
 									</div>
 								</div>
 								<div class="card-body custom-card-border">
-									<div class="row g-3">
-										<div class="col-md-4 col-4">
-											<img src="./icons/warehouse-booking.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center mb-0 font-14">Warehouse <br> Booking</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/additional-service.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center mb-0 font-14">Additional <br> Services</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/warehouse-mangement.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center mb-0 font-14">Warehouse Management</p>
-										</div>
-									</div>
+									<div class="row g-3" id="recent-services"></div>
 								</div>
 							</div>
 						</div>
@@ -465,64 +455,7 @@
 								<!--end::Header-->
 								<!--begin::Card body-->
 								<div class="card-body custom-card-border">
-									<div class="row g-3">
-										<div class="col-md-4 col-4">
-											<img src="./icons/warehouse-booking.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Warehouse <br> Booking</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/additional-service.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Additional <br> Services</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/warehouse-mangement.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Warehouse <br> Management</p>
-										</div>
-									</div>
-									<div class="row g-3 mt-1">
-										<div class="col-md-4 col-4">
-											<img src="./icons/declaration-management.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Declaration <br> Management</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/opinion-department.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Opinion <br> Department</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/tariff-management.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Tariff <br> Management</p>
-										</div>
-									</div>
-									<div class="row g-3 mt-1">
-										<div class="col-md-4 col-4">
-											<img src="./icons/review-management.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Review <br> Management</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/evluation-management.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Evaluation <br> Management</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<img src="./icons/verification-management.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">Verification <br> Management</p>
-										</div>
-									</div>
-									<div class="row g-3 mt-1">
-										<div class="col-md-4 col-4">
-											<img src="./icons/system-analytics.svg" alt=""
-												class="img-fluid mx-auto d-block project-icons">
-											<p class="text-center font-12 mt-2">System <br> analytics</p>
-										</div>
-									</div>
+									<div id="services-container"></div>
 								</div>
 								<!--end::Card body-->
 							</div>

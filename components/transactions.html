@@ -31,7 +31,7 @@
     <div class="container-fluid p-0">
         <div class="row g-0">
             <div class="col-lg-2 col-12">
-                <div class="sidebar sticky-lg-top h-100 custom-border-color">
+                <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
                     <div class="row g-0">
                         <div class="col-lg-12 col-12">
                             <a class="navbar-brand m-0">
@@ -40,10 +40,19 @@
                             <hr class="custom-border-color">
                             <ul class="nav flex-column siderbar-nav">
                                 <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">
+                                    <a class="nav-link" aria-current="page" href="profile.html">
                                         <div>
                                             <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
                                             Dashboard
+                                        </div>
+                                        
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="transactions.html">
+                                        <div>
+                                            <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
+                                            Transactions
                                         </div>
                                         <div>
                                             <img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
@@ -51,18 +60,10 @@
                                     </a>
                                 </li>
                                 <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div>
-                                            <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
-                                            Transactions
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
+                                    <a class="nav-link" href="connectedSites.html">
                                         <div>
                                             <img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
-                                            Connected Sites
+                                            Linked Sites
                                         </div>
                                     </a>
                                 </li>
@@ -107,13 +108,14 @@
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
                                                 <storng class="font-16">Wallet ID</storng>
-                                                <span
+                                                <span id="wallet-address"
                                                     class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
                                             </div>
                                             <div class="ms-5">
-                                                <a href="">
+                                                <a href="#" id="copy-button">
                                                     <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
                                                 </a>
+                                                <span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
                                             </div>
                                         </div>
                                     </div>

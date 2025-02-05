@@ -32,58 +32,61 @@
     <div class="container-fluid p-0">
         <div class="row g-0">
             <div class="col-lg-2 col-12">
-                <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
-                    <div class="row g-0">
-                        <div class="col-lg-12 col-12">
-                            <a class="navbar-brand m-0">
-                                <img src="./icons/logo-dark.svg" class="img-fluid logo" />
-                            </a>
-                            <hr class="custom-border-color">
-                            <ul class="nav flex-column siderbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link active" aria-current="page" href="#">
-                                        <div>
-                                            <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
-                                            Dashboard
-                                        </div>
-                                        <div>
-                                            <img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div>
-                                            <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
-                                            Transaction
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div>
-                                            <img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
-                                            Connected Sites
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div>
-                                            <img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
-                                            Settings
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="#">
-                                        <div>
-                                            <img src="./icons/help-icon.svg" alt="" class="img-fluid me-2">
-                                            Help
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
+                <div class="sidebar-container">
+                    <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
+                        <div class="row g-0">
+                            <div class="col-lg-12 col-12">
+                                <a class="navbar-brand m-0">
+                                    <img src="./icons/logo-dark.svg" class="img-fluid logo" />
+                                </a>
+                                <hr class="custom-border-color">
+                                <ul class="nav flex-column siderbar-nav">
+                                    <li class="nav-item">
+                                        <a class="nav-link" aria-current="page" href="profile.html">
+                                            <div>
+                                                <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
+                                                Dashboard
+                                            </div>
+                                            
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="transactions.html">
+                                            <div>
+                                                <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
+                                                Transaction
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link active" href="connectedSites.html">
+                                            <div>
+                                                <img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
+                                                Linked Sites
+                                            </div>
+                                            <div>
+                                                <img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">
+                                            <div>
+                                                <img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
+                                                Settings
+                                            </div>
+                                        </a>
+                                    </li>
+                                    <li class="nav-item">
+                                        <a class="nav-link" href="#">
+                                            <div>
+                                                <img src="./icons/help-icon.svg" alt="" class="img-fluid me-2">
+                                                Help
+                                            </div>
+                                        </a>
+                                    </li>
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -108,13 +111,14 @@
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
                                                 <storng class="font-16">Wallet ID</storng>
-                                                <span
+                                                <span id="wallet-address"
                                                     class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
                                             </div>
                                             <div class="ms-5">
-                                                <a href="">
+                                                <a href="#" id="copy-button">
                                                     <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
                                                 </a>
+                                                <span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
                                             </div>
                                         </div>
                                     </div>
@@ -151,7 +155,7 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white mb-3 text-start font-24 font-regular">Connected Sites</h1>
+                            <h1 class="text-white mb-3 text-start font-24 font-regular">Linked Sites</h1>
                             <div class="d-flex justify-content-end align-items-center mb-1">
                                 <button class="btn text-color-cs font-14 ms-4">Forget All Sites</button>
                                 <div class="mx-1 custom-btn" style="height: 20px;"></div>

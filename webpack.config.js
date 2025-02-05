@@ -23,7 +23,9 @@ module.exports = (env, argv) => {
       profile: './scripts/profile.js',
       popupLogin: './scripts/popup-login.js',
       connectWallet: './scripts/connectWallet.js',
-      approveReq: './scripts/approve-req.js'
+      approveReq: './scripts/approve-req.js',
+      connectedSites: './scripts/connectedSites.js',
+      transactions: './scripts/transactions.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -139,9 +141,9 @@ module.exports = (env, argv) => {
         chunks: ['transactions', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
-        template: './components/connected-sites.html',
-        filename: 'connected-sites.html',
-        chunks: ['connected-sites', 'vendors'] // Include vendor chunk
+        template: './components/connectedSites.html',
+        filename: 'connectedSites.html',
+        chunks: ['connectedSites', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [
