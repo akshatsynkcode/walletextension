@@ -735,7 +735,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 .cta-action-link{
   text-decoration: none;
-  color: #717171;
+  color: white;
   font-size: 14px;
 }
 
@@ -904,4 +904,9 @@ h1, h2, h3, h4, h5, h6, p{
 
 .dropdown-toggle::after{
   display: none;
+}
+
+.custom-card-border{
+  border-top: 1px solid #23699326;
+  border-radius: 8px;
 }
