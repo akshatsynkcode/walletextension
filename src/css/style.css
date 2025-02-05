@@ -19,6 +19,10 @@ body{
 .bg-color{
   background-color: rgba(20, 20, 20, 1);
 }
+
+.bg-color-header{
+  background-color: rgba(35, 105, 147, 0.05);
+}
 .img-login-container {
   position: relative;
   overflow: hidden;
@@ -118,7 +122,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color: #111111 !important;
+  background-color: #010507 !important;
   border-bottom: 1px solid #4B4B4B;
 }
 #middle-div {
@@ -700,15 +704,15 @@ th, td{
 .card-bordered, 
 .card-bordered .card-header, 
 .table:not(.table-bordered)>:not(:last-child)>:last-child>*{
-     border-color: #717171 !important;
+     border-color: #23699326 !important;
 } 
 
 .table:not(.table-bordered) th, .table:not(.table-bordered) td{
-     border-bottom: 1px solid #5C5C5C !important;
+     border-bottom: 1px solid #23699326 !important;
 }
 
 .sidebar{
-  background-color: #111111;
+  background-color: #2369930D;
   padding: 20px;
   border-right: 1px solid #4B4B4B;
 }
@@ -729,8 +733,8 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .bg-dark, .table-dark{
-  background-color: #111111 !important;
-  --bs-table-bg: #111111 !important;
+  background-color: #010507 !important;
+  --bs-table-bg: #010507 !important;
 }
 
 .cta-action-link{
@@ -756,7 +760,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 .border-dashed{
   border-style: dashed !important;
-  border-color: #8A9393 !important;
+  border-color: #236993 !important;
 }
 
 .table-dark th{
@@ -909,4 +913,8 @@ h1, h2, h3, h4, h5, h6, p{
 .custom-card-border{
   border-top: 1px solid #23699326;
   border-radius: 8px;
+}
+
+.custom-border-color{
+  border: 1px solid #23699326;
 }

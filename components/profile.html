@@ -1,32 +1,31 @@
 <!DOCTYPE html>
 <html lang="en">
-	<head>
-		<meta charset="UTF-8" />
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<title>Profile</title>
-		<link href="./css/bootstrap.min.css" rel="stylesheet" />
-		<link href="./css/style.css" rel="stylesheet" />
-		<link
-			href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
-			rel="stylesheet"
-			/>
-		<link
-			rel="stylesheet"
-			href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-			/>
-		<style>
-			/* Custom styling for the activity loader */
-			#activities-loader {
+
+<head>
+	<meta charset="UTF-8" />
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<title>Profile</title>
+	<link href="./css/bootstrap.min.css" rel="stylesheet" />
+	<link href="./css/style.css" rel="stylesheet" />
+	<link
+		href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+		rel="stylesheet" />
+	<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+	<style>
+		/* Custom styling for the activity loader */
+		#activities-loader {
 			display: flex;
 			justify-content: center;
 			align-items: center;
 			flex-direction: column;
 			margin-top: 20px;
-			}
-			#activities-loader .spinner-border {
+		}
+
+		#activities-loader .spinner-border {
 			margin-bottom: 10px;
-			}
-			.card-title.large-font {
+		}
+
+		.card-title.large-font {
 			font-size: 18px;
 			}
 		</style>
@@ -104,454 +103,471 @@
 								aria-label="Toggle navigation"
 								>
 							<span class="navbar-toggler-icon"></span>
-							</button>
-							<div class="collapse navbar-collapse" id="navbarSupportedContent">
-								<ul class="navbar-nav me-auto me-auto mb-2 mb-sm-0">
-									<li class="nav-item">
-										
-									</li>
-								</ul>
-								<div>
-									<div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white">
-										<div class="card-body p-2">
-											<div class="d-flex align-items-center">
-												<div>
-													<storng class="font-12">Wallet ID</storng>
-													<span class="ms-3 font-12 text-gray-600 text-truncate">stru23421fwewri554...</span>
-												</div>
-												<div class="ms-5">
-													<a href="">
-														<img src="./icons/copy-icon.svg" alt="" class="img-fluid">
-													</a>
-												</div>
-											</div>
-										</div>
-									</div>
-								</div>
-								<div class="d-flex align-items-center right-nav ps-4">
-									<div class="dropdown">
-										<i class="fa-duotone fa-solid fa-user user-icon"></i>
-										<button
-											class="btn text-white ps-1 border-0"
-											type="button"
-											id="dropdownMenuButton1"
-											data-bs-toggle="dropdown"
-											aria-expanded="false"
-											>
-											<div class="d-flex">
-												<div class="text-start">
-													<p id="username" class="f-14 mb-0">Username</p>
-													<span class="font-12">username@gmail.com</span>
-												</div>
-												<i
-													class="fas fa-chevron-down ms-2 mt-2"
-													style="font-size: 10px;"
-													></i>
-											</div>
-										</button>
-										<ul
-											class="dropdown-menu ms-4"
-											aria-labelledby="dropdownMenuButton1"
-											>
-											<li>
-												<button
-													class="dropdown-item btn text-white font-14"
-													data-bs-toggle="modal"
-													data-bs-target="#exampleModal"
-													id="lock-wallet-btn"
-													>
-												<i class="fa-solid fa-lock ms-auto me-2"></i>Logout
-												</button>
-											</li>
-										</ul>
-									</div>
-								</div>
-							</div>
-						</div>
-					</nav>
-					<div class="main-container p-4">
-						<div class="row g-3">
-							<div class="col-md-4 col-12">
-								<div class="card h-100 bg-dark text-white card-bordered">									
-									<div class="card-header d-block py-3 border-0">
-										<div class="d-flex align-items-center justify-content-between">
-											<div>
-												<p class="mb-0">Overview</p>
-											</div>	
-											<div>
-												<p class="text-white mb-0 font-14">Dec 2024</p>	
-											</div>
-										</div>
-									</div>
-									<div class="card-body custom-card-border">
-										<div class="row g-3 mt-2">
-											<div class="col-md-4 col-4">
-												<h2 class="font-28 text-center">36</h2>
-												<p class="text-center mt-2 text-gray-600">Transaction</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<h2 class="font-28 text-center">20</h2>
-												<p class="text-center mt-2 text-gray-600">Income</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<h2 class="font-28 text-center">16</h2>
-												<p class="text-center mt-2 text-gray-600">Outcome</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 col-12">
-								<div class="card h-100 bg-dark text-white card-bordered">
-									<!--begin::Header-->
-									<div class="card-header d-block py-3 border-0">
-										<div class="d-flex align-items-center justify-content-between">
-											<div>
-												<p class="mb-0">Your Balance</p>
-											</div>	
-											<div>
-												<p class="text-white mb-0 font-14">AED</p>	
-											</div>
-										</div>
-									</div>
-									<div class="card-body custom-card-border">
-										<div class="row g-3 d-flex align-items-end mt-2">
-											<div class="col-md-9 col-8">
-												<p class="text-gray-600">Balance</p>
-												<p class="font-28 mt-2">AED 20,345 </p>
-											</div>
-											<div class="col-md-3 col-4 text-end">
-												<img src="./icons/wallet-icon.svg" alt="" class="img-fluid">
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-							<div class="col-md-4 col-12">
-								<div class="card h-100 bg-dark text-white card-bordered">
-									<div class="card-header d-block py-3 border-0">
-										<div class="d-flex align-items-center justify-content-between">
-											<div>
-												<p class="mb-0">Recent Services</p>
-											</div>	
-											<div>
-												<a href="" class="d-flex-inline align-items-center p-0 cta-action-link">Manage</a>
-											</div>
-										</div>
-									</div>
-									<div class="card-body custom-card-border">
-										<div class="row g-3">
-											<div class="col-md-4 col-4">
-												<img src="./icons/warehouse-booking.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center mb-0 font-14">Warehouse <br> Booking</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/additional-service.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center mb-0 font-14">Additional <br> Services</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/warehouse-mangement.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center mb-0 font-14">Warehouse Management</p>
-											</div>
-										</div>
-									</div>
-								</div>
-							</div>
-						</div>						
-						<!--begin::Row-->
-						<div class="row g-3 mt-1">
-							<div class="col-md-8 col-12">
-								<div class="card h-100 bg-dark text-white card-bordered">
-									<!--begin::Header-->
-									<div class="card-header d-block py-3 border-0">
-										<div class="d-flex align-items-center justify-content-between">
-											<div>
-												<p>Recent Transactions</p>
-											</div>	
-											<div>
-												<a class="d-flex-inline align-items-center p-0 cta-action-link">Filter</a>
-												<a class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View More</a>
-											</div>
-										</div>
-									</div>
-									<!--end::Header-->
-									<!--begin::Card body-->
-									<div class="card-body custom-card-border">
-										<div class="row">
-											<div class="col-md-12 col-12">
-												<div class="table-responsive">
-													<table class="table table-dark align-middle font-medium text-sm">
-														<thead>
-															<tr>
-																<th class="text-gray-600">TYPE</th>
-																<th class="text-gray-600">AMOUNT</th>
-																<th class="text-gray-600">STATUS</th>
-																<th class="text-gray-600">METHOD</th>
-															</tr>	
-														</thead>	
-														<tbody>
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-danger">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-danger"></span> Failed	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Wallet Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-																</td>
-															</tr>	
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-success">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-success"></span> Success	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Bank Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">**** 3254</span>
-																</td>
-															</tr>	
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-danger">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-warning"></span> Failed	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Wallet Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-																</td>
-															</tr>	
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-warning">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-warning"></span> Processing	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Bank Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">**** 3254</span>
-																</td>
-															</tr>	
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-success">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-success"></span> Success	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Wallet Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-																</td>
-															</tr>	
-															<tr>
-																<td>
-																	<span class="d-flex align-items-center">
-																		<div>
-																			<img src="./icons/type-icon.svg" alt="" class="img-fluid type-img">	
-																		</div>
-																		<div class="ms-5">
-																			<p class="text-truncate mb-2 font-14">5txyz0ge653gh...</p>
-																			<span class="text-gray-600 font-12">From: 12/25/2024, 12:25:56 PM</span>
-																		</div>		
-																	</span>	
-																</td>
-																<td class="text-warning">- AED 2,555.00</td>
-																<td>
-																	<div class="position-relative">
-																		<span class="span-warning"></span> Processing	
-																	</div>	
-																</td>
-																<td>
-																	<p class="mb-2">Wallet Transfer</p>	
-																	<span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-																</td>
-															</tr>	
-														</tbody>
-													</table>	
-												</div>
-											</div>
-										</div>
-									</div>
-									<!--end::Card body-->
-								</div>
-							</div>
-							<div class="col-md-4 col-12">
-								<div class="card h-100 bg-dark text-white card-bordered">
-									<!--begin::Header-->
-									<div class="card-header d-block py-3 border-0">
-										<div class="d-flex align-items-center justify-content-between">
-											<div>
-												<p class="mb-0">Quick Links</p>
-											</div>	
-											<div>
-												<a href="" class="d-flex-inline align-items-center p-0 cta-action-link text-white">Manage</a>	
-											</div>
-										</div>
-									</div>
-									<!--end::Header-->
-									<!--begin::Card body-->
-									<div class="card-body custom-card-border">
-										<div class="row g-3">
-											<div class="col-md-4 col-4">
-												<img src="./icons/warehouse-booking.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Warehouse <br> Booking</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/additional-service.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Additional <br> Services</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/warehouse-mangement.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Warehouse <br> Management</p>
-											</div>
-										</div>
-										<div class="row g-3 mt-1">
-											<div class="col-md-4 col-4">
-												<img src="./icons/declaration-management.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Declaration <br> Management</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/opinion-department.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Opinion <br> Department</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/tariff-management.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Tariff <br> Management</p>
-											</div>
-										</div>
-										<div class="row g-3 mt-1">
-											<div class="col-md-4 col-4">
-												<img src="./icons/review-management.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Review <br> Management</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/evluation-management.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Evaluation <br> Management</p>
-											</div>
-											<div class="col-md-4 col-4">
-												<img src="./icons/verification-management.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">Verification <br> Management</p>
-											</div>
-										</div>
-										<div class="row g-3 mt-1">
-											<div class="col-md-4 col-4">
-												<img src="./icons/system-analytics.svg" alt="" class="img-fluid mx-auto d-block project-icons">
-												<p class="text-center font-12 mt-2">System <br> analytics</p>
-											</div>
-										</div>
-									</div>
-									<!--end::Card body-->
-								</div>
-							</div>
-						</div>
-						<!--end::Row-->
-					</div>
-					
-				</div>
-			</div>
-		</div>
+						</button>
+						<div class="collapse navbar-collapse" id="navbarSupportedContent">
+							<ul class="navbar-nav me-auto me-auto mb-2 mb-sm-0">
+								<li class="nav-item">
 
-		<!-- End Admin Panel -->
-		<div class="container-fluid p-0">
-		</div>
-		<div
-			class="modal fade"
-			id="exampleModal"
-			tabindex="-1"
-			aria-labelledby="exampleModalLabel"
-			aria-hidden="true"
-			>
-			<div class="modal-dialog modal-dialog-centered">
-				<div class="modal-content popup-modal p-4">
-					<div class="modal-body text-center text-white pb-0">
-						<div class="font-24">Confirm Logout</div>
-						<p class="dark-black pt-2 font-16">
-							Are you sure you want to logout?
-						</p>
-					</div>
-					<div class="modal-footer justify-content-between border-0">
-						<div class="d-flex w-100">
-							<button
-								type="button"
-								class="btn btn-dark w-50 f-14 border-color text-white"
-								data-bs-dismiss="modal"
-								>
-							No
-							</button>
-							<button
-								type="button"
-								class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14"
-								>
-							Yes
-							</button>
+								</li>
+							</ul>
+							<div>
+								<div class="card border border-dashed rounded me-3 p-0 bg-transparent">
+									<div class="card-body p-2">
+										<div class="d-flex align-items-center">
+											<div class="ms-2">
+												<storng class="font-16 text-white">Wallet ID</storng>
+												<span
+													class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
+											</div>
+											<div class="ms-5">
+												<a href="">
+													<img src="./icons/copy-icon.svg" alt="" class="img-fluid">
+												</a>
+											</div>
+										</div>
+									</div>
+								</div>
+							</div>
+							<div class="d-flex align-items-center right-nav ps-4">
+								<div class="dropdown">
+									<i class="fa-duotone fa-solid fa-user user-icon"></i>
+									<button class="btn text-white ps-1 border-0" type="button" id="dropdownMenuButton1"
+										data-bs-toggle="dropdown" aria-expanded="false">
+										<div class="d-flex">
+											<div class="text-start">
+												<p id="username" class="f-14 mb-0">Username</p>
+												<span class="font-12 text-color-cs">username@gmail.com</span>
+											</div>
+											<i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
+										</div>
+									</button>
+									<ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
+										<li>
+											<button class="dropdown-item btn text-white font-14" data-bs-toggle="modal"
+												data-bs-target="#exampleModal" id="lock-wallet-btn">
+												<i class="fa-solid fa-lock ms-auto me-2"></i>Logout
+											</button>
+										</li>
+									</ul>
+								</div>
+							</div>
 						</div>
+					</div>
+				</nav>
+				<div class="main-container p-4">
+					<div class="row g-3">
+						<div class="col-md-4 col-12">
+							<div class="card h-100 bg-dark text-white card-bordered">
+								<div class="card-header d-block py-3 border-0 bg-color-header">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<p class="mb-0">Overview</p>
+										</div>
+										<div>
+											<p class="text-white mb-0 font-14">Dec 2024</p>
+										</div>
+									</div>
+								</div>
+								<div class="card-body custom-card-border">
+									<div class="row g-3 mt-2">
+										<div class="col-md-4 col-4">
+											<h2 class="font-28 text-center">36</h2>
+											<p class="text-center mt-2 text-gray-600">Transaction</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<h2 class="font-28 text-center">20</h2>
+											<p class="text-center mt-2 text-gray-600">Income</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<h2 class="font-28 text-center">16</h2>
+											<p class="text-center mt-2 text-gray-600">Outcome</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-12">
+							<div class="card h-100 bg-dark text-white card-bordered">
+								<!--begin::Header-->
+								<div class="card-header d-block py-3 border-0 bg-color-header">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<p class="mb-0">Your Balance</p>
+										</div>
+										<div>
+											<p class="text-white mb-0 font-14">AED</p>
+										</div>
+									</div>
+								</div>
+								<div class="card-body custom-card-border">
+									<div class="row g-3 d-flex align-items-end mt-2">
+										<div class="col-md-9 col-8">
+											<p class="text-gray-600">Balance</p>
+											<p class="font-28 mt-2">AED 20,345 </p>
+										</div>
+										<div class="col-md-3 col-4 text-end">
+											<img src="./icons/wallet-icon.svg" alt="" class="img-fluid">
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+						<div class="col-md-4 col-12">
+							<div class="card h-100 bg-dark text-white card-bordered">
+								<div class="card-header d-block py-3 border-0 bg-color-header">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<p class="mb-0">Recent Services</p>
+										</div>
+										<div>
+											<a href=""
+												class="d-flex-inline align-items-center p-0 cta-action-link">Manage</a>
+										</div>
+									</div>
+								</div>
+								<div class="card-body custom-card-border">
+									<div class="row g-3">
+										<div class="col-md-4 col-4">
+											<img src="./icons/warehouse-booking.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center mb-0 font-14">Warehouse <br> Booking</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/additional-service.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center mb-0 font-14">Additional <br> Services</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/warehouse-mangement.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center mb-0 font-14">Warehouse Management</p>
+										</div>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
+					<!--begin::Row-->
+					<div class="row g-3 mt-1">
+						<div class="col-md-8 col-12">
+							<div class="card h-100 bg-dark text-white card-bordered">
+								<!--begin::Header-->
+								<div class="card-header d-block py-3 border-0 bg-color-header">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<p>Recent Transactions</p>
+										</div>
+										<div>
+											<a class="d-flex-inline align-items-center p-0 cta-action-link">
+												<img src="./icons/filter.png" alt="Filter Icon"
+													class="mx-2 font-14 text-white mb-1">Filter</a>
+											<a class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View
+												More</a>
+										</div>
+									</div>
+								</div>
+								<!--end::Header-->
+								<!--begin::Card body-->
+								<div class="card-body custom-card-border">
+									<div class="row">
+										<div class="col-md-12 col-12">
+											<div class="table-responsive">
+												<table class="table table-dark align-middle font-medium text-sm custom-rows">
+													<thead>
+														<tr>
+															<th class="text-gray-600">TYPE</th>
+															<th class="text-gray-600">AMOUNT</th>
+															<th class="text-gray-600">STATUS</th>
+															<th class="text-gray-600">METHOD</th>
+														</tr>
+													</thead>
+													<tbody>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-danger">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-danger"></span> Failed
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Wallet Transfer</p>
+																<span
+																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-success">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-success"></span> Success
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Bank Transfer</p>
+																<span class="text-truncate text-gray-600 font-12">****
+																	3254</span>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-danger">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-warning"></span> Failed
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Wallet Transfer</p>
+																<span
+																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-warning">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-warning"></span> Processing
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Bank Transfer</p>
+																<span class="text-truncate text-gray-600 font-12">****
+																	3254</span>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-success">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-success"></span> Success
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Wallet Transfer</p>
+																<span
+																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
+															</td>
+														</tr>
+														<tr>
+															<td>
+																<span class="d-flex align-items-center">
+																	<div>
+																		<img src="./icons/type-icon.svg" alt=""
+																			class="img-fluid type-img">
+																	</div>
+																	<div class="ms-5">
+																		<p class="text-truncate mb-2 font-14">
+																			5txyz0ge653gh...</p>
+																		<span class="text-gray-600 font-12">From:
+																			12/25/2024, 12:25:56 PM</span>
+																	</div>
+																</span>
+															</td>
+															<td class="text-warning">- AED 2,555.00</td>
+															<td>
+																<div class="position-relative">
+																	<span class="span-warning"></span> Processing
+																</div>
+															</td>
+															<td>
+																<p class="mb-2">Wallet Transfer</p>
+																<span
+																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
+															</td>
+														</tr>
+													</tbody>
+												</table>
+											</div>
+										</div>
+									</div>
+								</div>
+								<!--end::Card body-->
+							</div>
+						</div>
+						<div class="col-md-4 col-12">
+							<div class="card h-100 bg-dark text-white card-bordered">
+								<!--begin::Header-->
+								<div class="card-header d-block py-3 border-0 bg-color-header">
+									<div class="d-flex align-items-center justify-content-between">
+										<div>
+											<p class="mb-0">Quick Links</p>
+										</div>
+										<div>
+											<a href=""
+												class="d-flex-inline align-items-center p-0 cta-action-link text-white">Manage</a>
+										</div>
+									</div>
+								</div>
+								<!--end::Header-->
+								<!--begin::Card body-->
+								<div class="card-body custom-card-border">
+									<div class="row g-3">
+										<div class="col-md-4 col-4">
+											<img src="./icons/warehouse-booking.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Warehouse <br> Booking</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/additional-service.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Additional <br> Services</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/warehouse-mangement.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Warehouse <br> Management</p>
+										</div>
+									</div>
+									<div class="row g-3 mt-1">
+										<div class="col-md-4 col-4">
+											<img src="./icons/declaration-management.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Declaration <br> Management</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/opinion-department.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Opinion <br> Department</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/tariff-management.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Tariff <br> Management</p>
+										</div>
+									</div>
+									<div class="row g-3 mt-1">
+										<div class="col-md-4 col-4">
+											<img src="./icons/review-management.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Review <br> Management</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/evluation-management.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Evaluation <br> Management</p>
+										</div>
+										<div class="col-md-4 col-4">
+											<img src="./icons/verification-management.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">Verification <br> Management</p>
+										</div>
+									</div>
+									<div class="row g-3 mt-1">
+										<div class="col-md-4 col-4">
+											<img src="./icons/system-analytics.svg" alt=""
+												class="img-fluid mx-auto d-block project-icons">
+											<p class="text-center font-12 mt-2">System <br> analytics</p>
+										</div>
+									</div>
+								</div>
+								<!--end::Card body-->
+							</div>
+						</div>
+					</div>
+					<!--end::Row-->
+				</div>
+
+			</div>
+		</div>
+	</div>
+
+	<!-- End Admin Panel -->
+	<div class="container-fluid p-0">
+	</div>
+	<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content popup-modal p-4">
+				<div class="modal-body text-center text-white pb-0">
+					<div class="font-24">Confirm Logout</div>
+					<p class="dark-black pt-2 font-16">
+						Are you sure you want to logout?
+					</p>
+				</div>
+				<div class="modal-footer justify-content-between border-0">
+					<div class="d-flex w-100">
+						<button type="button" class="btn btn-dark w-50 f-14 border-color text-white"
+							data-bs-dismiss="modal">
+							No
+						</button>
+						<button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">
+							Yes
+						</button>
 					</div>
 				</div>
 			</div>
 		</div>
-		<!-- <script src="profile.bundle.js"></script> -->
-		<script src="./js/bootstrap.bundle.min.js"></script>
-	</body>
+	</div>
+	<!-- <script src="profile.bundle.js"></script> -->
+	<script src="./js/bootstrap.bundle.min.js"></script>
+</body>
+
 </html>

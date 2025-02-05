@@ -31,13 +31,13 @@
     <div class="container-fluid p-0">
         <div class="row g-0">
             <div class="col-lg-2 col-12">
-                <div class="sidebar sticky-lg-top h-100">
+                <div class="sidebar sticky-lg-top h-100 custom-border-color">
                     <div class="row g-0">
                         <div class="col-lg-12 col-12">
                             <a class="navbar-brand m-0">
                                 <img src="./icons/logo-dark.svg" class="img-fluid logo" />
                             </a>
-                            <hr>
+                            <hr class="custom-border-color">
                             <ul class="nav flex-column siderbar-nav">
                                 <li class="nav-item">
                                     <a class="nav-link active" aria-current="page" href="profile.html">
@@ -88,7 +88,7 @@
                 </div>
             </div>
             <div class="col-lg-10 col-12">
-                <nav class="navbar navbar-expand-sm header">
+                <nav class="navbar navbar-expand-sm header custom-border-color">
                     <div class="container-fluid z-2">
                         <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                             data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
@@ -105,10 +105,10 @@
                                 <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white">
                                     <div class="card-body p-2">
                                         <div class="d-flex align-items-center">
-                                            <div>
-                                                <storng class="font-12">Wallet ID</storng>
+                                            <div class="ms-2">
+                                                <storng class="font-16">Wallet ID</storng>
                                                 <span
-                                                    class="ms-3 font-12 text-gray-600 text-truncate">stru23421fwewri554...</span>
+                                                    class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
                                             </div>
                                             <div class="ms-5">
                                                 <a href="">
@@ -127,7 +127,7 @@
                                         <div class="d-flex">
                                             <div class="text-start">
                                                 <p id="username" class="f-14 mb-0">Username</p>
-                                                <span class="font-12">username@gmail.com</span>
+                                                <span class="font-12 text-color-cs">username@gmail.com</span>
                                             </div>
                                             <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
                                         </div>
@@ -188,8 +188,6 @@
                                     <img src="./icons/export.png" alt="" class="img-fluid me-1">Export
                                 </a>
                             </div>
-                            <div class="card bg-dark">
-                                <!--begin::Card body-->
                                 <div class="table-responsive">
                                     <table
                                         class="table table-dark custom-table align-middle font-medium text-sm full-width-table text-start text-nowrap">
@@ -294,9 +292,7 @@
                                         </tbody>
                                     </table>
                                 </div>
-                                <!--end::Card body-->
-                            </div>
-                            <div class="d-flex justify-content-center mt-3 mb-3">
+                            <div class="d-flex justify-content-center mb-3">
                                 <a class="btn bg-transparent border-0 font-14 font-regular text-white"
                                     id="loadMoreButton">
                                     Load More <i class="fas fa-chevron-down ms-2"></i>
