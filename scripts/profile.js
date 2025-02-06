@@ -492,3 +492,50 @@ async function lockWallet() {
         
 // //     });
 // // });
+async function fetchTransactionCount() {
+    const authToken = await chrome.storage.sync.get('authToken');
+    if (!authToken || !authToken.authToken) {
+        console.error('Authorization token is missing');
+        redirectToLogin(); // Redirect or handle the missing token case
+        return;
+    }
+
+    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction-count?filter=count', {
+        method: 'GET',
+        headers: {
+            'Accept': 'application/json',
+            'Authorization': `Bearer ${authToken.authToken}`, // Ensure this line is correct
+            'Content-Type': 'application/json'
+        }
+    });
+
+    if (response.ok) {
+        const data = await response.json();
+        updateTransactionCountUI(data);
+    } else {
+        const errorData = await response.json();
+        console.error('Failed to fetch transaction count:', errorData.error);
+    }
+}
+
+
+
+function updateTransactionCountUI(data) {
+    const debitCountElement = document.getElementById('debit-count');
+    const creditCountElement = document.getElementById('credit-count');
+    const totalCountElement = document.getElementById('total-count');
+
+    // Check if data and elements are available
+    if (data && debitCountElement && creditCountElement && totalCountElement) {
+        // Update the text content of each element with data from the API
+        debitCountElement.textContent = data.debit_count;
+        creditCountElement.textContent = data.credit_count;
+        totalCountElement.textContent = data.total_count;
+    }
+}
+
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchTransactionCount();  // Fetches and updates the transaction counts
+});
+
