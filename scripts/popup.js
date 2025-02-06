@@ -39,7 +39,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                             balanceElement.textContent = `AED ${formatAmount(balanceInfoData.balance.toFixed(3))}`;
                         }
                     } else if (balanceInfoResponse.status === 401) {
-                        chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                        chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                                 if (response.success) {
                                     window.location.href = 'popup-login.html';
@@ -58,7 +58,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     console.error('Username or address element not found');
                 }
             } else if (userInfoResponse.status === 401) {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -107,13 +107,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function lockWallet() {
     const { authToken } = await chrome.storage.sync.get('authToken');
+    const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
         return;
     }
 
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
+        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -121,7 +122,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
