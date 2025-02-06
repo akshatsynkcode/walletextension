@@ -8,7 +8,7 @@
 
 // // Redirect to login if no token or token is invalid
 function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'connectedSites']);
+    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email']);
     window.location.href = 'login.html';
 }
 function formatAmount(amount) {
@@ -262,13 +262,14 @@ function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, sepa
 // // Lock wallet and redirect to login
 async function lockWallet() {
     const { authToken } = await chrome.storage.sync.get('authToken');
+    const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
         return;
     }
 
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
+        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -276,7 +277,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';

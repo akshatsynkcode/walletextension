@@ -62,8 +62,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
     }
     else if (message.action === 'check_auth') {
-        chrome.storage.sync.get(['authToken'], (result) => {
-            sendResponse({ success: true, authToken: result.authToken });
+        chrome.storage.sync.get(['authToken', 'email'], (result) => {
+            let authTokenValue = result.authToken;
+            fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-check-auth?email=${encodeURIComponent(result.email)}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authTokenValue}` },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log("Auth token invalid, logging out");
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                        sendResponse({ success: false, authToken: null });
+                    });
+                } else {
+                    sendResponse({ success: true, authToken: authTokenValue });
+                }
+            })
+            .catch(error => {
+                console.log('Error in auth check, logging out:', error);
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                    sendResponse({ success: false, authToken: null });
+                });
+            });
+            
+            return true;
         });
     } else if (message.action === 'getbalance') {
         chrome.storage.sync.get(['authToken'], (result) => {
@@ -492,7 +514,7 @@ function startAuthCheck() {
 
                 if (response.status === 401) {
                     console.log("Auth token invalid. Logging out.");
-                    chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                         stopAuthCheck(); // Stop the check
                         // chrome.runtime.sendMessage({ action: 'lock_wallet' });
                     });

@@ -37,7 +37,8 @@ document.getElementById('login-btn').addEventListener('click', async function lo
             // Store the token in chrome.storage.sync
             chrome.storage.sync.set({
                 authToken: data.token,
-                connectedSites: data.connected_sites
+                connectedSites: data.connected_sites,
+                email:data.email
             }, function () {
                 if (chrome.runtime.lastError) {
                     console.error('Error setting authToken:', chrome.runtime.lastError);
