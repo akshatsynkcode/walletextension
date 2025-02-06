@@ -279,6 +279,50 @@ app.put('/api/ext-profile', async (req, res) => {
         res.status(500).json({ error: 'Internal server error during profile update' });
     }
 });
+// Proxy route for /api/ext-transaction-count
+app.get('/api/ext-transaction-count', async (req, res) => {
+    try {
+        const authToken = req.header('Authorization');
+        if (!authToken) {
+            return res.status(401).json({ error: 'Authorization token is required' });
+        }
+
+        // Add a filter query parameter
+        const filterQuery = 'count'; // As specified in your curl command to always use 'count'
+
+        // Construct the full API URL with the query parameter
+        const apiUrl = `https://ime.finloge.com/api/ext-transaction?filter=${filterQuery}`;
+
+        const response = await fetch(apiUrl, {
+            method: 'GET',
+            headers: {
+                'Accept': 'application/json',
+                'User-Agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+                'Authorization': authToken,
+                'Content-Type': 'application/json',
+                'Cookie': 'csrftoken=S5PcdDgSrNo0FW7ZLBuBobHoWeCplg0d; csrftoken=S5PcdDgSrNo0FW7ZLBuBobHoWeCplg0d'
+            }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            res.status(200).json(data);
+        } else {
+            // Detailed error handling based on the content type in the response header
+            if (response.headers.get('content-type')?.includes('application/json')) {
+                const errorData = await response.json();
+                res.status(response.status).json(errorData);
+            } else {
+                const errorData = await response.text();
+                res.status(response.status).send(errorData);
+            }
+        }
+    } catch (error) {
+        console.error('Error fetching transaction count:', error);
+        res.status(500).json({ error: 'Internal server error during transaction count fetch' });
+    }
+});
+
 // Start the server
 app.listen(PORT, () => {
     console.log(`Proxy server running on port ${PORT}`);
