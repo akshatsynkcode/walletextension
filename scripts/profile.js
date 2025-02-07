@@ -594,13 +594,13 @@ function fetchRecentServices() {
 }
 
 function fetchQuickLinks() {
-    const buttons = document.querySelectorAll('.quicklink_button');
-    buttons.forEach(function(button) {
-        button.addEventListener('click', function(event) {
+    document.addEventListener('click', function(event) {
+        if (event.target.closest('.quicklink_button')) {
             event.preventDefault();
-            var url = this.getAttribute('href');
-            var imgSrc = this.querySelector('img').getAttribute('src');
-            var label = this.querySelector('p').textContent.trim();
+            var button = event.target.closest('.quicklink_button');
+            var url = button.getAttribute('href');
+            var imgSrc = button.querySelector('img').getAttribute('src');
+            var label = button.querySelector('p').textContent.trim();
 
             chrome.storage.sync.get('recentServices', function (response) {
                 let recentServicesArray = response.recentServices || [];
@@ -623,6 +623,6 @@ function fetchQuickLinks() {
             });
 
             window.open(url, '_blank');
-        });
+        }
     });
 }
