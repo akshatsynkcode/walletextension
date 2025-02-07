@@ -48,21 +48,22 @@ async function lockWallet() {
   }
 }
 async function fetchUpdatedUserProfile() {
+    const { authToken } = await chrome.storage.sync.get('authToken');
+    if (!authToken) {
+        console.error('Authorization token is missing');
+        redirectToLogin();
+        return;
+    }
+
     try {
-        const { authToken } = await chrome.storage.sync.get('authToken');
-        if (!authToken) {
-            console.error('Authorization token is missing');
-            redirectToLogin();
-            return;
-        }
-  
         const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
-  
+
         if (response.ok) {
             const data = await response.json();
+            renderConnectedSites(data.connected_sites); // Render connected sites from the response
             return data;
         } else if (response.status === 404) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -73,8 +74,45 @@ async function fetchUpdatedUserProfile() {
     } catch (error) {
         console.error('Error fetching user profile:', error);
     }
-  }
-  
+}
+
+function renderConnectedSites(sites) {
+    if (!sites) {
+        console.error('No connected sites data available');
+        return;
+    }
+
+    const container = document.querySelector('.d-flex.flex-column'); // The container where connected sites should be appended
+    container.innerHTML = ''; // Clear existing content
+
+    sites.forEach(site => {
+        const siteDiv = document.createElement('div');
+        siteDiv.className = 'w-100 mb-4';
+        siteDiv.innerHTML = `
+            <div class="dropdown dropdown-menu-end w-100">
+                <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
+                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                    <div class="d-flex align-items-center">
+                        <img src="${site.service_image}" alt="" class="img-fluid me-2" style="width: 10vh;">
+                        <span class="mx-4">${site.service_name}</span>
+                        <span class="text-color-cs">${site.service_url}</span>
+                    </div>
+                    <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
+                </a>
+                <ul class="dropdown-menu ms-4">
+                    <li><button class="dropdown-item btn btn-transparent text-color-cs">Forget Site</button></li>
+                    <li><button class="dropdown-item btn btn-transparent text-color-cs">Disconnect</button></li>
+                </ul>
+            </div>
+        `;
+        container.appendChild(siteDiv);
+    });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+    await fetchUpdatedUserProfile(); // Fetch and render profile and connected sites on load
+});
+
   document.addEventListener('DOMContentLoaded', async () => {
     const { authToken } = await chrome.storage.sync.get(['authToken']);
   
