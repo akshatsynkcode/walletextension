@@ -909,3 +909,10 @@ h1, h2, h3, h4, h5, h6, p{
 .custom-border-color{
   border: 1px solid #23699326;
 }
+
+.custom-spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid rgba(29, 40, 83, 1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}

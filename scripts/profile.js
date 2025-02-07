@@ -305,7 +305,7 @@ async function lockWallet() {
                     const link = document.createElement('a');
                     link.href = service.url;
                     link.target = '_blank'; // Open in a new tab
-                    link.className = 'text-decoration-none text-white'; // Optional: Remove underline, text color also changes
+                    link.className = 'text-decoration-none text-white quicklink_button';
 
                     // Create image element
                     const img = document.createElement('img');
@@ -331,6 +331,8 @@ async function lockWallet() {
             });
         }
         
+        fetchQuickLinks();
+        fetchRecentServices();
         // Fetch transaction history
         await fetchAndUpdateTransactionHistory(pageSize=5);
   
@@ -544,4 +546,83 @@ function getStatusClass(status) {
         case 'processing': return 'warning';
         default: return '';
     }
+}
+
+function fetchRecentServices() {
+    chrome.storage.sync.get('recentServices', function (response) {
+        let recentServicesArray = response.recentServices || [];
+        let recentService = recentServicesArray.slice(0, 3);
+        const recentServicesContainer = document.getElementById('recent-services');
+        recentServicesContainer.innerHTML = '';
+
+        let row = null;
+
+        recentService.forEach((service, index) => {
+            if (index % 3 === 0) {
+                row = document.createElement('div');
+                row.className = 'row g-3 mt-1';
+                recentServicesContainer.appendChild(row);
+            }
+
+            if (row) {
+                const col = document.createElement('div');
+                col.className = 'col-md-4 col-4';
+
+                const link = document.createElement('a');
+                link.href = service.url;
+                link.target = '_blank'; // Open in a new tab
+                link.className = 'text-decoration-none text-white quicklink_button';
+
+                const img = document.createElement('img');
+                img.src = service.imgSrc;
+                img.alt = service.label;
+                img.className = 'img-fluid mx-auto d-block project-icons';
+
+                const p = document.createElement('p');
+                p.className = 'text-center font-12 mt-2';
+                p.innerHTML = service.label;
+
+                link.appendChild(img);
+                link.appendChild(p);
+
+                col.appendChild(link);
+
+                row.appendChild(col);
+            }
+        });
+    });
+}
+
+function fetchQuickLinks() {
+    const buttons = document.querySelectorAll('.quicklink_button');
+    buttons.forEach(function(button) {
+        button.addEventListener('click', function(event) {
+            event.preventDefault();
+            var url = this.getAttribute('href');
+            var imgSrc = this.querySelector('img').getAttribute('src');
+            var label = this.querySelector('p').textContent.trim();
+
+            chrome.storage.sync.get('recentServices', function (response) {
+                let recentServicesArray = response.recentServices || [];
+
+                // Remove the existing entry if found
+                recentServicesArray = recentServicesArray.filter(service => service.url !== url);
+
+                // Add the new entry to the top
+                recentServicesArray.unshift({ url, imgSrc, label });
+
+                // Keep only the last 3 entries
+                if (recentServicesArray.length > 3) {
+                    recentServicesArray = recentServicesArray.slice(0, 3);
+                }
+
+                chrome.storage.sync.set({ recentServices: recentServicesArray }, function() {
+                    console.log("Updated recent services:", recentServicesArray);
+                    fetchRecentServices();
+                });
+            });
+
+            window.open(url, '_blank');
+        });
+    });
 }

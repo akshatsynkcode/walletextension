@@ -534,3 +534,34 @@ function stopAuthCheck() {
         console.log("Auth check stopped.");
     }
 }
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.action === "storeURL") {
+        let url = message.url;
+        let imgSrc = message.imgSrc;
+        let label = message.label;
+        let imgName =message.imgName;
+
+        chrome.storage.sync.get('recentServices', function (result) {
+            let recentServicesArray = result.recentServices  || [];
+            recentServicesArray.push({ url: url, imgSrc: imgSrc, label: label, imgName: imgName });
+
+            chrome.storage.sync.set({ 'recentServices': recentServicesArray }, function () {
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    if (tabs.length > 0) {
+                        chrome.tabs.update(tabs[0].id, { url: url });
+                    }
+                });
+                sendResponse({ status: "Recent service stored successfully  !" });
+            });
+        });
+        return true;
+    }
+    if (message.action === "getRecentServices") {
+        chrome.storage.sync.get('recentServices', function (result) {
+            let recentServicesArray = result.recentServices || [];
+            sendResponse({ recentServices: recentServicesArray.slice(-3).reverse() });
+        });
+        return true;
+    }
+});
