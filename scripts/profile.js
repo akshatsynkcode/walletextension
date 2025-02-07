@@ -333,7 +333,8 @@ async function lockWallet() {
     const usernameElement = document.getElementById('username');
     const walletAddressElement = document.getElementById('wallet-address');
     const balanceElement = document.getElementById('balance');
-    
+    const emailElement = document.getElementById('email');
+
     const copyButton = document.getElementById('copy-button');
     const copyMessage = document.getElementById('copy-message');
     if(copyButton){
@@ -364,12 +365,13 @@ async function lockWallet() {
                 balance: updatedProfile.balance,
                 fullName: updatedProfile.fullName,
                 walletAddress: updatedProfile.walletAddress,
+                email: updatedProfile.email
             };
             balanceElement.textContent = `AED ${formatAmount(parseFloat(updatedUserInfo.balance).toFixed(3))}`;
             walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
             walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
             usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
-
+            emailElement.textContent = updatedUserInfo.email || 'N/A';
             // **Services Section - Dynamically Generate Service Cards**
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 

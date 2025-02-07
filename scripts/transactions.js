@@ -85,7 +85,7 @@ async function fetchUpdatedUserProfile() {
   
     const usernameElement = document.getElementById('username');
     const walletAddressElement = document.getElementById('wallet-address');
-    
+    const emailElement = document.getElementById('email');
     const copyButton = document.getElementById('copy-button');
     const copyMessage = document.getElementById('copy-message');
     if(copyButton){
@@ -114,11 +114,13 @@ async function fetchUpdatedUserProfile() {
             const updatedUserInfo = {
                 fullName: updatedProfile.fullName,
                 walletAddress: updatedProfile.walletAddress,
+                email: updatedProfile.email
             };
             walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
             walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
             usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
-
+            emailElement.textContent = updatedUserInfo.email || 'N/A';
+            
 
         }
         
