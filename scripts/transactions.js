@@ -92,14 +92,14 @@ async function fetchUpdatedUserProfile() {
 }
 
 async function fetchAndUpdateTransactionHistory() {
-  try {
-    const { authToken } = await chrome.storage.sync.get("authToken");
-    if (!authToken) {
-      console.error("Authorization token is missing");
-      redirectToLogin();
-      return;
-    }
+  const { authToken } = await chrome.storage.sync.get("authToken");
+  if (!authToken) {
+    console.error("Authorization token is missing");
+    redirectToLogin();
+    return;
+  }
 
+  try {
     const response = await fetch(
       `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction`,
       {
@@ -107,67 +107,109 @@ async function fetchAndUpdateTransactionHistory() {
         headers: { Authorization: `Bearer ${authToken}` },
       }
     );
-    result = await response.json();
 
-if (result.status === 'success') {
-    const transactions = result.data;
-    console.log(transactions, "transactions");
-    const tableBody = document.querySelector(".custom-table tbody");
-    tableBody.innerHTML = ""; // Clear previous data
-    out_transaction_img= "./icons/out-transaction.svg"
-    in_transaction_img= "./icons/in-transaction.png"
+    if (!response.ok) {
+      if (response.status === 404) {
+        console.error("Token expired or invalid, redirecting to login.");
+        redirectToLogin();
+      } else {
+        console.error(
+          "Failed to fetch transaction history:",
+          response.statusText
+        );
+      }
+      return;
+    }
 
-    transactions.forEach(transaction => {
+    const result = await response.json();
+    if (result.status === "success") {
+      const transactions = result.data;
+      console.log(transactions, "transactions");
+      const tableBody = document.querySelector(".custom-table tbody");
+      tableBody.innerHTML = ""; // Clear previous data
+
+      const out_transaction_img = "./icons/withdrawal.svg";
+      const in_transaction_img = "./icons/deposit.svg";
+
+      transactions.forEach((transaction) => {
         const row = document.createElement("tr");
         row.classList.add("border-bottom");
-        
+
         row.innerHTML = `
-            <td class="px-3">
-                <div class="form-check">
-                    <input class="form-check-input mx-1 bg-transparent border border-white fs-6" type="checkbox">
-                </div>
-            </td>
-            <td>
-                <span class="d-flex align-items-center">
-                    <div style="width: max-content;">
-                        <img src="${transaction.debit ? out_transaction_img : in_transaction_img}" alt="" class="img-fluid type-img">
-                    </div>
-                    <div class="ms-4">
-                        <p class="text-truncate mb-2 font-14">${transaction.debit ? truncateWalletAddress(transaction.to_wallet_address) : truncateWalletAddress(transaction.from_wallet_address)}</p>
-                        <span class="text-gray-600 font-12">From: ${transaction.created_at_time}</span>
-                    </div>
-                </span>
-            </td>
-            <td class="${transaction.debit ? 'text-danger' : 'text-success'} px-3">
-                ${transaction.debit ? '-' : '+'} AED ${transaction.amount}
-            </td>
-            <td class="px-3">
-                <div class="position-relative">
-                    <span class="${transaction.status === 'completed' ? 'span-success' : 'span-danger'}"></span> ${transaction.status}
-                </div>
-            </td>
-            <td class="px-3">
-                <p class="mb-2">${transaction.module_id=== 'Top up wallet' ? 'Bank Transfer' : 'Wallet Transfer'}</p>
-                <span class="text-truncate text-gray-600 font-12">${truncateWalletAddress(transaction.extrinsic_hash) || 'N/A'}</span>
-            </td>
-            <td class="px-3">
-                <div class="d-flex align-items-center">
-                    <span class="status-indicator span-department"></span>
-                    ${transaction.module_type || 'N/A'}
-                </div>
-            </td>
-            <td class="px-3">
-                <span class="text-truncate font-12">${new Date(transaction.created_at).toLocaleString()}</span>
-            </td>
-        `;
-        
+                    <td class="px-3">
+                        <div class="form-check">
+                            <input class="form-check-input mx-1 bg-transparent border border-white fs-6" type="checkbox">
+                        </div>
+                    </td>
+                    <td>
+                        <span class="d-flex align-items-center">
+                            <div style="width: max-content;">
+                                <img src="${
+                                  transaction.debit
+                                    ? out_transaction_img
+                                    : in_transaction_img
+                                }" alt="" class="img-fluid type-img">
+                            </div>
+                            <div class="ms-4">
+                                <p class="text-truncate mb-2 font-14">${
+                                  transaction.debit
+                                    ? truncateWalletAddress(
+                                        transaction.to_wallet_address
+                                      )
+                                    : truncateWalletAddress(
+                                        transaction.from_wallet_address
+                                      )
+                                }</p>
+                                <span class="text-gray-600 font-12">From: ${
+                                  transaction.created_at_time
+                                }</span>
+                            </div>
+                        </span>
+                    </td>
+                    <td class="${
+                      transaction.debit ? "text-danger" : "text-success"
+                    } px-3">
+                        ${transaction.debit ? "-" : "+"} AED ${
+          transaction.amount
+        }
+                    </td>
+                    <td class="px-3">
+                        <div class="position-relative">
+                            <span class="${
+                              transaction.status === "completed"
+                                ? "span-success"
+                                : "span-danger"
+                            }"></span> ${transaction.status}
+                        </div>
+                    </td>
+                    <td class="px-3">
+                        <p class="mb-2">${
+                          transaction.module_id === "Top up wallet"
+                            ? "Bank Transfer"
+                            : "Wallet Transfer"
+                        }</p>
+                        <span class="text-truncate text-gray-600 font-12">${
+                          truncateWalletAddress(transaction.extrinsic_hash) ||
+                          "N/A"
+                        }</span>
+                    </td>
+                    <td class="px-3">
+                        <div class="d-flex align-items-center">
+                            <span class="status-indicator span-department"></span>
+                            ${transaction.module_type || "N/A"}
+                        </div>
+                    </td>
+                    <td class="px-3">
+                        <span class="text-truncate font-12">${new Date(
+                          transaction.created_at
+                        ).toLocaleString()}</span>
+                    </td>
+                `;
+
         tableBody.appendChild(row);
-    });
-    } else if (response.status === 404) {
-      console.error("Token expired or invalid, redirecting to login.");
-      redirectToLogin();
+      });
     } else {
-      console.error("Failed to fetch transaction history:", response.statusText);
+      console.error("Transaction fetch failed:", result);
     }
   } catch (error) {
     console.error("Error fetching transaction history:", error);
@@ -250,4 +292,3 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
-
