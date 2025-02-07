@@ -75,99 +75,6 @@ function formatAmount(amount) {
 //     }
 // });
 
-// // Fetch and update transaction history with pagination support
-// async function fetchAndUpdateTransactionHistory(page = 1) {
-//     const paginationInfo = document.getElementById("pagination-info");
-//     const pageNumbers = document.getElementById("page-numbers");
-//     const activitiesContent = document.getElementById("activities-content");
-//     const loader = document.getElementById('balance-loader');
-//     const activityContainer = document.querySelector('.p-3');
-    
-//     if (loader) {
-//         loader.style.display = 'inline-block'; // Show loader before fetching
-//     }
-
-//     let timeoutFlag = false;
-
-//     // Set a timeout to show "No Transactions Found" if no data is fetched within 5 seconds
-//     const noDataTimeout = setTimeout(() => {
-//         timeoutFlag = true;
-//         if (activityContainer.innerHTML.trim() === '') {
-//             activityContainer.innerHTML = `
-//                 <div class="no-transactions-message text-center text-white">
-//                     <p>No transactions found</p>
-//                 </div>`;
-//         }
-//         if (loader) {
-//             loader.style.display = 'none'; // Hide loader after timeout
-//         }
-//     }, 5000);
-
-//     try {
-//         const { authToken } = await chrome.storage.sync.get('authToken');
-//         if (!authToken) {
-//             console.error('Authorization token is missing');
-//             redirectToLogin();
-//             return;
-//         }
-
-//         let response = null;
-
-//         if (filter != ''){
-//             response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}&filter=${filter}`, {
-//                 method: 'GET',
-//                 headers: { 'Authorization': `Bearer ${authToken}` }
-//             });
-//         }else{
-//             response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}`, {
-//                 method: 'GET',
-//                 headers: { 'Authorization': `Bearer ${authToken}` }
-//             });
-//         }
-        
-
-//         clearTimeout(noDataTimeout); // Clear the timeout if data is fetched successfully
-
-//         if (response.ok) {
-//             const data = await response.json();
-//             if (data.data.length > 0) {
-//                 updateTransactionHistoryUI(data.data); // Pass the transactions array
-
-//                 // Update pagination info
-//                 currentPage = data.page;
-//                 totalPages = data.page_count;
-
-//                 paginationInfo.textContent = `${(currentPage - 1) * 5 + 1}-${Math.min(currentPage * 5, data.count)} of ${data.count}`;
-//                 pageNumbers.textContent = `Page ${currentPage} of ${totalPages}`;
-
-//                 // Enable/disable buttons based on page info
-//                 prevButton.disabled = currentPage <= 1;
-//                 nextButton.disabled = currentPage >= totalPages;
-//             } else if (!timeoutFlag) {
-//                 // If no transactions and the timeout hasn't already occurred
-//                 activityContainer.innerHTML = `
-//                     <div class="no-transactions-message text-center text-white">
-//                         <p>No transactions found</p>
-//                     </div>`;
-//                     paginationInfo.textContent = `0-0 of 0`;
-//                     pageNumbers.textContent = `1`;
-//             }
-//         } else if (response.status === 401) {
-//             console.error('Token expired or invalid, redirecting to login.');
-//             redirectToLogin();
-//         } else {
-//             console.error('Failed to fetch transactions:', response.statusText);
-//         }
-//     } catch (error) {
-//         console.error('Error fetching transactions:', error);
-//     } finally {
-//         if (loader) {
-//             loader.style.display = 'none'; // Hide loader after transactions are fetched
-//         }
-//     }
-// }
-
-
 // // Function to update the UI with the fetched transaction history
 // function updateTransactionHistoryUI(transactions) {
 //     const activityContainer = document.querySelector('.p-3');
@@ -379,7 +286,6 @@ async function lockWallet() {
             servicesContainer.innerHTML = '';
 
             let row = null; // Declare row outside loop
-
             Object.entries(updatedUserInfo.services).forEach(([serviceName, imageUrl], index) => {
                 if (index % 3 === 0) {
                     // Create a new row after every 3 items
@@ -417,7 +323,7 @@ async function lockWallet() {
         }
         
         // Fetch transaction history
-        // await fetchAndUpdateTransactionHistory(currentPage);
+        await fetchAndUpdateTransactionHistory(pageSize=5);
   
         // Periodic balance update
     }
@@ -541,4 +447,92 @@ function updateTransactionCountUI(data) {
 document.addEventListener('DOMContentLoaded', async () => {
     await fetchTransactionCount();  // Fetches and updates the transaction counts
 });
+// This function should be defined in a separate JavaScript file or within a <script> tag in your HTML.
 
+async function fetchAndUpdateTransactionHistory(pageSize) {
+    const { authToken } = await chrome.storage.sync.get('authToken');
+if (!authToken) {
+    console.error('No authToken found. Cannot log out.');
+    return;
+}
+    try {
+        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}`, {
+            method: 'GET',
+            headers: {
+                'Authorization': `Bearer ${authToken}`
+            }
+        });
+        
+        if (!response.ok) throw new Error('Failed to fetch data');
+        
+        const data = await response.json();
+        console.log("this is data.data", data);
+        updateTransactionTable(data.data);
+    } catch (error) {
+        console.error('Error fetching transaction data:', error);
+    }
+}
+
+function updateTransactionTable(transactions) {
+    const tableBody = document.querySelector('.table-dark tbody');
+    tableBody.innerHTML = ''; // Clears the table
+    const out_transaction_img = "./icons/withdrawal.svg";
+    const in_transaction_img = "./icons/deposit.svg";
+    transactions.forEach(transaction => {
+        const row = document.createElement('tr');
+        // Add cells and content to each row based on the transaction data
+        row.innerHTML = `<td>
+                            <span class="d-flex align-items-center">
+                            <div style="width: max-content;">
+                                <img src="${
+                                  transaction.debit
+                                    ? out_transaction_img
+                                    : in_transaction_img
+                                }" alt="" class="img-fluid type-img">
+                            </div>
+                                <div class="ms-5">
+                                    <p class="text-truncate mb-2 font-14">${  transaction.debit
+                                    ? truncateWalletAddress(
+                                        transaction.to_wallet_address
+                                      )
+                                    : truncateWalletAddress(
+                                        transaction.from_wallet_address
+                                      )}</p>
+                                    <span class="text-gray-600 font-12">From: ${new Date(
+                                        transaction.created_at
+                                      ).toLocaleString()}</span>
+                                </div>
+                            </span>
+                        </td>
+                       <td class="${
+                      transaction.debit ? "text-danger" : "text-success"
+                    } px-3">
+                        ${transaction.debit ? "-" : "+"} AED ${
+          transaction.amount
+        }
+                    </td>
+                        <td><div class="position-relative"><span class="span-${getStatusClass(transaction.status)}"></span> ${transaction.status}</div></td>
+                        <td class="px-3">
+                       <p class="mb-2">${
+                          transaction.module_id === "Top up wallet"
+                            ? "Bank Transfer"
+                            : "Wallet Transfer"
+                        }</p>
+                        <span
+                            class="text-truncate text-gray-600 font-12">${
+                                truncateWalletAddress(transaction.extrinsic_hash) ||
+                                "N/A"
+                              }</span>
+                    </td>`;
+        tableBody.appendChild(row);
+    });
+}
+
+function getStatusClass(status) {
+    switch (status.toLowerCase()) {
+        case 'completed': return 'success';
+        case 'failed': return 'danger';
+        case 'processing': return 'warning';
+        default: return '';
+    }
+}

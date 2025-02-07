@@ -160,9 +160,9 @@ async function fetchAndUpdateTransactionHistory() {
                                         transaction.from_wallet_address
                                       )
                                 }</p>
-                                <span class="text-gray-600 font-12">From: ${
-                                  transaction.created_at_time
-                                }</span>
+                                <span class="text-gray-600 font-12">From: ${new Date(
+                                  transaction.created_at
+                                ).toLocaleString()}</span>
                             </div>
                         </span>
                     </td>
