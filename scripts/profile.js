@@ -147,6 +147,7 @@ async function fetchUpdatedUserProfile() {
 
         if (response.ok) {
             const data = await response.json();
+            console.log(data);
             return data;
         } else if (response.status === 404) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -231,7 +232,7 @@ async function lockWallet() {
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     const { authToken } = await chrome.storage.sync.get(['authToken']);
-  
+    console.log(authToken, "authToken");
     if (!authToken) {
         redirectToLogin();
         return;
@@ -286,7 +287,8 @@ async function lockWallet() {
             servicesContainer.innerHTML = '';
 
             let row = null; // Declare row outside loop
-            Object.entries(updatedUserInfo.services).forEach(([serviceName, imageUrl], index) => {
+
+            updatedUserInfo.services.forEach((service, index) => {
                 if (index % 3 === 0) {
                     // Create a new row after every 3 items
                     row = document.createElement('div');
@@ -299,27 +301,34 @@ async function lockWallet() {
                     const col = document.createElement('div');
                     col.className = 'col-md-4 col-4';
 
+                    // Create anchor element (clickable link)
+                    const link = document.createElement('a');
+                    link.href = service.url;
+                    link.target = '_blank'; // Open in a new tab
+                    link.className = 'text-decoration-none text-white'; // Optional: Remove underline, text color also changes
+
                     // Create image element
                     const img = document.createElement('img');
-                    img.src = imageUrl;
-                    img.alt = serviceName;
+                    img.src = service.image;
+                    img.alt = service.name;
                     img.className = 'img-fluid mx-auto d-block project-icons';
 
                     // Create text description
                     const p = document.createElement('p');
                     p.className = 'text-center font-12 mt-2';
-                    p.innerHTML = `${serviceName} <br> Management`;
+                    p.innerHTML = `${service.name} <br> Management`;
 
-                    // Append image and text inside column
-                    col.appendChild(img);
-                    col.appendChild(p);
+                    // Append image and text inside anchor
+                    link.appendChild(img);
+                    link.appendChild(p);
+
+                    // Append anchor inside column
+                    col.appendChild(link);
 
                     // Append column to the row
                     row.appendChild(col);
                 }
             });
-
-
         }
         
         // Fetch transaction history
