@@ -2,6 +2,15 @@ function redirectToLogin() {
   chrome.storage.sync.remove(['authToken', 'connectedSites']);
   window.location.href = 'login.html';
 }
+
+function showFullScreenLoader() {
+    document.getElementById('full-screen-loader').style.display = 'flex';
+  }
+  
+  // Hide the full-screen loader
+  function hideFullScreenLoader() {
+    document.getElementById('full-screen-loader').style.display = 'none';
+  }
 function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, separator = '.......') {
   if (!walletAddress || walletAddress.length <= startChars + endChars) {
       return walletAddress; // Return the full address if it's too short to truncate
@@ -48,34 +57,57 @@ async function lockWallet() {
   }
 }
 async function fetchUpdatedUserProfile() {
+    showFullScreenLoader();  // Show loader before making the API call
     const { authToken } = await chrome.storage.sync.get('authToken');
     if (!authToken) {
-        console.error('Authorization token is missing');
-        redirectToLogin();
-        return;
+      console.error('Authorization token is missing');
+      redirectToLogin();
+      hideFullScreenLoader();  // Hide loader when redirecting
+      return;
     }
-
+  
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            renderConnectedSites(data.connected_sites); // Render connected sites from the response
-            return data;
-        } else if (response.status === 404) {
-            console.error('Token expired or invalid, redirecting to login.');
-            redirectToLogin();
-        } else {
-            console.error('Failed to fetch user profile:', response.statusText);
-        }
+      const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
+        method: 'GET',
+        headers: { 'Authorization': `Bearer ${authToken}` }
+      });
+  
+      if (response.ok) {
+        const data = await response.json();
+        renderConnectedSites(data.connected_sites);  // Render connected sites from the response
+  
+        const updatedUserInfo = {
+          fullName: data.fullName,
+          walletAddress: data.walletAddress,
+          email: data.email
+        };
+  
+        // Render wallet ID, username, and email in the correct order
+        const walletAddressElement = document.getElementById('wallet-address');
+        const usernameElement = document.getElementById('username');
+        const emailElement = document.getElementById('email');
+  
+        // Set the text content in the correct order
+        walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
+        walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
+        usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
+        emailElement.textContent = updatedUserInfo.email || 'N/A';
+  
+        hideFullScreenLoader();  // Hide loader after the data is fetched successfully
+        return data;
+      } else if (response.status === 404) {
+        console.error('Token expired or invalid, redirecting to login.');
+        redirectToLogin();
+        hideFullScreenLoader();  // Hide loader if token is invalid
+      } else {
+        console.error('Failed to fetch user profile:', response.statusText);
+        hideFullScreenLoader();  // Hide loader in case of error
+      }
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+      console.error('Error fetching user profile:', error);
+      hideFullScreenLoader();  // Hide loader on error
     }
-}
-
+  }
 function renderConnectedSites(sites) {
     if (!sites) {
         console.error('No connected sites data available');

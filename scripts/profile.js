@@ -29,6 +29,15 @@ function formatAmount(amount) {
         return amount.toFixed(2); // If it's less than 1,000, show the number with two decimals
     }
 }
+// Function to show the full screen loader
+function showFullScreenLoader() {
+    document.getElementById('full-screen-loader').style.display = 'flex';
+}
+
+// Function to hide the full screen loader
+function hideFullScreenLoader() {
+    document.getElementById('full-screen-loader').style.display = 'none';
+}
 
 // Fetch and update balance
 // async function fetchAndUpdateBalance() {
@@ -132,11 +141,13 @@ function formatAmount(amount) {
 
 // // Fetch updated user profile from the API
 async function fetchUpdatedUserProfile() {
+    showFullScreenLoader();
     try {
         const { authToken } = await chrome.storage.sync.get('authToken');
         if (!authToken) {
             console.error('Authorization token is missing');
             redirectToLogin();
+            hideFullScreenLoader();
             return;
         }
 
@@ -147,6 +158,7 @@ async function fetchUpdatedUserProfile() {
 
         if (response.ok) {
             const data = await response.json();
+            hideFullScreenLoader();
             console.log(data);
             return data;
         } else if (response.status === 404) {
@@ -157,6 +169,8 @@ async function fetchUpdatedUserProfile() {
         }
     } catch (error) {
         console.error('Error fetching user profile:', error);
+        hideFullScreenLoader();
+        redirectToLogin();
     }
 }
 
@@ -169,10 +183,12 @@ function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, sepa
 
 // // Lock wallet and redirect to login
 async function lockWallet() {
+    showFullScreenLoader();
     const { authToken } = await chrome.storage.sync.get('authToken');
     const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
+        hideFullScreenLoader();
         return;
     }
 
@@ -184,6 +200,7 @@ async function lockWallet() {
 
         if (response.ok) {
             const data = await response.json();
+            hideFullScreenLoader();
             if (data.message === "Successfully Logged Out") {
                 chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
@@ -202,6 +219,7 @@ async function lockWallet() {
             alert('Logout failed. Please try again.');
         }
     } catch (error) {
+        hideFullScreenLoader();
         console.error('Error during logout:', error);
         alert('An error occurred during logout. Please try again.' + response.status);
     }
@@ -231,6 +249,7 @@ async function lockWallet() {
 // // });
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
+    showFullScreenLoader();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
