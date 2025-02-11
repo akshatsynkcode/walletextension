@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transitions</title>
+    <title>Transactions</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
     <link
@@ -45,7 +45,7 @@
                                             <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
                                             Dashboard
                                         </div>
-                                        
+
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -115,7 +115,8 @@
                                                 <a href="#" id="copy-button">
                                                     <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
                                                 </a>
-                                                <span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
+                                                <span id="copy-message" style="display: none;"
+                                                    class="font-12 text-color-cs">Copied!</span>
                                             </div>
                                         </div>
                                     </div>
@@ -192,9 +193,44 @@
                                     class="table table-dark custom-table align-middle font-medium text-sm full-width-table text-start text-nowrap">
                                     <thead>
                                         <tr>
-                                            <th class="px-3 font-14 text-white">TYPE</th>
+                                            <th class="font-14 text-white">
+                                                <div class="dropdown">
+                                                    <a href="#"
+                                                        class="btn btn-dark bg-transparent font-14 dropdown-toggle border-0 font-regular"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        TYPE<img src="./icons/sort-in-icon.png" alt=""
+                                                            class="img-fluid me-1" style="margin-bottom: 2px;">
+                                                    </a>
+                                                    <ul class="dropdown-menu font-14 custom-btn">
+                                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Debit
+                                                                Transaction</a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Credit
+                                                                Transaction</a></li>
+                                                    </ul>
+                                                </div>
+                                            </th>
                                             <th class="px-3 font-14 text-white">AMOUNT</th>
-                                            <th class="px-1 font-14 text-white">STATUS</th>
+                                            <th class="font-14 text-white">
+                                                <div class="dropdown">
+                                                    <a href="#"
+                                                        class="btn btn-dark bg-transparent font-14 dropdown-toggle border-0 p-0 font-regular"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        STATUS<img src="./icons/sort-in-icon.png" alt=""
+                                                            class="img-fluid me-1" style="margin-bottom: 2px;">
+                                                    </a>
+                                                    <ul class="dropdown-menu font-14 custom-btn">
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Successful
+                                                            </a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Unsuccessful
+                                                            </a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Processing
+                                                            </a></li>
+                                                    </ul>
+                                                </div>
+                                            </th>
                                             <th class="px-3 font-14 text-white">METHOD</th>
                                             <th class="px-3 font-14 text-white">DEPARTMENT</th>
                                             <th class="px-3 font-14 text-white">DATE</th>
@@ -277,22 +313,38 @@
                             <!--begin::Pagination-->
                             <nav class="d-flex justify-content-end">
                                 <ul class="pagination d-inline-flex custom-border-color rounded p-2">
-                                    <li class="page-item"><a href="#" class="page-link fa fa-chevron-left mr-1 font-14 border-0"></a>
+                                    <li class="page-item"><a href="#"
+                                            class="page-link fa fa-chevron-left mr-1 font-14 border-0"></a>
                                     </li>
                                     <li class="page-item">
                                         <a class="page-link font-12 border-0 rounded" href="#" tabindex="-1">First</a>
                                     </li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">1</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">2</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">3</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">4</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">5</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">...</a></li>
-                                    <li class="page-item"><a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">22</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">1</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">2</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">3</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">4</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">5</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">...</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">22</a></li>
                                     <li class="page-item">
                                         <a class="page-link font-12 border-0 rounded" href="#">Last</a>
                                     </li>
-                                    <li class="page-item"><a href="#" class="page-link fa fa-chevron-right font-14 border-0"></a></li>
+                                    <li class="page-item"><a href="#"
+                                            class="page-link fa fa-chevron-right font-14 border-0"></a></li>
                                 </ul>
                             </nav>
                             <!--end:: Pagination-->
