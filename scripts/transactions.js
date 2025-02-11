@@ -136,11 +136,7 @@ async function fetchAndUpdateTransactionHistory() {
         row.classList.add("border-bottom");
 
         row.innerHTML = `
-                    <td class="px-3">
-                        <div class="form-check">
-                            <input class="form-check-input mx-1 bg-transparent border border-white fs-6" type="checkbox">
-                        </div>
-                    </td>
+
                     <td>
                         <span class="d-flex align-items-center">
                             <div style="width: max-content;">

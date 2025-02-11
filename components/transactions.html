@@ -4,7 +4,7 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Transitions</title>
+    <title>Transactions</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
     <link
@@ -31,7 +31,7 @@
     <div class="container-fluid p-0">
         <div class="row g-0">
             <div class="col-lg-2 col-12">
-                <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
+                <div class="sidebar sticky-lg-top h-100 custom-border-color">
                     <div class="row g-0">
                         <div class="col-lg-12 col-12">
                             <a class="navbar-brand m-0">
@@ -45,7 +45,7 @@
                                             <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
                                             Dashboard
                                         </div>
-                                        
+
                                     </a>
                                 </li>
                                 <li class="nav-item">
@@ -115,7 +115,8 @@
                                                 <a href="#" id="copy-button">
                                                     <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
                                                 </a>
-                                                <span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
+                                                <span id="copy-message" style="display: none;"
+                                                    class="font-12 text-color-cs">Copied!</span>
                                             </div>
                                         </div>
                                     </div>
@@ -153,29 +154,16 @@
                         <div class="col-12">
                             <!-- Heading -->
                             <h1 class="text-white mb-3 text-start font-24 font-regular">Transactions</h1>
-                            <!-- Date search and calendar -->
                             <div class="d-flex justify-content-start align-items-center mb-3">
                                 <div class="input-group">
-                                    <!-- First Dropdown: Last 7 days -->
                                     <div class="dropdown">
-                                        <button
-                                            class="btn btn-dark border-dark dropdown-toggle border-right-0 rounded-end-0 bg-color-button font-14"
+                                        <button class="btn btn-dark border-dark dropdown-toggle bg-color-button font-14"
                                             type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
                                             aria-expanded="false">
                                             Last 7 days
                                         </button>
                                     </div>
-
-                                    <!-- Second Dropdown: Calendar with Date Range -->
-                                    <div class="dropdown">
-                                        <button
-                                            class="btn btn-dark border-dark dropdown-toggle border-left-0 rounded-start-0 bg-color-button font-14"
-                                            type="button" id="dropdownMenuButton2" data-bs-toggle="dropdown"
-                                            aria-expanded="false">
-                                            <i class="fas fa-calendar-alt me-2"></i>20 Jan - 27 Jan
-                                        </button>
-                                    </div>
-                                    <div class="d-flex align-items-center ms-2">
+                                    <div class="d-flex align-items-center ms-4">
                                         <button
                                             class="btn text-white border-right-0 rounded-end-0 bg-color-button font-14">All
                                             25</button>
@@ -185,121 +173,181 @@
                                             05</button>
                                     </div>
                                 </div>
-                                <a href=""
-                                    class="btn btn-dark ms-auto d-flex align-items-center bg-transparent font-14 custom-btn">
-                                    <img src="./icons/export.png" alt="" class="img-fluid me-1">Export
-                                </a>
-                            </div>
-                                <div class="table-responsive">
-                                    <table
-                                        class="table table-dark custom-table align-middle font-medium text-sm full-width-table text-start text-nowrap">
-                                        <thead>
-                                            <tr>
-                                                <th class="px-3 "></th>
-                                                <th class="px-3 font-14 text-white">TYPE</th>
-                                                <th class="px-3 font-14 text-white">AMOUNT</th>
-                                                <th class="px-1 font-14 text-white">STATUS</th>
-                                                <th class="px-3 font-14 text-white">METHOD</th>
-                                                <th class="px-3 font-14 text-white">DEPARTMENT</th>
-                                                <th class="px-3 font-14 text-white">DATE</th>
-                                            </tr>
-                                        </thead>
-                                        <tbody>
-                                            <!-- <tr class="border-bottom">
-                                                <td class="px-3">
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input mx-1 bg-transparent border border-white fs-6"
-                                                            type="checkbox" value="" id="checkbox1">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="d-flex align-items-center">
-                                                        <div>
-                                                            <img src="./icons/type-icon.svg" alt=""
-                                                                class="img-fluid type-img">
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <p class="text-truncate mb-2 font-14">
-                                                                5txyz0ge653gh...</p>
-                                                            <span class="text-gray-600 font-12">From:
-                                                                12/25/2024, 12:25:56 PM</span>
-                                                        </div>
-                                                    </span>
-                                                </td>
-                                                <td class="text-danger px-3">- AED 2,555.00</td>
-                                                <td class="px-3">
-                                                    <div class="position-relative">
-                                                        <span class="span-danger"></span> Failed
-                                                    </div>
-                                                </td>
-                                                <td class="px-3">
-                                                    <p class="mb-2">Wallet Transfer</p>
-                                                    <span
-                                                        class="text-truncate text-gray-600 font-12">set35428djd...</span>
-                                                </td>
-                                                <td class="px-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="status-indicator span-department"></span>
-                                                        Warehouse Booking
-                                                    </div>
-
-                                                </td>
-                                                <td class="px-3"><span class="text-truncate font-12">12/25/2024,
-                                                        12:25:56 PM</span></td>
-                                            </tr>
-                                            <tr class="border-bottom">
-                                                <td class="px-3">
-                                                    <div class="form-check">
-                                                        <input
-                                                            class="form-check-input mx-1 bg-transparent border border-white fs-6"
-                                                            type="checkbox" value="" id="checkbox1">
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <span class="d-flex align-items-center">
-                                                        <div>
-                                                            <img src="./icons/type-icon.svg" alt=""
-                                                                class="img-fluid type-img">
-                                                        </div>
-                                                        <div class="ms-4">
-                                                            <p class="text-truncate mb-2 font-14">
-                                                                5txyz0ge653gh...</p>
-                                                            <span class="text-gray-600 font-12">From:
-                                                                12/25/2024, 12:25:56 PM</span>
-                                                        </div>
-                                                    </span>
-                                                </td>
-                                                <td class="text-danger px-3">- AED 2,555.00</td>
-                                                <td class="px-3">
-                                                    <div class="position-relative">
-                                                        <span class="span-danger"></span> Failed
-                                                    </div>
-                                                </td>
-                                                <td class="px-3">
-                                                    <p class="mb-2">Wallet Transfer</p>
-                                                    <span
-                                                        class="text-truncate text-gray-600 font-12">set35428djd...</span>
-                                                </td>
-                                                <td class="px-3">
-                                                    <div class="d-flex align-items-center">
-                                                        <span class="status-indicator span-department"></span>
-                                                        Warehouse Booking
-                                                    </div>
-
-                                                </td>
-                                                <td class="px-3"><span class="text-truncate font-12">12/25/2024,
-                                                        12:25:56 PM</span></td>
-                                            </tr> -->
-                                        </tbody>
-                                    </table>
+                                <div class="dropdown">
+                                    <a href="#"
+                                        class="btn btn-dark ms-auto d-flex align-items-center bg-transparent font-14 custom-btn dropdown-toggle"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <img src="./icons/download.png" alt="" class="img-fluid me-1"> Download
+                                        <i class="fas fa-chevron-down ms-2 me-3 text-color-cs"></i>
+                                    </a>
+                                    <ul class="dropdown-menu font-14 custom-btn">
+                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Current Month</a></li>
+                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Last 3 Months</a></li>
+                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Last 6 Months</a></li>
+                                        <li><a class="dropdown-item text-color-cs my-2" href="#">2024</a></li>
+                                    </ul>
                                 </div>
-                            <div class="d-flex justify-content-center mb-3">
-                                <a class="btn bg-transparent border-0 font-14 font-regular text-white"
-                                    id="loadMoreButton">
-                                    Load More <i class="fas fa-chevron-down ms-2"></i>
-                                </a>
                             </div>
+                            <div class="table-responsive">
+                                <table
+                                    class="table table-dark custom-table align-middle font-medium text-sm full-width-table text-start text-nowrap">
+                                    <thead>
+                                        <tr>
+                                            <th class="font-14 text-white">
+                                                <div class="dropdown">
+                                                    <a href="#"
+                                                        class="btn btn-dark bg-transparent font-14 dropdown-toggle border-0 font-regular"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        TYPE<img src="./icons/sort-in-icon.png" alt=""
+                                                            class="img-fluid me-1" style="margin-bottom: 2px;">
+                                                    </a>
+                                                    <ul class="dropdown-menu font-14 custom-btn">
+                                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Debit
+                                                                Transaction</a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2" href="#">Credit
+                                                                Transaction</a></li>
+                                                    </ul>
+                                                </div>
+                                            </th>
+                                            <th class="px-3 font-14 text-white">AMOUNT</th>
+                                            <th class="font-14 text-white">
+                                                <div class="dropdown">
+                                                    <a href="#"
+                                                        class="btn btn-dark bg-transparent font-14 dropdown-toggle border-0 p-0 font-regular"
+                                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                                        STATUS<img src="./icons/sort-in-icon.png" alt=""
+                                                            class="img-fluid me-1" style="margin-bottom: 2px;">
+                                                    </a>
+                                                    <ul class="dropdown-menu font-14 custom-btn">
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Successful
+                                                            </a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Unsuccessful
+                                                            </a></li>
+                                                        <li><a class="dropdown-item text-color-cs my-2"
+                                                                href="#">Processing
+                                                            </a></li>
+                                                    </ul>
+                                                </div>
+                                            </th>
+                                            <th class="px-3 font-14 text-white">METHOD</th>
+                                            <th class="px-3 font-14 text-white">DEPARTMENT</th>
+                                            <th class="px-3 font-14 text-white">DATE</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-bottom">
+                                            <td>
+                                                <span class="d-flex align-items-center">
+                                                    <div>
+                                                        <img src="./icons/type-icon-in-transaction.svg" alt=""
+                                                            class="img-fluid type-img">
+                                                    </div>
+                                                    <div class="ms-2">
+                                                        <p class="text-truncate font-12 mb-2">
+                                                            5txyz0ge653gh...</p>
+                                                        <span class="text-gray-600 font-12">From:
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td class="text-danger px-3">- AED 2,555.00</td>
+                                            <td class="px-3">
+                                                <div class="position-relative">
+                                                    <span class="span-danger"></span> Failed
+                                                </div>
+                                            </td>
+                                            <td class="px-3">
+                                                <p class="mb-2">Wallet Transfer</p>
+                                                <span class="text-truncate text-gray-600 font-12">set35428djd...</span>
+                                            </td>
+                                            <td class="px-3">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="status-indicator span-department"></span>
+                                                    Warehouse Booking
+                                                </div>
+
+                                            </td>
+                                            <td class="px-3"><span class="text-truncate font-12">12/25/2024,
+                                                    12:25:56 PM</span></td>
+                                        </tr>
+                                        <tr class="border-bottom">
+                                            <td>
+                                                <span class="d-flex align-items-center">
+                                                    <div>
+                                                        <img src="./icons/type-icon-out-transaction.svg" alt=""
+                                                            class="img-fluid type-img">
+                                                    </div>
+                                                    <div class="ms-2">
+                                                        <p class="text-truncate font-12 mb-2">
+                                                            5txyz0ge653gh...</p>
+                                                        <span class="text-gray-600 font-12">To:
+                                                        </span>
+                                                    </div>
+                                                </span>
+                                            </td>
+                                            <td class="text-danger px-3">- AED 2,555.00</td>
+                                            <td class="px-3">
+                                                <div class="position-relative">
+                                                    <span class="span-danger"></span> Failed
+                                                </div>
+                                            </td>
+                                            <td class="px-3">
+                                                <p class="mb-2">Wallet Transfer</p>
+                                                <span class="text-truncate text-gray-600 font-12">set35428djd...</span>
+                                            </td>
+                                            <td class="px-3">
+                                                <div class="d-flex align-items-center">
+                                                    <span class="status-indicator span-department"></span>
+                                                    Warehouse Booking
+                                                </div>
+
+                                            </td>
+                                            <td class="px-3"><span class="text-truncate font-12">12/25/2024,
+                                                    12:25:56 PM</span></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <!--begin::Pagination-->
+                            <nav class="d-flex justify-content-end">
+                                <ul class="pagination d-inline-flex custom-border-color rounded p-2">
+                                    <li class="page-item"><a href="#"
+                                            class="page-link fa fa-chevron-left mr-1 font-14 border-0"></a>
+                                    </li>
+                                    <li class="page-item">
+                                        <a class="page-link font-12 border-0 rounded" href="#" tabindex="-1">First</a>
+                                    </li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">1</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">2</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">3</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">4</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">5</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">...</a></li>
+                                    <li class="page-item"><a
+                                            class="page-link font-12 mx-1 border-0 bg-color-pagination rounded"
+                                            href="#">22</a></li>
+                                    <li class="page-item">
+                                        <a class="page-link font-12 border-0 rounded" href="#">Last</a>
+                                    </li>
+                                    <li class="page-item"><a href="#"
+                                            class="page-link fa fa-chevron-right font-14 border-0"></a></li>
+                                </ul>
+                            </nav>
+                            <!--end:: Pagination-->
                         </div>
                     </div>
                     <!--end::Row-->
