@@ -501,9 +501,12 @@ h1, h4 {
   .page-link:hover{
     box-shadow: none;
     background-color: #fff !important;
-    color:rgba(17, 52, 73, 1);
+    color:rgba(17, 52, 73, 1);}
 
-  }
+    .page-link.active{
+      color: rgba(17, 52, 73, 1);
+      background-color: rgba(255, 255, 255, 1);
+    }
 
   .middle-div{
     flex-grow: 1; 
@@ -839,9 +842,6 @@ h1, h2, h3, h4, h5, h6, p{
   background-color: #236993!important;
 }
 
-.bg-color-pagination{
-  background-color: #2369931A !important;
-}
 
 .card-bordered {
   border: 1px solid #23699326 !important;
@@ -923,4 +923,9 @@ h1, h2, h3, h4, h5, h6, p{
 .spinner-border {
   width: 3rem;
   height: 3rem;
+}
+
+.custom-img{
+  max-width: 48px;
+  max-height: 48px;
 }
