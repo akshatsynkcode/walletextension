@@ -837,6 +837,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 .bg-color-button{
   background-color: #236993!important;
+  color: white !important;
 }
 
 .bg-color-pagination{

@@ -28,6 +28,11 @@
 </head>
 
 <body>
+    <div id="full-screen-loader" style="display: none;">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
     <div class="container-fluid p-0">
         <div class="row g-0">
             <div class="col-lg-2 col-12">
@@ -158,19 +163,24 @@
                                 <div class="input-group">
                                     <div class="dropdown">
                                         <button class="btn btn-dark border-dark dropdown-toggle bg-color-button font-14"
-                                            type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown"
+                                            type="button" id="dateRangeDropdown" data-bs-toggle="dropdown"
                                             aria-expanded="false">
-                                            Last 7 days
+                                            Last 7 Days
                                         </button>
+                                        <ul class="dropdown-menu" id="dateRangeMenu">
+                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 7 Days">Last 7 Days</a></li>
+                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 15 Days">Last 15 Days</a></li>
+                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 30 Days">Last 30 Days</a></li>
+                                        </ul>
                                     </div>
                                     <div class="d-flex align-items-center ms-4">
-                                        <button
-                                            class="btn text-white border-right-0 rounded-end-0 bg-color-button font-14">All
-                                            25</button>
-                                        <button class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
-                                            35</button>
-                                        <button class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
-                                            05</button>
+                                        <button id="allTransactionbtn"
+                                            class="btn custom-btn border-right-0 rounded-end-0 bg-color-button font-14">All
+                                            0</button>
+                                        <button id="successfulTransactionbtn" class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
+                                            0</button>
+                                        <button id="failedTransactionbtn" class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
+                                            0</button>
                                     </div>
                                 </div>
                                 <div class="dropdown">
@@ -237,76 +247,7 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                        <tr class="border-bottom">
-                                            <td>
-                                                <span class="d-flex align-items-center">
-                                                    <div>
-                                                        <img src="./icons/type-icon-in-transaction.svg" alt=""
-                                                            class="img-fluid type-img">
-                                                    </div>
-                                                    <div class="ms-2">
-                                                        <p class="text-truncate font-12 mb-2">
-                                                            5txyz0ge653gh...</p>
-                                                        <span class="text-gray-600 font-12">From:
-                                                        </span>
-                                                    </div>
-                                                </span>
-                                            </td>
-                                            <td class="text-danger px-3">- AED 2,555.00</td>
-                                            <td class="px-3">
-                                                <div class="position-relative">
-                                                    <span class="span-danger"></span> Failed
-                                                </div>
-                                            </td>
-                                            <td class="px-3">
-                                                <p class="mb-2">Wallet Transfer</p>
-                                                <span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-                                            </td>
-                                            <td class="px-3">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="status-indicator span-department"></span>
-                                                    Warehouse Booking
-                                                </div>
-
-                                            </td>
-                                            <td class="px-3"><span class="text-truncate font-12">12/25/2024,
-                                                    12:25:56 PM</span></td>
-                                        </tr>
-                                        <tr class="border-bottom">
-                                            <td>
-                                                <span class="d-flex align-items-center">
-                                                    <div>
-                                                        <img src="./icons/type-icon-out-transaction.svg" alt=""
-                                                            class="img-fluid type-img">
-                                                    </div>
-                                                    <div class="ms-2">
-                                                        <p class="text-truncate font-12 mb-2">
-                                                            5txyz0ge653gh...</p>
-                                                        <span class="text-gray-600 font-12">To:
-                                                        </span>
-                                                    </div>
-                                                </span>
-                                            </td>
-                                            <td class="text-danger px-3">- AED 2,555.00</td>
-                                            <td class="px-3">
-                                                <div class="position-relative">
-                                                    <span class="span-danger"></span> Failed
-                                                </div>
-                                            </td>
-                                            <td class="px-3">
-                                                <p class="mb-2">Wallet Transfer</p>
-                                                <span class="text-truncate text-gray-600 font-12">set35428djd...</span>
-                                            </td>
-                                            <td class="px-3">
-                                                <div class="d-flex align-items-center">
-                                                    <span class="status-indicator span-department"></span>
-                                                    Warehouse Booking
-                                                </div>
-
-                                            </td>
-                                            <td class="px-3"><span class="text-truncate font-12">12/25/2024,
-                                                    12:25:56 PM</span></td>
-                                        </tr>
+                                    
                                     </tbody>
                                 </table>
                             </div>
