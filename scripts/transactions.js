@@ -91,7 +91,10 @@ async function fetchUpdatedUserProfile() {
   }
 }
 
-async function fetchAndUpdateTransactionHistory() {
+let currentPage = 1;
+const transactionsPerPage = 5; // Adjust as needed
+
+async function fetchAndUpdateTransactionHistory(page = 1) {
   const { authToken } = await chrome.storage.sync.get("authToken");
   if (!authToken) {
     console.error("Authorization token is missing");
@@ -101,7 +104,7 @@ async function fetchAndUpdateTransactionHistory() {
 
   try {
     const response = await fetch(
-      `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction`,
+      `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}`,
       {
         method: "GET",
         headers: { Authorization: `Bearer ${authToken}` },
@@ -113,10 +116,7 @@ async function fetchAndUpdateTransactionHistory() {
         console.error("Token expired or invalid, redirecting to login.");
         redirectToLogin();
       } else {
-        console.error(
-          "Failed to fetch transaction history:",
-          response.statusText
-        );
+        console.error("Failed to fetch transaction history:", response.statusText);
       }
       return;
     }
@@ -124,7 +124,6 @@ async function fetchAndUpdateTransactionHistory() {
     const result = await response.json();
     if (result.status === "success") {
       const transactions = result.data;
-      console.log(transactions, "transactions");
       const tableBody = document.querySelector(".custom-table tbody");
       tableBody.innerHTML = ""; // Clear previous data
 
@@ -136,74 +135,47 @@ async function fetchAndUpdateTransactionHistory() {
         row.classList.add("border-bottom");
 
         row.innerHTML = `
-
-                    <td>
-                        <span class="d-flex align-items-center">
-                            <div style="width: max-content;">
-                                <img src="${
-                                  transaction.debit
-                                    ? out_transaction_img
-                                    : in_transaction_img
-                                }" alt="" class="img-fluid type-img">
-                            </div>
-                            <div class="ms-4">
-                                <p class="text-truncate mb-2 font-14">${
-                                  transaction.debit
-                                    ? truncateWalletAddress(
-                                        transaction.to_wallet_address
-                                      )
-                                    : truncateWalletAddress(
-                                        transaction.from_wallet_address
-                                      )
-                                }</p>
-                                <span class="text-gray-600 font-12">From: ${new Date(
-                                  transaction.created_at
-                                ).toLocaleString()}</span>
-                            </div>
-                        </span>
-                    </td>
-                    <td class="${
-                      transaction.debit ? "text-danger" : "text-success"
-                    } px-3">
-                        ${transaction.debit ? "-" : "+"} AED ${
-          transaction.amount
-        }
-                    </td>
-                    <td class="px-3">
-                        <div class="position-relative">
-                            <span class="${
-                              transaction.status === "completed"
-                                ? "span-success"
-                                : "span-danger"
-                            }"></span> ${transaction.status}
-                        </div>
-                    </td>
-                    <td class="px-3">
-                        <p class="mb-2">${
-                          transaction.module_id === "Top up wallet"
-                            ? "Bank Transfer"
-                            : "Wallet Transfer"
-                        }</p>
-                        <span class="text-truncate text-gray-600 font-12">${
-                          truncateWalletAddress(transaction.extrinsic_hash) ||
-                          "N/A"
-                        }</span>
-                    </td>
-                    <td class="px-3">
-                        <div class="d-flex align-items-center">
-                            <span class="status-indicator span-department"></span>
-                            ${transaction.module_type || "N/A"}
-                        </div>
-                    </td>
-                    <td class="px-3">
-                        <span class="text-truncate font-12">${new Date(
-                          transaction.created_at
-                        ).toLocaleString()}</span>
-                    </td>
-                `;
+          <td>
+            <span class="d-flex align-items-center">
+              <div style="width: max-content;">
+                <img src="${transaction.debit ? out_transaction_img : in_transaction_img}" alt="" class="img-fluid type-img">
+              </div>
+              <div class="ms-4">
+                <p class="text-truncate mb-2 font-14">${transaction.debit
+                  ? truncateWalletAddress(transaction.to_wallet_address)
+                  : truncateWalletAddress(transaction.from_wallet_address)}</p>
+                <span class="text-gray-600 font-12">From: ${new Date(transaction.created_at).toLocaleString()}</span>
+              </div>
+            </span>
+          </td>
+          <td class="${transaction.debit ? "text-danger" : "text-success"} px-3">
+            ${transaction.debit ? "-" : "+"} AED ${transaction.amount}
+          </td>
+          <td class="px-3">
+            <div class="position-relative">
+              <span class="${transaction.status === "completed" ? "span-success" : "span-danger"}"></span> ${transaction.status}
+            </div>
+          </td>
+          <td class="px-3">
+            <p class="mb-2">${transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"}</p>
+            <span class="text-truncate text-gray-600 font-12">${truncateWalletAddress(transaction.extrinsic_hash) || "N/A"}</span>
+          </td>
+          <td class="px-3">
+            <div class="d-flex align-items-center">
+              <span class="status-indicator span-department"></span>
+              ${transaction.module_type || "N/A"}
+            </div>
+          </td>
+          <td class="px-3">
+            <span class="text-truncate font-12">${new Date(transaction.created_at).toLocaleString()}</span>
+          </td>
+        `;
 
         tableBody.appendChild(row);
       });
+
+      // Update pagination
+      updatePagination(result.page, result.page_count);
     } else {
       console.error("Transaction fetch failed:", result);
     }
@@ -211,6 +183,49 @@ async function fetchAndUpdateTransactionHistory() {
     console.error("Error fetching transaction history:", error);
   }
 }
+
+// Function to update pagination UI
+function updatePagination(currentPage, totalPages) {
+  const paginationContainer = document.querySelector(".pagination");
+  paginationContainer.innerHTML = ""; // Clear previous pagination
+
+  // Previous button
+  const prevButton = document.createElement("li");
+  prevButton.className = "page-item";
+  prevButton.innerHTML = `<a href="#" class="page-link fa fa-chevron-left font-14 border-0"></a>`;
+  prevButton.addEventListener("click", () => {
+    if (currentPage > 1) {
+      fetchAndUpdateTransactionHistory(currentPage - 1);
+    }
+  });
+  paginationContainer.appendChild(prevButton);
+
+  // Page numbers
+  for (let i = 1; i <= totalPages; i++) {
+    const pageItem = document.createElement("li");
+    pageItem.className = `page-item ${i === currentPage ? "active" : ""}`;
+    pageItem.innerHTML = `<a class="page-link font-12 mx-1 border-0 bg-color-pagination rounded" href="#">${i}</a>`;
+    pageItem.addEventListener("click", () => fetchAndUpdateTransactionHistory(i));
+    paginationContainer.appendChild(pageItem);
+  }
+
+  // Next button
+  const nextButton = document.createElement("li");
+  nextButton.className = "page-item";
+  nextButton.innerHTML = `<a href="#" class="page-link fa fa-chevron-right font-14 border-0"></a>`;
+  nextButton.addEventListener("click", () => {
+    if (currentPage < totalPages) {
+      fetchAndUpdateTransactionHistory(currentPage + 1);
+    }
+  });
+  paginationContainer.appendChild(nextButton);
+}
+
+// Load first page on DOMContentLoaded
+document.addEventListener("DOMContentLoaded", () => {
+  fetchAndUpdateTransactionHistory(1);
+});
+
 
 document.addEventListener("DOMContentLoaded", async () => {
   const { authToken } = await chrome.storage.sync.get(["authToken"]);
