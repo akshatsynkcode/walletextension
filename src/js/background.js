@@ -62,8 +62,30 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
     }
     else if (message.action === 'check_auth') {
-        chrome.storage.sync.get(['authToken'], (result) => {
-            sendResponse({ success: true, authToken: result.authToken });
+        chrome.storage.sync.get(['authToken', 'email'], (result) => {
+            let authTokenValue = result.authToken;
+            fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-check-auth?email=${encodeURIComponent(result.email)}`, {
+                method: 'GET',
+                headers: { 'Authorization': `Bearer ${authTokenValue}` },
+            })
+            .then(response => {
+                if (!response.ok) {
+                    console.log("Auth token invalid, logging out");
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                        sendResponse({ success: false, authToken: null });
+                    });
+                } else {
+                    sendResponse({ success: true, authToken: authTokenValue });
+                }
+            })
+            .catch(error => {
+                console.log('Error in auth check, logging out:', error);
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                    sendResponse({ success: false, authToken: null });
+                });
+            });
+            
+            return true;
         });
     } else if (message.action === 'getbalance') {
         chrome.storage.sync.get(['authToken'], (result) => {
@@ -492,7 +514,7 @@ function startAuthCheck() {
 
                 if (response.status === 401) {
                     console.log("Auth token invalid. Logging out.");
-                    chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                         stopAuthCheck(); // Stop the check
                         // chrome.runtime.sendMessage({ action: 'lock_wallet' });
                     });
@@ -512,3 +534,34 @@ function stopAuthCheck() {
         console.log("Auth check stopped.");
     }
 }
+
+chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
+    if (message.action === "storeURL") {
+        let url = message.url;
+        let imgSrc = message.imgSrc;
+        let label = message.label;
+        let imgName =message.imgName;
+
+        chrome.storage.sync.get('recentServices', function (result) {
+            let recentServicesArray = result.recentServices  || [];
+            recentServicesArray.push({ url: url, imgSrc: imgSrc, label: label, imgName: imgName });
+
+            chrome.storage.sync.set({ 'recentServices': recentServicesArray }, function () {
+                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+                    if (tabs.length > 0) {
+                        chrome.tabs.update(tabs[0].id, { url: url });
+                    }
+                });
+                sendResponse({ status: "Recent service stored successfully  !" });
+            });
+        });
+        return true;
+    }
+    if (message.action === "getRecentServices") {
+        chrome.storage.sync.get('recentServices', function (result) {
+            let recentServicesArray = result.recentServices || [];
+            sendResponse({ recentServices: recentServicesArray.slice(-3).reverse() });
+        });
+        return true;
+    }
+});

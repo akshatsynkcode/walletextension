@@ -348,11 +348,6 @@ background-color: rgba(20, 20, 20, 1);
   color: #060677;
   font-size: 1rem;
 }
-.logo {
-    text-align: center;
-    position: relative;
-    z-index: 1;
-}
 h1, h4 {
     text-align: center;
     position: relative;
@@ -714,7 +709,7 @@ th, td{
 
 .sidebar{
   background-color: #2369930D;
-  padding: 20px;
+  padding: 12px;
   border-right: 1px solid #4B4B4B;
 }
 
@@ -753,10 +748,6 @@ h1, h2, h3, h4, h5, h6, p{
 .text-gray-600{
   color: #8A9393;
   font-size: 14px;
-}
-
-.logo{
-  width: 140px;
 }
 
 .border-dashed{
@@ -908,4 +899,28 @@ h1, h2, h3, h4, h5, h6, p{
 
 .custom-border-color{
   border: 1px solid #23699326;
+}
+
+.custom-spinner {
+  border: 5px solid #f3f3f3;
+  border-top: 5px solid rgba(29, 40, 83, 1);
+  border-radius: 50%;
+  animation: spin 1s linear infinite;
+}
+
+#full-screen-loader {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.5);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 9999;
+}
+.spinner-border {
+  width: 3rem;
+  height: 3rem;
 }
