@@ -159,7 +159,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .font-12{
   font-size: 12px;
   font-weight: 400;
-  line-height: 21.9px;
+  line-height: 14.4px;
 }
 .font-18 {
   font-size: 18px;
@@ -500,12 +500,16 @@ h1, h4 {
   }
   .page-link{
     color: white;
-    background-color: rgba(20, 20, 20, 1);
+    background-color: #010507;
   }
+
   .page-link:hover{
     box-shadow: none;
-    background-color: rgba(20, 20, 20, 1) !important;
+    background-color: #fff !important;
+    color:rgba(17, 52, 73, 1);
+
   }
+
   .middle-div{
     flex-grow: 1; 
     display: flex; 
@@ -694,9 +698,6 @@ th, td{
      font-size: 12px;
 }
 
-.font-12{
-     font-size: 12px;
-}
 .card-bordered .card-header{
      min-height: auto !important;
 }
@@ -847,6 +848,9 @@ h1, h2, h3, h4, h5, h6, p{
   background-color: #236993!important;
 }
 
+.bg-color-pagination{
+  background-color: #2369931A !important;
+}
 
 .card-bordered {
   border: 1px solid #23699326 !important;
@@ -872,19 +876,6 @@ h1, h2, h3, h4, h5, h6, p{
 .table.custom-table th {
   border-left: none !important;
   border-right: none !important;
-}
-
-
-.span-success {
-  background-color: #48bb78;
-}
-
-.span-danger {
-  background-color: #f56565;
-}
-
-.span-warning {
-  background-color: #ecc94b;
 }
 
 .span-department {
