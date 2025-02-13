@@ -388,7 +388,6 @@ function updatePagination(totalPages, currentPage = 1) {
   
   paginationContainer.innerHTML = ""; // Clear previous pagination
   let createPageItem = (text, page, isActive = false, isDisabled = false) => {
-    // add ul tag first
     
       let li = document.createElement("li");
       li.className = `page-item ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`;
