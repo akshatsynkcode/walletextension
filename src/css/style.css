@@ -837,6 +837,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 .bg-color-button{
   background-color: #236993!important;
+  color: white !important;
 }
 
 .bg-color-pagination{
@@ -847,6 +848,9 @@ h1, h2, h3, h4, h5, h6, p{
   border: 1px solid #23699326 !important;
   border-radius: 8px;
   overflow: hidden; 
+}
+.hide-pagination {
+  display: none !important;
 }
 
 
