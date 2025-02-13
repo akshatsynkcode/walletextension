@@ -99,7 +99,7 @@ async function fetchUpdatedUserProfile() {
   }
 }
 
-async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days", page=1) {
+async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=1) {
   pageSize = 7
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
@@ -117,6 +117,10 @@ async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days", pa
       startDate = endDate - 15 * 24 * 60 * 60;
   } else if (selectedText === "Last 30 Days") {
       startDate = endDate - 30 * 24 * 60 * 60;
+  }
+  else if (selectedText === "All Time") {
+      startDate = "";
+      endDate = "";
   } else {
       console.error("Invalid date range selected");
       return;
