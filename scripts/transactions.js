@@ -99,8 +99,8 @@ async function fetchUpdatedUserProfile() {
   }
 }
 
-async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days") {
-  console.log("Fetching transactions for:", selectedText);
+async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days", page=1) {
+  pageSize = 7
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
   if (dropdownButton) {
@@ -132,9 +132,9 @@ async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days") {
           redirectToLogin();
           return;
       }
-      console.log(startDate, endDate);
+
       const response = await fetch(
-          `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}&page_size=100`,
+          `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}&page_size=${pageSize}&page=${page}`,
           {
               method: "GET",
               headers: {
@@ -158,6 +158,9 @@ async function fetchAndUpdateTransactionHistory(selectedText = "Last 7 Days") {
       const result = await response.json();
       updateTransactionTable(result);
 
+      // Update pagination
+      updatePagination(result.page_count, page);
+
   } catch (error) {
       console.error("Error fetching transaction history:", error);
   }
@@ -175,10 +178,10 @@ function setupDateRangeListeners() {
 function updateTransactionTable(result) {
   if (result.status === "success") {
     const transactions = result.data;
-    console.log("updateTransactionTable",transactions.length);
+    const total_count = result.stats.data_count;
 
-    let failedCount = transactions.filter(tx => tx.status === "failed").length;
-    let completedCount = transactions.filter(tx => tx.status === "completed").length;
+    let failedCount = result.stats.failed_count;
+    let completedCount = result.stats.success_count;
 
     const allTransactionbtn = document.getElementById("allTransactionbtn");
     const successfulTransactionbtn = document.getElementById("successfulTransactionbtn");
@@ -187,7 +190,7 @@ function updateTransactionTable(result) {
     // Format count with leading zero if less than 10
     const formatCount = (count) => count < 10 ? `0${count}` : count;
 
-    allTransactionbtn.textContent = `All ${formatCount(transactions.length)}`;
+    allTransactionbtn.textContent = `All ${formatCount(total_count)}`;
     successfulTransactionbtn.textContent = `Completed ${formatCount(completedCount)}`;
     failedTransactionbtn.textContent = `Failed ${formatCount(failedCount)}`;
 
@@ -370,3 +373,67 @@ document.addEventListener("DOMContentLoaded", async () => {
     });
   }
 });
+
+
+function updatePagination(totalPages, currentPage = 1) {
+  let paginationContainer = document.querySelector(".pagination");
+  
+  if (totalPages <= 1){
+    paginationContainer.classList.add("hide-pagination");
+    return;
+  }
+  else{
+    paginationContainer.classList.remove("hide-pagination");
+  }
+  
+  paginationContainer.innerHTML = ""; // Clear previous pagination
+  let createPageItem = (text, page, isActive = false, isDisabled = false) => {
+    // add ul tag first
+    
+      let li = document.createElement("li");
+      li.className = `page-item ${isActive ? "active" : ""} ${isDisabled ? "disabled" : ""}`;
+      let a = document.createElement("a");
+      a.className = "page-link";
+      a.href = "#";
+      a.textContent = text;
+      if (!isDisabled) {
+          a.addEventListener("click", (e) => {
+              e.preventDefault();
+              fetchAndUpdateTransactionHistory(document.getElementById("dateRangeDropdown").textContent, page);
+          });
+      }
+      li.appendChild(a);
+      return li;
+  };
+  if (totalPages <= 5) {
+      for (let i = 1; i <= totalPages; i++) {
+          let pageItem = createPageItem(i, i, currentPage === i);
+          paginationContainer.appendChild(pageItem);
+      }
+      return;
+  }
+  if (currentPage <= 3) {
+      for (let i = 1; i <= 5; i++) {
+          let pageItem = createPageItem(i, i, currentPage === i);
+          paginationContainer.appendChild(pageItem);
+      }
+      paginationContainer.appendChild(createPageItem("...", currentPage + 1));
+      paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
+  } else if (currentPage >= totalPages - 2) {
+      paginationContainer.appendChild(createPageItem(1, 1, currentPage === 1));
+      paginationContainer.appendChild(createPageItem("...", currentPage - 1));
+      for (let i = totalPages - 4; i <= totalPages; i++) {
+          let pageItem = createPageItem(i, i, currentPage === i);
+          paginationContainer.appendChild(pageItem);
+      }
+  } else {
+      paginationContainer.appendChild(createPageItem(1, 1, currentPage === 1));
+      paginationContainer.appendChild(createPageItem("...", currentPage - 1));
+      for (let i = currentPage - 2; i <= currentPage + 2; i++) {
+          let pageItem = createPageItem(i, i, currentPage === i);
+          paginationContainer.appendChild(pageItem);
+      }
+      paginationContainer.appendChild(createPageItem("...", currentPage + 1));
+      paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
+  }
+}
