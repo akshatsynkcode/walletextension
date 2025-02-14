@@ -245,6 +245,14 @@ async function lockWallet() {
             const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             lockModal.show();
             const confirmButton = document.querySelector('.yes-btn');
+            const cancelButton = document.querySelector('.no-btn');
+            cancelButton.addEventListener('click', () => {
+                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
+                modalElement.addEventListener("hidden.bs.modal", function () {
+                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
+                });
+            })
             confirmButton.addEventListener('click', () => {
                 lockModal.hide();
                 lockWallet();

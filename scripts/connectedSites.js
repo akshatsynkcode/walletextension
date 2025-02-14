@@ -123,7 +123,7 @@ function renderConnectedSites(sites) {
         const siteDiv = document.createElement('div');
         siteDiv.className = 'w-100 mb-4';
         siteDiv.innerHTML = `
-            <div class="dropdown dropdown-menu-end w-100">
+            <div class="dropdown dropdown-menu-end w-100" style="background-color: #181b1c;">
                 <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
                     type="button" data-bs-toggle="dropdown" aria-expanded="false">
                     <div class="d-flex align-items-center">
@@ -264,6 +264,14 @@ function removeSiteFromStorage(site) {
             const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             lockModal.show();
             const confirmButton = document.querySelector('.yes-btn');
+            const cancelButton = document.querySelector('.no-btn');
+            cancelButton.addEventListener('click', () => {
+                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
+                modalElement.addEventListener("hidden.bs.modal", function () {
+                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
+                });
+            })
             confirmButton.addEventListener('click', () => {
                 lockModal.hide();
                 lockWallet();
