@@ -95,17 +95,19 @@ async function fetchUpdatedUserProfile() {
   
         hideFullScreenLoader();  // Hide loader after the data is fetched successfully
         return data;
-      } else if (response.status === 404) {
+      } else if (response.status === 401) {
         console.error('Token expired or invalid, redirecting to login.');
         redirectToLogin();
         hideFullScreenLoader();  // Hide loader if token is invalid
       } else {
         console.error('Failed to fetch user profile:', response.statusText);
-        hideFullScreenLoader();  // Hide loader in case of error
+        hideFullScreenLoader();
+        redirectToLogin();  // Hide loader in case of error
       }
     } catch (error) {
       console.error('Error fetching user profile:', error);
-      hideFullScreenLoader();  // Hide loader on error
+      hideFullScreenLoader(); 
+      redirectToLogin(); // Hide loader on error
     }
 }
 function renderConnectedSites(sites) {

@@ -150,7 +150,7 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
       );
 
       if (!response.ok) {
-          if (response.status === 404) {
+          if (response.status === 401) {
               console.error("Token expired or invalid, redirecting to login.");
               redirectToLogin();
           } else {

@@ -38,107 +38,6 @@ function showFullScreenLoader() {
 function hideFullScreenLoader() {
     document.getElementById('full-screen-loader').style.display = 'none';
 }
-
-// Fetch and update balance
-// async function fetchAndUpdateBalance() {
-   
-//     try {
-//         const { authToken } = await chrome.storage.sync.get('authToken');
-//         if (!authToken) {
-//             console.error('Authorization token is missing');
-//             redirectToLogin();
-//             return;
-//         }
-
-//         const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
-//             method: 'GET',
-//             headers: { 'Authorization': `Bearer ${authToken}` }
-//         });
-
-//         if (response.ok) {
-//             const { balance } = await response.json();
-//             document.getElementById('balance').textContent = `AED ${formatAmount(parseFloat(balance).toFixed(3))}`;
-//         } else if (response.status === 401) {
-//             console.error('Token expired or invalid, redirecting to login.');
-//             redirectToLogin();
-//         } else {
-//             console.error('Failed to fetch balance:', response.statusText);
-//         }
-//     } catch (error) {
-//         console.error('Error fetching balance:', error);
-//     }
-// }
-
-
-
-
-// prevButton.addEventListener("click", async () => {
-//     if (currentPage > 1) {
-//         await fetchAndUpdateTransactionHistory(currentPage - 1);
-//     }
-// });
-
-// nextButton.addEventListener("click", async () => {
-//     if (currentPage < totalPages) {
-//         await fetchAndUpdateTransactionHistory(currentPage + 1);
-//     }
-// });
-
-// // Function to update the UI with the fetched transaction history
-// function updateTransactionHistoryUI(transactions) {
-//     const activityContainer = document.querySelector('.p-3');
-//     activityContainer.innerHTML = ''; // Clear any existing content
-
-//     transactions.forEach(transaction => {
-//         // Create a new card for each transaction
-//         const fullwalletAdress = transaction.debit ? transaction.to_wallet_address : transaction.from_wallet_address;
-//         const shortAddress = fullwalletAdress.substring(0, 5) + '...' + fullwalletAdress.substring(fullwalletAdress.length - 4);
-//         const colorClass = transaction.debit ? 'text-danger' : 'text-success';
-//         const typeText = transaction.debit ? 'To' : 'From';
-//         let statuscolor = 'text-secondary';
-//         let borderClass = '';
-//         const sign = transaction.debit ? '-' : '+';
-
-//         if (transaction.status === 'pending') {
-//         statuscolor = 'text-warning';
-//         borderClass = 'border border-warning';
-//         } else if (transaction.status === 'completed') {
-//         statuscolor = 'text-success';
-//         borderClass = 'border border-success';
-//         }
-
-//         const transactionCard = document.createElement('div');
-//         transactionCard.classList.add('card', 'mb-3', 'border-0', 'activity-card');
-
-//         transactionCard.innerHTML = `
-//             <div class="row g-0 justify-content-center align-items-center">
-//                 <!-- First Column: Transaction to -->
-//                 <div class="col-4 col-md-4 ps-2">
-//                     <div class="text-start activity-card-body p-1">
-//                         <h5 class="card-title font-14 font-regular m-0 text-white">${typeText} : </h5>
-//                         <a href="#" class="address-link mx-2" style="color: rgba(0, 194, 255, 1);" data-full-address="${fullwalletAdress}" 
-//        title="${fullwalletAdress}">${shortAddress}</a>
-//        <span class="copy-message" style="display: none;">Copied!</span>
-//        </div>
-//                 </div>
-                
-//                 <!-- Second Column: Amount -->
-//                 <div class="col-4 col-md-4 text-center d-flex justify-content-center">
-//                     <h5 class="card-title font-14 font-regular m-0 ${colorClass}">${sign} AED ${parseFloat(transaction.amount).toFixed(2)}</h5>
-//                     <span class="card-text font-12 ms-2"><small class="badge status-color ${statuscolor} ${borderClass}">${transaction.status}</small></span>
-//                 </div>
-                
-//                 <!-- Third Column: Date of the Transaction -->
-//                 <div class="col-4 col-md-4 text-end padding-right">
-//                     <p class="card-text font-12 text-white"><small>${new Date(transaction.created_at).toLocaleString()}</small></p>
-//                 </div>
-//             </div>
-//         `;
-
-//         activityContainer.appendChild(transactionCard);
-//     });
-// }
-
 // // Fetch updated user profile from the API
 async function fetchUpdatedUserProfile() {
     showFullScreenLoader();
@@ -161,11 +60,14 @@ async function fetchUpdatedUserProfile() {
             hideFullScreenLoader();
             console.log(data);
             return data;
-        } else if (response.status === 404) {
+        } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
             redirectToLogin();
+            hideFullScreenLoader();
         } else {
             console.error('Failed to fetch user profile:', response.statusText);
+            hideFullScreenLoader();
+            redirectToLogin();
         }
     } catch (error) {
         console.error('Error fetching user profile:', error);
@@ -206,8 +108,10 @@ async function lockWallet() {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';
+                            hideFullScreenLoader();
                         } else {
                             console.error('Failed to close full-screen tab.');
+                            hideFullScreenLoader();
                         }
                     });
                 });
@@ -224,29 +128,6 @@ async function lockWallet() {
         alert('An error occurred during logout. Please try again.' + response.status);
     }
 }
-
-// // Remaining unchanged code for copy wallet address and DOM loading logic follows
-// //   document.querySelector('.p-3').addEventListener('click', (event) => {
-// //     if (event.target.classList.contains('address-link')) {
-// //         event.preventDefault();
-// //         const fullwalletAddress = event.target.getAttribute('data-full-address');
-// //         const copyMessage = document.createElement('span');
-// //         copyMessage.className = 'copy-message';
-// //         copyMessage.style.display = 'inline';
-// //         copyMessage.textContent = 'Copied!';
-// //         event.target.parentNode.appendChild(copyMessage);
-
-// //         if (fullwalletAddress) {
-// //             navigator.clipboard.writeText(fullwalletAddress).then(() => {
-// //                 setTimeout(() => {
-// //                     copyMessage.style.display = 'none';
-// //                 }, 1000);
-// //             }).catch(err => {
-// //                 console.error('Could not copy text: ', err);
-// //             });
-// //         }
-// //     }
-// // });
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
@@ -372,65 +253,6 @@ async function lockWallet() {
     }
   });
 
-//   document.addEventListener('DOMContentLoaded', function() {
-//     const navLinks = document.querySelectorAll('.navbar-nav .nav-link');
-//     const navbarCollapse = document.getElementById('navbarSupportedContent');
-//     const navbarToggler = document.querySelector('.navbar-toggler');
-
-//     // Close the navbar when a nav link is clicked
-//     navLinks.forEach(link => {
-//       link.addEventListener('click', () => {
-//         if (navbarCollapse.classList.contains('show')) {
-//           navbarCollapse.classList.remove('show');
-//           navbarToggler.setAttribute('aria-expanded', 'false');
-//         }
-//       });
-//     });
-
-//     // Close the navbar when clicking outside of it
-//     window.addEventListener('click', (event) => {
-//       if (!navbarCollapse.contains(event.target) && !navbarToggler.contains(event.target)) {
-//         if (navbarCollapse.classList.contains('show')) {
-//           navbarCollapse.classList.remove('show');
-//           navbarToggler.setAttribute('aria-expanded', 'false');
-//         }
-//       }
-//     });
-//   });
-
-
-//   document.addEventListener("DOMContentLoaded", () => {
-//     const searchInput = document.getElementById('search-input');
-//     let debounceTimeout;
-
-//     searchInput.addEventListener('input', function () {
-//         query = this.value;
-//         console.log(query);
-//         currentPage = 1;
-//         totalPages = 1;
-//         if (query !== '') {
-//             clearTimeout(debounceTimeout);
-//             debounceTimeout = setTimeout(() => {
-//                 fetchAndUpdateTransactionHistory(currentPage);
-//             }, 300); 
-//         } else {
-//             fetchAndUpdateTransactionHistory(currentPage);
-//         }
-//     });
-// });
-// // document.addEventListener("DOMContentLoaded", () => {
-// //     document.getElementById('transaction-filter').addEventListener('change', function() {
-// //         // Get the current URL
-// //         const value = document.getElementById('transaction-filter').value;
-// //         filter = value;
-// //         if (value != ''){
-// //             currentPage = 1;
-// //             totalPages = 1;
-// //             fetchAndUpdateTransactionHistory(currentPage)
-// //         }
-        
-// //     });
-// // });
 async function fetchTransactionCount() {
     const authToken = await chrome.storage.sync.get('authToken');
     if (!authToken || !authToken.authToken) {
@@ -453,6 +275,7 @@ async function fetchTransactionCount() {
         updateTransactionCountUI(data);
     } else {
         const errorData = await response.json();
+        redirectToLogin();
         console.error('Failed to fetch transaction count:', errorData.error);
     }
 }
@@ -493,7 +316,10 @@ if (!authToken) {
             }
         });
         
-        if (!response.ok) throw new Error('Failed to fetch data');
+        if (!response.ok) {
+            console.error('Failed to fetch transaction data:', response.statusText);
+            redirectToLogin();
+        }
         
         const data = await response.json();
         console.log("this is data.data", data);
