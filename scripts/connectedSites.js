@@ -107,7 +107,7 @@ async function fetchUpdatedUserProfile() {
       console.error('Error fetching user profile:', error);
       hideFullScreenLoader();  // Hide loader on error
     }
-  }
+}
 function renderConnectedSites(sites) {
     if (!sites) {
         console.error('No connected sites data available');
@@ -132,18 +132,75 @@ function renderConnectedSites(sites) {
                     <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
                 </a>
                 <ul class="dropdown-menu ms-4">
-                    <li><button class="dropdown-item btn btn-transparent text-color-cs">Forget Site</button></li>
-                    <li><button class="dropdown-item btn btn-transparent text-color-cs">Disconnect</button></li>
+                    <li><button class="dropdown-item btn btn-transparent text-color-cs disconnect-btn">Disconnect</button></li>
                 </ul>
             </div>
         `;
         container.appendChild(siteDiv);
+        siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+            const updatedSites = sites.filter(s => s.service_name !== site.service_name);
+            
+            chrome.storage.sync.get(['authToken'], (result) => {
+                if (result.authToken) {
+                    deleteSite(site.service_url, result.authToken, "remove");
+                    removeSiteFromStorage(site.service_url)
+                    renderConnectedSites(updatedSites);
+                } else {
+                    console.error("No authToken found.");
+                }
+            });
+        });
     });
 }
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await fetchUpdatedUserProfile(); // Fetch and render profile and connected sites on load
-});
+function deleteSite(site, authToken, operation) {
+    // Replace the URL with your API endpoint
+    const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-profile`;
+
+    const requestBody = {
+        domain: site,
+        operation: operation, // Example of passing the second variable
+    };
+
+    fetch(apiUrl, {
+        method: 'PUT',
+        headers: {
+            'Content-Type': 'application/json',
+            "Authorization": `Bearer ${authToken}`,
+        },
+        body: JSON.stringify(requestBody),
+    })
+    .then(response => {
+        if (response.ok) {
+            console.log(`Successfully updated site: ${site}`);
+        } else {
+            console.error(`Failed to update site: ${site}`);
+        }
+    })
+    .catch(error => {
+        console.error(`Error updating site: ${site}`, error);
+    });
+}
+
+function removeSiteFromStorage(site) {
+    chrome.storage.sync.get(['connectedSites'], function(result) {
+        const connectedSites = result.connectedSites || [];
+        
+        const index = connectedSites.indexOf(site);
+        if (index !== -1) {
+            connectedSites.splice(index, 1);
+            console.log(`Site removed from storage: ${site}`);
+            
+            chrome.storage.sync.set({ connectedSites }, function() {
+                console.log('Updated connectedSites saved to storage:', connectedSites);
+            });
+        } else {
+            console.warn(`Site not found in connectedSites: ${site}`);
+        }
+    });
+}
+
+
 
   document.addEventListener('DOMContentLoaded', async () => {
     const { authToken } = await chrome.storage.sync.get(['authToken']);
@@ -211,4 +268,21 @@ document.addEventListener('DOMContentLoaded', async () => {
             }, { once: true });
         });
     }
+
+    document.querySelector('#disconnect-all-btn').addEventListener('click', function () {
+        chrome.storage.sync.get(['authToken'], function(result) {
+
+            if (!result.authToken) {
+                console.error("Auth token not found.");
+                return;
+            }
+
+            chrome.storage.sync.set({ 'connectedSites': [] }, function () {
+                deleteSite("",result.authToken, "remove_all")
+                renderConnectedSites([]);
+            });
+
+        });
+    });
+    
   });
