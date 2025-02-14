@@ -169,26 +169,26 @@
 										<div>
 											<p class="mb-0">Overview</p>
 										</div>
-										<div>
-											<p class="text-white mb-0 font-14">This Month</p>
+										<div class="ms-auto"> <!-- This pushes the dropdown to the right -->
+											<div class="dropdown">
+												<button class="btn btn-dark border-dark dropdown-toggle bg-color-button font-14"
+													type="button" id="chartDateRangeDropdown" data-bs-toggle="dropdown"
+													aria-expanded="false">
+													All Time
+												</button>
+												<ul class="dropdown-menu dropdown-menu-end" id="chartDateRangeMenu"> 
+													<li><a class="dropdown-item text-white" href="#" data-value="All Time">All Time</a></li>
+													<li><a class="dropdown-item text-white" href="#" data-value="Last 7 Days">Last 7 Days</a></li>
+													<li><a class="dropdown-item text-white" href="#" data-value="Last 15 Days">Last 15 Days</a></li>
+													<li><a class="dropdown-item text-white" href="#" data-value="Last 30 Days">Last 30 Days</a></li>
+													<li><a class="dropdown-item text-white" href="#" data-value="Last Year">Last Year</a></li>
+												</ul>
+											</div>
 										</div>
-									</div>
+									</div>									
 								</div>
 								<div class="card-body custom-card-border">
-									<div class="row g-3 mt-2">
-										<div class="col-md-4 col-4">
-											<h2 class="font-28 text-center" id ="total-count"></h2>
-											<p class="text-center mt-2 text-gray-600">Transaction</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<h2 class="font-28 text-center" id = "credit-count"></h2>
-											<p class="text-center mt-2 text-gray-600">Income</p>
-										</div>
-										<div class="col-md-4 col-4">
-											<h2 class="font-28 text-center" id="debit-count"></h2>
-											<p class="text-center mt-2 text-gray-600">Outgoing</p>
-										</div>
-									</div>
+									<div id="pie-chart" style="width: 100%; height: 300px;"></div>
 								</div>
 							</div>
 						</div>

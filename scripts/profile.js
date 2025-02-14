@@ -1,4 +1,4 @@
-
+import Highcharts from 'highcharts';
 // let currentPage = 1;
 // let totalPages = 1;
 // let query = '';
@@ -250,6 +250,9 @@ async function lockWallet() {
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
+    let defaultSelectedText = document.getElementById("chartDateRangeDropdown")?.textContent.trim() || "Last 7 Days";
+    await fetchTransactionCount(defaultSelectedText);
+    setupDateRangeListeners();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
@@ -353,7 +356,7 @@ async function lockWallet() {
         fetchQuickLinks();
         fetchRecentServices();
         // Fetch transaction history
-        await fetchAndUpdateTransactionHistory(pageSize=5);
+        await fetchAndUpdateTransactionHistory();
   
         // Periodic balance update
     }
@@ -431,7 +434,38 @@ async function lockWallet() {
         
 // //     });
 // // });
-async function fetchTransactionCount() {
+async function fetchTransactionCount(selectedText = "All Time") {
+
+    let dropdownButton = document.getElementById("chartDateRangeDropdown");
+    if (dropdownButton) {
+        dropdownButton.textContent = selectedText; // Update the dropdown button text
+    }
+
+    // Calculate start_date and end_date
+    let endDate = Math.floor(Date.now() / 1000);
+    let startDate;
+
+    if (selectedText === "Last 7 Days") {
+        startDate = endDate - 7 * 24 * 60 * 60;
+    } else if (selectedText === "Last 15 Days") {
+        startDate = endDate - 15 * 24 * 60 * 60;
+    } else if (selectedText === "Last 30 Days") {
+        startDate = endDate - 30 * 24 * 60 * 60;
+    } else if (selectedText === "Last Year") {
+        startDate = endDate - 365 * 24 * 60 * 60;
+    }
+    else if (selectedText === "All Time") {
+        startDate = "";
+        endDate = "";
+        console.log("All time selected - no date range applied", selectedText, startDate, endDate);
+        
+    } else {
+        console.error("Invalid date range selected");
+        return;
+    }
+
+    console.log(`Fetching transactions from ${new Date(startDate * 1000).toLocaleDateString()} to ${new Date(endDate * 1000).toLocaleDateString()}`);
+
     const authToken = await chrome.storage.sync.get('authToken');
     if (!authToken || !authToken.authToken) {
         console.error('Authorization token is missing');
@@ -439,14 +473,18 @@ async function fetchTransactionCount() {
         return;
     }
 
-    const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction-count?filter=count', {
-        method: 'GET',
-        headers: {
-            'Accept': 'application/json',
-            'Authorization': `Bearer ${authToken.authToken}`, // Ensure this line is correct
-            'Content-Type': 'application/json'
+ 
+    const response = await fetch(
+        `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}`,
+        {
+            method: "GET",
+            headers: {
+                "Authorization": `Bearer ${authToken.authToken}`,
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+            }
         }
-    });
+    );
 
     if (response.ok) {
         const data = await response.json();
@@ -456,30 +494,170 @@ async function fetchTransactionCount() {
         console.error('Failed to fetch transaction count:', errorData.error);
     }
 }
-
-
-
-function updateTransactionCountUI(data) {
-    const debitCountElement = document.getElementById('debit-count');
-    const creditCountElement = document.getElementById('credit-count');
-    const totalCountElement = document.getElementById('total-count');
-
-    // Check if data and elements are available
-    if (data && debitCountElement && creditCountElement && totalCountElement) {
-        // Update the text content of each element with data from the API
-        debitCountElement.textContent = data.stats.monthly_debit_count;
-        creditCountElement.textContent = data.stats.monthly_credit_count;
-        totalCountElement.textContent = data.stats.monthly_total_count;
-    }
+function setupDateRangeListeners() {
+    document.querySelectorAll("#chartDateRangeMenu .dropdown-item").forEach(item => {
+        item.addEventListener("click", async function () {
+            let selectedText = this.getAttribute("data-value");
+            await fetchTransactionCount(selectedText);
+        });
+    });
 }
 
+function updateTransactionCountUI(data) {
+    const { stats } = data;
+    console.log("this is working", stats);
 
-document.addEventListener('DOMContentLoaded', async () => {
-    await fetchTransactionCount();  // Fetches and updates the transaction counts
-});
+    if (stats) {
+        const { total_debit_count: debitValues, total_credit_count: creditValues, data_count: totalValues } = stats;
+
+        const pieData = [
+            { name: 'Debits', y: debitValues, color: 'rgba(255, 255, 255, 1)' },   // Solid White
+            { name: 'Credits', y: creditValues, color: 'rgba(255, 255, 255, 0.8)' }, // Slightly Transparent White
+            { name: 'Total', y: totalValues, color: 'rgba(255, 255, 255, 0.6)' }  // More Transparent White
+        ];
+
+        console.log("Pie Data:", pieData);
+
+        Highcharts.chart('pie-chart', {
+            chart: {
+                type: 'pie',
+                backgroundColor: '#000', // Black background
+                options3d: { enabled: true, alpha: 45, beta: 0 } // 3D Effect
+            },
+            title: { 
+                text: 'Transaction Breakdown',
+                style: { color: '#fff', fontSize: '20px', fontWeight: 'bold' }
+            },
+            tooltip: { 
+                backgroundColor: '#222', 
+                style: { color: '#fff' },
+                pointFormat: '<b>{point.name}</b>: {point.y} transactions'
+            },
+            legend: { 
+                itemStyle: { color: '#fff', fontSize: '14px' },
+                layout: 'vertical',
+                align: 'right',
+                verticalAlign: 'middle'
+            },
+            plotOptions: {
+                pie: {
+                    allowPointSelect: true,
+                    cursor: 'pointer',
+                    depth: 35, // Depth effect
+                    borderWidth: 2,
+                    borderColor: '#111',
+                    showInLegend: true,
+                    slicedOffset: 20, // Hover explosion effect
+                    states: {
+                        hover: {
+                            brightness: 0.2, // Glowing effect on hover
+                            halo: {
+                                size: 10,
+                                opacity: 0.5
+                            }
+                        }
+                    }
+                }
+            },
+            series: [{
+                name: 'Transactions',
+                colorByPoint: true,
+                data: pieData
+            }],
+            accessibility: {
+                enabled: false // Disable the warning
+            },
+            credits: {
+                enabled: false // Removes the Highcharts logo
+            }
+        });
+    } else {
+        console.log("No Data");
+    }
+}
+// function updateTransactionCountUI(data) {
+//     const { stats } = data;
+//     console.log("this is another api working", stats);
+
+//     if (stats) {
+//         const { monthly_debit_count: debitValues, monthly_credit_count: creditValues, monthly_total_count: totalValues } = stats;
+
+//         const pieData = [
+//             { name: 'Debits', y: debitValues, color: { radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 }, stops: [[0, '#fff'], [1, '#ccc']] } },
+//             { name: 'Credits', y: creditValues, color: { radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 }, stops: [[0, '#ddd'], [1, '#999']] } },
+//             { name: 'Total', y: totalValues, color: { radialGradient: { cx: 0.5, cy: 0.5, r: 0.5 }, stops: [[0, '#bbb'], [1, '#666']] } }
+//         ];
+
+//         console.log("Pie Data:", pieData);
+
+//         Highcharts.chart('pie-chart', {
+//             chart: {
+//                 type: 'pie',
+//                 backgroundColor: '#000', // Black background
+//                 options3d: { enabled: true, alpha: 55, beta: 0 }, // Enhanced 3D effect
+//                 animation: { duration: 1200, easing: 'easeOutBounce' } // Smooth animation
+//             },
+//             title: { 
+//                 text: 'Transaction Breakdown',
+//                 style: { color: '#fff', fontSize: '22px', fontWeight: 'bold' }
+//             },
+//             tooltip: { 
+//                 backgroundColor: '#222', 
+//                 style: { color: '#fff' },
+//                 pointFormat: '<b>{point.name}</b>: {point.y} transactions ({point.percentage:.1f}%)' // Show percentage
+//             },
+//             legend: { 
+//                 itemStyle: { color: '#fff', fontSize: '14px' },
+//                 layout: 'horizontal', // Better positioning
+//                 align: 'center',
+//                 verticalAlign: 'bottom'
+//             },
+//             plotOptions: {
+//                 pie: {
+//                     allowPointSelect: true,
+//                     cursor: 'pointer',
+//                     depth: 40, // More depth for a better 3D feel
+//                     borderWidth: 2,
+//                     borderColor: '#111',
+//                     showInLegend: true,
+//                     slicedOffset: 25, // Increased hover explosion effect
+//                     states: {
+//                         hover: {
+//                             brightness: 0.3, // Stronger hover glow effect
+//                             halo: {
+//                                 size: 12,
+//                                 opacity: 0.7
+//                             }
+//                         }
+//                     },
+//                     dataLabels: {
+//                         enabled: true,
+//                         format: '<b>{point.name}</b>: {point.percentage:.1f}%', // Display percentage
+//                         style: { color: '#fff', fontSize: '14px', fontWeight: 'bold' }
+//                     }
+//                 }
+//             },
+//             series: [{
+//                 name: 'Transactions',
+//                 colorByPoint: true,
+//                 data: pieData
+//             }],
+//             accessibility: {
+//                 enabled: false // Disable the warning
+//             },
+//             credits: {
+//                 enabled: false // Removes the Highcharts logo
+//             }
+//         });
+//     } else {
+//         console.log("No Data");
+//     }
+// }
+
+
 // This function should be defined in a separate JavaScript file or within a <script> tag in your HTML.
 
-async function fetchAndUpdateTransactionHistory(pageSize) {
+async function fetchAndUpdateTransactionHistory(pageSize = 7) {
     const { authToken } = await chrome.storage.sync.get('authToken');
 if (!authToken) {
     console.error('No authToken found. Cannot log out.');
