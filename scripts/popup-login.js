@@ -6,6 +6,12 @@ document.addEventListener('DOMContentLoaded', () => {
     const errorMessage = document.getElementById('error-message');
     const loader = document.getElementById('loader');
     const loginButton = document.getElementById('login-btn');
+    const expandButton = document.getElementById('expand-btn'); // Get the expand button by ID
+
+    // Add event listener for the expand button
+    expandButton.addEventListener('click', () => {
+        window.open('login.html', '_blank'); // Redirect to the full login page in a new tab
+    });
 
     // Check if user is already logged in and redirect if necessary
     chrome.storage.sync.get(['authToken'], (result) => {
@@ -35,7 +41,7 @@ document.addEventListener('DOMContentLoaded', () => {
         loader.style.display = 'block';
 
         try {
-            const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-login', {
+            const response = await fetch(`${baseApiUrl}/api/ext-login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -49,8 +55,9 @@ document.addEventListener('DOMContentLoaded', () => {
                 // Store the auth token in chrome storage
                 chrome.storage.sync.set({
                     authToken: data.token,
-                    connectedSites: data.connected_sites
-                }, function () {
+                    connectedSites: data.connected_sites,
+                    email:data.email
+                }, () => {
                     if (chrome.runtime.lastError) {
                         console.error('Error setting authToken:', chrome.runtime.lastError);
                         errorMessage.textContent = 'Failed to store auth token.';
@@ -62,8 +69,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     // Redirect to popup.html after successful login
                     window.location.href = 'popup.html';
                 });
-                chrome.runtime.sendMessage({ action: 'login' });
-
             } else {
                 errorMessage.textContent = data.message || 'Login failed, please try again.';
             }
@@ -76,38 +81,20 @@ document.addEventListener('DOMContentLoaded', () => {
             loginButton.style.display = 'block';
         }
     });
-});
 
+    // Toggle password visibility
+    const togglePassword = document.getElementById('toggle-password');
+    togglePassword.addEventListener('click', function() {
+      const type = passwordInput.type === 'password' ? 'text' : 'password';
+      passwordInput.type = type;
+      this.querySelector('i').classList.toggle('fa-eye-slash');
+      this.querySelector('i').classList.toggle('fa-eye');
+    });
 
-const togglePassword = document.getElementById('toggle-password');
-const passwordInput = document.getElementById('password');
-
-togglePassword.addEventListener('click', function() {
-  // Toggle the type between password and text
-  const type = passwordInput.type === 'password' ? 'text' : 'password';
-  passwordInput.type = type;
-
-  // Change the eye icon based on password visibility
-  const icon = togglePassword.querySelector('i');
-  if (type === 'password') {
-    icon.classList.remove('fa-eye-slash');
-    icon.classList.add('fa-eye');
-  } else {
-    icon.classList.remove('fa-eye');
-    icon.classList.add('fa-eye-slash');
-  }
-});
-
-document.addEventListener('DOMContentLoaded', () => {
+    // Redirect to forgot password
     document.getElementById("forgot-password").addEventListener("click", function (event) {
         event.preventDefault();
-        let IAM_URL = "";
-        if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://log-iam-temp.finloge.com/forgot-password/";
-        }
-        else{
-            IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";
-        }
+        const IAM_URL = baseApiUrl.includes('dev') ? "https://ime.finloge.com/forgot-password/" : "https://ime.dubaicustoms.network/forgot-password/";
         window.open(IAM_URL, "_blank", "noopener,noreferrer");
     });
 });

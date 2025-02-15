@@ -37,7 +37,8 @@ document.getElementById('login-btn').addEventListener('click', async function lo
             // Store the token in chrome.storage.sync
             chrome.storage.sync.set({
                 authToken: data.token,
-                connectedSites: data.connected_sites
+                connectedSites: data.connected_sites,
+                email:data.email
             }, function () {
                 if (chrome.runtime.lastError) {
                     console.error('Error setting authToken:', chrome.runtime.lastError);
@@ -100,7 +101,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         let IAM_URL = "";
         if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://log-iam-temp.finloge.com/forgot-password/";
+            IAM_URL = "https://ime.finloge.com/forgot-password/";
         }
         else{
             IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";

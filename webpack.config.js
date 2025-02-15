@@ -23,7 +23,9 @@ module.exports = (env, argv) => {
       profile: './scripts/profile.js',
       popupLogin: './scripts/popup-login.js',
       connectWallet: './scripts/connectWallet.js',
-      approveReq: './scripts/approve-req.js'
+      approveReq: './scripts/approve-req.js',
+      connectedSites: './scripts/connectedSites.js',
+      transactions: './scripts/transactions.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -132,6 +134,16 @@ module.exports = (env, argv) => {
         template: './components/popup-login.html',
         filename: 'popup-login.html',
         chunks: ['popupLogin', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/transactions.html',
+        filename: 'transactions.html',
+        chunks: ['transactions', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/connectedSites.html',
+        filename: 'connectedSites.html',
+        chunks: ['connectedSites', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [
