@@ -57,8 +57,6 @@ document.addEventListener('DOMContentLoaded', () => {
                     authToken: data.token,
                     connectedSites: data.connected_sites,
                     email:data.email
-                }, function () {
-                    connectedSites: data.connected_sites
                 }, () => {
                     if (chrome.runtime.lastError) {
                         console.error('Error setting authToken:', chrome.runtime.lastError);

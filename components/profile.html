@@ -39,13 +39,13 @@
 		<div class="container-fluid p-0">
 			<div class="row g-0">
 				<div class="col-lg-2 col-12">
-					<div class="sidebar sticky-lg-top h-100">
+					<div class="sidebar sticky-lg-top h-100 custom-border-color">
 						<div class="row g-0">
 							<div class="col-lg-12 col-12">
 								<a class="navbar-brand m-0">
 									<img src="./icons/logo-dark.svg" class="img-fluid logo"/>
 								</a>
-								<hr>
+								<hr class="custom-border-color">
 								<ul class="nav flex-column siderbar-nav">
 									<li class="nav-item">
 									  	<a class="nav-link active" aria-current="page" href="profile.html">
@@ -74,7 +74,7 @@
 											</div>
 										</a>
 									</li>
-									<li class="nav-item">
+									<!-- <li class="nav-item">
 									  	<a class="nav-link" href="#">
 											<div>
 												<img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
@@ -89,14 +89,14 @@
 												Help
 											</div>
 										</a>
-									</li>
+									</li> -->
 								</ul>
 							</div>
 						</div>
 					</div>
 				</div>
 				<div class="col-lg-10 col-12">					
-					<nav class="navbar navbar-expand-sm header">
+					<nav class="navbar navbar-expand-sm header custom-border-color">
 						<div class="container-fluid z-2">
 							<button
 								class="navbar-toggler"
@@ -122,7 +122,7 @@
 											<div class="ms-2">
 												<storng class="font-16 text-white">Wallet ID</storng>
 												<span id="wallet-address"
-													class="ms-3 font-14 text-gray-600 text-truncate">stru23421fwewri554...</span>
+													class="ms-3 font-14 text-gray-600 text-truncate"></span>
 											</div>
 											<div class="ms-5">
 												<a href="#" id="copy-button">
@@ -186,7 +186,7 @@
 										</div>
 										<div class="col-md-4 col-4">
 											<h2 class="font-28 text-center" id="debit-count"></h2>
-											<p class="text-center mt-2 text-gray-600">Outcome</p>
+											<p class="text-center mt-2 text-gray-600">Outgoing</p>
 										</div>
 									</div>
 								</div>
@@ -254,10 +254,7 @@
 											<p>Recent Transactions</p>
 										</div>
 										<div>
-											<a class="d-flex-inline align-items-center p-0 cta-action-link">
-												<img src="./icons/filter.png" alt="Filter Icon"
-													class="mx-2 font-14 text-white mb-1">Filter</a>
-											<a class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View
+											<a href="transactions.html" class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View
 												More</a>
 										</div>
 									</div>
@@ -278,168 +275,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														<!-- <tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-danger">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-danger"></span> Failed
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Wallet Transfer</p>
-																<span
-																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-success">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-success"></span> Success
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Bank Transfer</p>
-																<span class="text-truncate text-gray-600 font-12">****
-																	3254</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-danger">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-warning"></span> Failed
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Wallet Transfer</p>
-																<span
-																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-warning">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-warning"></span> Processing
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Bank Transfer</p>
-																<span class="text-truncate text-gray-600 font-12">****
-																	3254</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-success">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-success"></span> Success
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Wallet Transfer</p>
-																<span
-																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
-															</td>
-														</tr>
-														<tr>
-															<td>
-																<span class="d-flex align-items-center">
-																	<div>
-																		<img src="./icons/type-icon.svg" alt=""
-																			class="img-fluid type-img">
-																	</div>
-																	<div class="ms-5">
-																		<p class="text-truncate mb-2 font-14">
-																			5txyz0ge653gh...</p>
-																		<span class="text-gray-600 font-12">From:
-																			12/25/2024, 12:25:56 PM</span>
-																	</div>
-																</span>
-															</td>
-															<td class="text-warning">- AED 2,555.00</td>
-															<td>
-																<div class="position-relative">
-																	<span class="span-warning"></span> Processing
-																</div>
-															</td>
-															<td>
-																<p class="mb-2">Wallet Transfer</p>
-																<span
-																	class="text-truncate text-gray-600 font-12">set35428djd...</span>
-															</td>
-														</tr> -->
+														
 													</tbody>
 												</table>
 											</div>
@@ -499,7 +335,7 @@
 				</div>
 				<div class="modal-footer justify-content-between border-0">
 					<div class="d-flex w-100">
-						<button type="button" class="btn btn-dark w-50 f-14 border-color text-white"
+						<button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white"
 							data-bs-dismiss="modal">
 							No
 						</button>
