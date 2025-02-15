@@ -188,7 +188,9 @@ async function lockWallet() {
 
             let row = null; // Declare row outside loop
 
-            updatedUserInfo.services.forEach((service, index) => {
+            //Ensure only the first 9 services are displayed
+            const limitedServices = updatedUserInfo.services.slice(0, 3);
+            limitedServices.forEach((service, index) => {
                 if (index % 3 === 0) {
                     // Create a new row after every 3 items
                     row = document.createElement('div');
