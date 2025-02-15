@@ -8,7 +8,7 @@
 
 // // Redirect to login if no token or token is invalid
 function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email']);
+    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV']);
     window.location.href = 'login.html';
 }
 function formatAmount(amount) {
@@ -66,7 +66,7 @@ async function fetchUpdatedUserProfile() {
             redirectToLogin();
             hideFullScreenLoader();
         } else {
-            console.error('Failed to fetch user profile:aaaaaaaaaaaaaaaa', response.statusText);
+            console.error('Failed to fetch user profile:', response.statusText);
             hideFullScreenLoader();
             redirectToLogin();
         }
@@ -267,8 +267,8 @@ async function lockWallet() {
   });
 
 async function fetchTransactionCount() {
-    const authToken = await chrome.storage.sync.get('authToken');
-    if (!authToken || !authToken.authToken) {
+    const { authToken } = await chrome.storage.sync.get('authToken');
+    if (!authToken) {
         console.error('Authorization token is missing');
         redirectToLogin(); // Redirect or handle the missing token case
         return;
