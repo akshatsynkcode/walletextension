@@ -68,23 +68,23 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                 method: 'GET',
                 headers: { 'Authorization': `Bearer ${authTokenValue}` },
             })
-            .then(response => {
-                if (!response.ok) {
-                    console.log("Auth token invalid, logging out");
+                .then(response => {
+                    if (!response.ok) {
+                        console.log("Auth token invalid, logging out");
+                        chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                            sendResponse({ success: false, authToken: null });
+                        });
+                    } else {
+                        sendResponse({ success: true, authToken: authTokenValue });
+                    }
+                })
+                .catch(error => {
+                    console.log('Error in auth check, logging out:', error);
                     chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                         sendResponse({ success: false, authToken: null });
                     });
-                } else {
-                    sendResponse({ success: true, authToken: authTokenValue });
-                }
-            })
-            .catch(error => {
-                console.log('Error in auth check, logging out:', error);
-                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
-                    sendResponse({ success: false, authToken: null });
                 });
-            });
-            
+
             return true;
         });
     } else if (message.action === 'getbalance') {
@@ -94,25 +94,25 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${result.authToken}` }
                 })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Network response was not ok');
-                    }
-                })
-                .then(data => {
-                    sendResponse({ success: true, balance: data.balance });
-                })
-                .catch(error => {
-                    console.error('Error fetching balance:', error);
-                    sendResponse({ success: false, error: 'Failed to fetch balance' }); 
-                });
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Network response was not ok');
+                        }
+                    })
+                    .then(data => {
+                        sendResponse({ success: true, balance: data.balance });
+                    })
+                    .catch(error => {
+                        console.error('Error fetching balance:', error);
+                        sendResponse({ success: false, error: 'Failed to fetch balance' });
+                    });
             } else {
                 sendResponse({ success: false, error: 'Auth token not found' });
             }
         });
-    }  
+    }
     else if (message.action === 'get_auth') {  // New case for getauth
         chrome.storage.sync.get(['authToken'], (result) => {
             if (result.authToken) {
@@ -136,7 +136,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         if (connectionRequest) {
             pendingRequests.splice(pendingRequests.indexOf(connectionRequest), 1); // Remove the approved request
         }
-        sendResponse({ success: true});
+        sendResponse({ success: true });
     }
     else {
         switch (message.action) {
@@ -173,7 +173,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
     }
     return true;
-    
+
 });
 
 // Handle approving the transaction
@@ -183,24 +183,24 @@ async function handleApproveTransaction(message, sendResponse) {
     console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 
+        headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status:status, transaction_id: transaction_id })
+        body: JSON.stringify({ status: status, transaction_id: transaction_id })
 
     });
-    console.log("id to body data",JSON.stringify({ status:status, transaction_id: transaction_id, authToken: authToken }));
+    console.log("id to body data", JSON.stringify({ status: status, transaction_id: transaction_id, authToken: authToken }));
     console.log(response.status, "response");
     console.log(response.message, "response");
     console.log(response.headers, "response");
     if (response.status == 200) {
         chrome.storage.sync.remove(['transaction_id', 'username', 'fromAddress', 'toAddress', 'amount', 'url']);
-        sendResponse({ success: true,  message : response.message });
-    } else if(response.status == 401){
-        sendResponse({ success: false , message : response.message, statusCode:response.status });
-    }else{
-        sendResponse({ success: false , message : response.message});
+        sendResponse({ success: true, message: response.message });
+    } else if (response.status == 401) {
+        sendResponse({ success: false, message: response.message, statusCode: response.status });
+    } else {
+        sendResponse({ success: false, message: response.message });
     }
 }
 
@@ -210,11 +210,11 @@ async function handleRejectTransaction(message, sendResponse) {
 
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
-        headers: { 
+        headers: {
             'Authorization': `Bearer ${authToken}`,
             'Content-Type': 'application/json'
         },
-        body: JSON.stringify({ status:status, transaction_id: transaction_id })
+        body: JSON.stringify({ status: status, transaction_id: transaction_id })
 
     });
     if (response.ok) {
@@ -229,12 +229,12 @@ async function handleRejectTransaction(message, sendResponse) {
 // Listener for extension installation
 function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
-        chrome.tabs.get(fullscreenTabId, function(tab) {
+        chrome.tabs.get(fullscreenTabId, function (tab) {
             if (chrome.runtime.lastError || !tab) {
                 // If tab doesn't exist, reset the fullscreenTabId
                 fullscreenTabId = null;
                 isLoggedIn = false;
-                chrome.action.setPopup({popup: "popup-login.html"});
+                chrome.action.setPopup({ popup: "popup-login.html" });
                 sendResponse({ success: true });
             } else {
                 chrome.tabs.remove(fullscreenTabId, () => {
@@ -244,7 +244,7 @@ function handleLockWallet(sendResponse) {
                     } else {
                         fullscreenTabId = null;
                         isLoggedIn = false;
-                        chrome.action.setPopup({popup: "popup-login.html"});
+                        chrome.action.setPopup({ popup: "popup-login.html" });
                         sendResponse({ success: true });
                     }
                 });
@@ -257,7 +257,7 @@ function handleLockWallet(sendResponse) {
 
 function handleUnlockWallet(sendResponse) {
     isLoggedIn = true;
-    chrome.action.setPopup({popup: "popup.html"}); // Enable popup after unlocking
+    chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
     if (!fullscreenTabId) {
         chrome.tabs.create({
             url: chrome.runtime.getURL('profile.html'),
@@ -285,17 +285,38 @@ function handleRequestConnection(sender, sendResponse) {
         responseCallback: sendResponse
     };
 
-    chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
+    chrome.storage.sync.get(['authToken', 'connectedSites'], async function (result) {
         if (chrome.runtime.lastError) {
             console.error("Error retrieving storage data:", chrome.runtime.lastError);
         }
+
+        let isConnected = false;
+        async function checkConnection() {
+            try {
+                let response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-check-connected-site?domain=${sender.origin}`, {
+                    method: 'GET',
+                    headers: { 'Authorization': `Bearer ${result.authToken}` }
+                });
+                console.log(response);
+                if (!response.ok) {
+                    return false; // Return false if request fails
+                }
+                let data = await response.json(); // Wait for JSON response
+                return data.is_connected_site; // Return connection status
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        isConnected = await checkConnection();
         const connectedSites = result.connectedSites || [];
         console.log("Connected Sites:", connectedSites);
-        let isConnected = connectedSites.some((site) => site.includes(sender.origin));
+        // let isConnected = connectedSites.some((site) => site.includes(sender.origin)); ##For chromestorage check
 
         if (isConnected) {
             console.log("Connected Site found");
-            sendResponse({ success: true, authToken : result.authToken });
+            sendResponse({ success: true, authToken: result.authToken });
             return;
         }
 
@@ -310,33 +331,33 @@ function handleRequestConnection(sender, sendResponse) {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${authToken}` }
                 })
-                .then(response => {
-                    if (response.ok) {
-                        return response.json();
-                    } else {
-                        throw new Error('Network response was not ok');
-                    }
-                })
-                .then(data => {
-                    const fullName = data.fullName;
-                    const walletAddress = data.walletAddress;
+                    .then(response => {
+                        if (response.ok) {
+                            return response.json();
+                        } else {
+                            throw new Error('Network response was not ok');
+                        }
+                    })
+                    .then(data => {
+                        const fullName = data.fullName;
+                        const walletAddress = data.walletAddress;
 
-                    // Store data in Chrome storage
-                    chrome.storage.sync.set({ fullName, walletAddress }, function() {
-                        chrome.windows.create({
-                            url: chrome.runtime.getURL(`connectWallet.html?tabId=${senderTabId}`), // No data passed
-                            type: 'popup',
-                            width: 340,
-                            height: 570
-                        }, (window) => {
-                            servicePopups[senderTabId] = window.id; // Save the window ID
+                        // Store data in Chrome storage
+                        chrome.storage.sync.set({ fullName, walletAddress }, function () {
+                            chrome.windows.create({
+                                url: chrome.runtime.getURL(`connectWallet.html?tabId=${senderTabId}`), // No data passed
+                                type: 'popup',
+                                width: 340,
+                                height: 570
+                            }, (window) => {
+                                servicePopups[senderTabId] = window.id; // Save the window ID
+                            });
                         });
+                    })
+                    .catch(error => {
+                        console.error('Fetch error:', error);
+                        sendResponse({ success: false, error: error.message });
                     });
-                })
-                .catch(error => {
-                    console.error('Fetch error:', error);
-                    sendResponse({ success: false, error: error.message });
-                });
             } else {
                 chrome.tabs.create({
                     url: chrome.runtime.getURL('login.html'),
@@ -380,19 +401,19 @@ function handleApproveConnection(message, sendResponse) {
     const { tabId } = message; // Use tabId from the message
     const approveRequest = pendingRequests.find((req) => req.tabId === tabId);
     if (approveRequest) {
-        chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
+        chrome.storage.sync.get(['authToken', 'connectedSites'], function (result) {
             if (result.authToken) {
                 // Send the address back to the original request
-                approveRequest.responseCallback({ success: true, authToken : result.authToken });
+                approveRequest.responseCallback({ success: true, authToken: result.authToken });
                 pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the approved request
                 chrome.storage.sync.remove(['fullName', 'walletAddress']);
 
                 // Update Connected Sites locally
                 let connectedSites = result.connectedSites || [];
                 if (!connectedSites.includes(approveRequest.origin)) {
-                    connectedSites.push(approveRequest.origin); 
+                    connectedSites.push(approveRequest.origin);
 
-                    chrome.storage.sync.set({ connectedSites }, function() {
+                    chrome.storage.sync.set({ connectedSites }, function () {
                         if (chrome.runtime.lastError) {
                             console.error("Error updating connectedSites:", chrome.runtime.lastError);
                         } else {
@@ -402,7 +423,7 @@ function handleApproveConnection(message, sendResponse) {
                                 headers: {
                                     "Authorization": `Bearer ${result.authToken}`,
                                     "Content-Type": "application/json"
-                                  },
+                                },
                                 body: JSON.stringify({ domain: approveRequest.origin, operation: "add" })
                             })
                                 .then((response) => {
@@ -423,7 +444,7 @@ function handleApproveConnection(message, sendResponse) {
                     console.log("Domain already present in connectedSites:", approveRequest.origin);
                 }
 
-                sendResponse({ success: true, authToken : result.authToken });
+                sendResponse({ success: true, authToken: result.authToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
                 pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the denied request
@@ -479,7 +500,7 @@ chrome.runtime.onInstalled.addListener((details) => {
 chrome.action.onClicked.addListener(() => {
     chrome.storage.sync.get(['authToken'], (result) => {
         if (result.authToken) {
-            chrome.action.setPopup({popup: "popup.html"});
+            chrome.action.setPopup({ popup: "popup.html" });
         } else {
             chrome.tabs.create({
                 url: chrome.runtime.getURL('welcome.html'),
@@ -523,7 +544,7 @@ function startAuthCheck() {
                 console.error('Error during auth token validation:', error);
             }
         });
-    },  24*60*60*1000); // Run every 24 hours
+    }, 24 * 60 * 60 * 1000); // Run every 24 hours
 }
 
 // Function to stop the periodic auth check
@@ -540,10 +561,10 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         let url = message.url;
         let imgSrc = message.imgSrc;
         let label = message.label;
-        let imgName =message.imgName;
+        let imgName = message.imgName;
 
         chrome.storage.sync.get('recentServices', function (result) {
-            let recentServicesArray = result.recentServices  || [];
+            let recentServicesArray = result.recentServices || [];
             recentServicesArray.push({ url: url, imgSrc: imgSrc, label: label, imgName: imgName });
 
             chrome.storage.sync.set({ 'recentServices': recentServicesArray }, function () {
