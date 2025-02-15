@@ -1,3 +1,4 @@
+import { jsPDF } from "jspdf";
 function showFullScreenLoader() {
   document.getElementById('full-screen-loader').style.display = 'flex';
 }
@@ -99,8 +100,8 @@ async function fetchUpdatedUserProfile() {
   }
 }
 
-async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=1) {
-  pageSize = 7
+async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=1,pageSize = 7) {
+  
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
   if (dropdownButton) {
@@ -150,7 +151,7 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
       );
 
       if (!response.ok) {
-          if (response.status === 401) {
+          if (response.status === 404) {
               console.error("Token expired or invalid, redirecting to login.");
               redirectToLogin();
           } else {
@@ -366,14 +367,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       );
       lockModal.show();
       const confirmButton = document.querySelector(".yes-btn");
-      const cancelButton = document.querySelector('.no-btn');
-            cancelButton.addEventListener('click', () => {
-                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
-                modalElement.addEventListener("hidden.bs.modal", function () {
-                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
-                });
-            })
       confirmButton.addEventListener(
         "click",
         () => {
@@ -448,3 +441,199 @@ function updatePagination(totalPages, currentPage = 1) {
       paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
   }
 }
+function generateTransactionPDF(transactions, stats, timeRange) {
+    // Initialize PDF document
+    const doc = new jsPDF();
+    let yPos = 20;
+    
+    // Add title with time range
+    doc.setFontSize(16);
+    doc.text(`Transaction Report - ${timeRange}`, 105, yPos, { align: "center" });
+    yPos += 15;
+    
+    // Add stats summary
+    doc.setFontSize(12);
+    doc.text("Transaction Summary", 20, yPos);
+    yPos += 10;
+    
+    doc.setFontSize(10);
+    doc.text(`Total Transactions: ${stats.data_count}`, 20, yPos);
+    yPos += 7;
+    doc.text(`Successful Transactions: ${stats.success_count}`, 20, yPos);
+    yPos += 7;
+    doc.text(`Failed Transactions: ${stats.failed_count}`, 20, yPos);
+    yPos += 7;
+    doc.text(`Total Credits: ${stats.total_credit_count}`, 20, yPos);
+    yPos += 7;
+    doc.text(`Total Debits: ${stats.total_debit_count}`, 20, yPos);
+    yPos += 15;
+
+    // Table headers
+    const headers = ["Date", "Type", "Amount (AED)", "Status", "Module"];
+    const columnWidths = [40, 35, 30, 25, 30];
+    let xPos = 20;
+
+    // Draw headers
+    doc.setFontSize(10);
+    doc.setFont(undefined, 'bold');
+    headers.forEach((header, index) => {
+        doc.text(header, xPos, yPos);
+        xPos += columnWidths[index];
+    });
+    yPos += 7;
+
+    // Draw line under headers
+    doc.line(20, yPos - 3, 190, yPos - 3);
+
+    // Reset font to normal
+    doc.setFont(undefined, 'normal');
+
+    // Draw transaction rows
+    transactions.forEach(transaction => {
+        // Check if we need a new page
+        if (yPos > 270) {
+            doc.addPage();
+            yPos = 20;
+            
+            // Redraw headers on new page
+            xPos = 20;
+            doc.setFont(undefined, 'bold');
+            headers.forEach((header, index) => {
+                doc.text(header, xPos, yPos);
+                xPos += columnWidths[index];
+            });
+            yPos += 7;
+            doc.line(20, yPos - 3, 190, yPos - 3);
+            doc.setFont(undefined, 'normal');
+        }
+
+        xPos = 20;
+        const date = new Date(transaction.created_at).toLocaleDateString();
+        const type = transaction.debit ? "Debit" : "Credit";
+        const amount = transaction.amount;
+        const status = transaction.status;
+        const module = transaction.module_type;
+
+        const rowData = [date, type, amount, status, module];
+        rowData.forEach((text, index) => {
+            // Ensure text doesn't exceed column width
+            let displayText = String(text);
+            if (displayText.length > columnWidths[index] / 2) {
+                displayText = displayText.substring(0, Math.floor(columnWidths[index] / 2)) + "...";
+            }
+            doc.text(displayText, xPos, yPos);
+            xPos += columnWidths[index];
+        });
+
+        yPos += 7;
+    });
+
+    // Add footer with timestamp and page numbers
+    const pageCount = doc.internal.getNumberOfPages();
+    for (let i = 1; i <= pageCount; i++) {
+        doc.setPage(i);
+        doc.setFontSize(8);
+        doc.text(`Generated on: ${new Date().toLocaleString()}`, 20, 285);
+        doc.text(`Page ${i} of ${pageCount}`, 180, 285);
+    }
+
+    // Save the PDF
+    doc.save(`transaction-report-${timeRange.toLowerCase().replace(/\s+/g, '-')}.pdf`);
+}
+
+
+
+async function fetchAllTransactions(timeRange) {
+  try {
+      const { authToken } = await chrome.storage.sync.get("authToken");
+      if (!authToken) {
+          console.error("Authorization token is missing");
+          return;
+      }
+
+      let dateParams = '';
+      const now = new Date();
+
+      switch(timeRange) {
+          case "Current Month":
+              const startCurrentMonth = new Date(now.getFullYear(), now.getMonth(), 1);
+              const endCurrentMonth = new Date(now.getFullYear(), now.getMonth() + 1, 0, 23, 59, 59);
+              dateParams = `&start_date=${Math.floor(startCurrentMonth.getTime() / 1000)}&end_date=${Math.floor(endCurrentMonth.getTime() / 1000)}`;
+              break;
+          case "Last 3 Months":
+              const startLast3Months = new Date(now.getFullYear(), now.getMonth() - 3, 1);
+              dateParams = `&start_date=${Math.floor(startLast3Months.getTime() / 1000)}&end_date=${Math.floor(now.getTime() / 1000)}`;
+              break;
+          case "Last 6 Months":
+              const startLast6Months = new Date(now.getFullYear(), now.getMonth() - 6, 1);
+              dateParams = `&start_date=${Math.floor(startLast6Months.getTime() / 1000)}&end_date=${Math.floor(now.getTime() / 1000)}`;
+              break;
+          case "2024":
+              const start2024 = new Date(2024, 0, 1, 0, 0, 0);
+              const end2024 = new Date(2024, 11, 31, 23, 59, 59);
+              dateParams = `&start_date=${Math.floor(start2024.getTime() / 1000)}&end_date=${Math.floor(end2024.getTime() / 1000)}`;
+              break;
+          case "All Time":
+              dateParams = ''; // No date parameters for All Time
+              break;
+      }
+
+      const downloadButton = document.querySelector('.dropdown-toggle');
+      const originalText = downloadButton.innerHTML;
+      downloadButton.innerHTML = '<span class="spinner-border spinner-border-sm me-2" role="status" aria-hidden="true"></span>Downloading...';
+
+      let allTransactions = [];
+      let currentPage = 1;
+      let hasMorePages = true;
+      let stats;
+
+      while (hasMorePages) {
+          const url = `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=7&page=${currentPage}${dateParams}`;
+
+          const response = await fetch(url, {
+              method: "GET",
+              headers: {
+                  "Authorization": `Bearer ${authToken}`,
+                  "Accept": "application/json",
+                  "Content-Type": "application/json"
+              }
+          });
+
+          if (!response.ok) {
+              throw new Error(`HTTP error! status: ${response.status}`);
+          }
+
+          const result = await response.json();
+          if (result.status === "success") {
+              allTransactions = [...allTransactions, ...result.data];
+              stats = result.stats;
+
+              hasMorePages = result.next !== null;
+              currentPage++;
+          } else {
+              throw new Error("Failed to fetch transaction data");
+          }
+      }
+
+      downloadButton.innerHTML = originalText;
+      generateTransactionPDF(allTransactions, stats, timeRange);
+
+  } catch (error) {
+      console.error("Error generating PDF:", error);
+      const downloadButton = document.querySelector('.dropdown-toggle');
+      downloadButton.innerHTML = originalText;
+      alert("Error generating PDF report. Please try again.");
+  }
+}
+
+// Set up event listeners for download options
+document.addEventListener('DOMContentLoaded', () => {
+    const downloadItems = document.querySelectorAll('.dropdown-menu .dropdown-item');
+    downloadItems.forEach(item => {
+        item.addEventListener('click', (e) => {
+            e.preventDefault();
+            const timeRange = e.target.textContent.trim();
+            fetchAllTransactions(timeRange);
+        });
+    });
+});
