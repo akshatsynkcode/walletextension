@@ -98,7 +98,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // Redirect to forgot password
     document.getElementById("forgot-password").addEventListener("click", function (event) {
         event.preventDefault();
-        const IAM_URL = baseApiUrl.includes('dev') ? "https://log-iam-temp.finloge.com/forgot-password/" : "https://ime.dubaicustoms.network/forgot-password/";
+        const IAM_URL = baseApiUrl.includes('dev') ? "https://ime.finloge.com/forgot-password/" : "https://ime.dubaicustoms.network/forgot-password/";
         window.open(IAM_URL, "_blank", "noopener,noreferrer");
     });
 });

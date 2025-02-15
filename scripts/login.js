@@ -106,7 +106,7 @@ document.addEventListener('DOMContentLoaded', () => {
         event.preventDefault();
         let IAM_URL = "";
         if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://log-iam-temp.finloge.com/forgot-password/";
+            IAM_URL = "https://ime.finloge.com/forgot-password/";
         }
         else{
             IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";
