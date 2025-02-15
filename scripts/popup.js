@@ -116,6 +116,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function lockWallet() {
+    alert("Rajithaaaaaaaaaaaaaaaaa 11111111111111 ");
     const { authToken } = await chrome.storage.sync.get('authToken');
     const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {

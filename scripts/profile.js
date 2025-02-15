@@ -38,164 +38,6 @@ function showFullScreenLoader() {
 function hideFullScreenLoader() {
     document.getElementById('full-screen-loader').style.display = 'none';
 }
-
-// Fetch and update balance
-async function fetchAndUpdateBalance() {
-    const loader = document.getElementById('balance-loader');
-    if (loader) {
-        loader.style.display = 'inline-block'; // Show loader before fetching balance
-    }
-
-    try {
-        const { authToken } = await chrome.storage.sync.get('authToken');
-        if (!authToken) {
-            console.error('Authorization token is missing');
-            redirectToLogin();
-            return;
-        }
-        const { authIV } = await chrome.storage.sync.get('authIV');
-        const decryptedAuthToken = await decryptText(authToken, authIV);
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
-        });
-
-        if (response.ok) {
-            const { balance } = await response.json();
-            document.getElementById('balance').textContent = `AED ${formatAmount(parseFloat(balance).toFixed(3))}`;
-        } else if (response.status === 401) {
-            console.error('Token expired or invalid, redirecting to login.');
-            redirectToLogin();
-        } else {
-            console.error('Failed to fetch balance:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching balance:', error);
-    } finally {
-        if (loader) {
-            loader.style.display = 'none'; // Hide loader after balance is fetched
-        }
-    }
-}
-
-
-
-
-prevButton.addEventListener("click", async () => {
-    if (currentPage > 1) {
-        await fetchAndUpdateTransactionHistory(currentPage - 1);
-    }
-});
-
-nextButton.addEventListener("click", async () => {
-    if (currentPage < totalPages) {
-        await fetchAndUpdateTransactionHistory(currentPage + 1);
-    }
-});
-
-// Fetch and update transaction history with pagination support
-async function fetchAndUpdateTransactionHistory(page = 1) {
-    const paginationInfo = document.getElementById("pagination-info");
-    const pageNumbers = document.getElementById("page-numbers");
-    const activitiesContent = document.getElementById("activities-content");
-    const loader = document.getElementById('balance-loader');
-    const activityContainer = document.querySelector('.p-3');
-    
-    if (loader) {
-        loader.style.display = 'inline-block'; // Show loader before fetching
-    }
-
-    let timeoutFlag = false;
-
-    // Set a timeout to show "No Transactions Found" if no data is fetched within 5 seconds
-    const noDataTimeout = setTimeout(() => {
-        timeoutFlag = true;
-        if (activityContainer.childElementCount === 0) {
-            const noTransactionsMessage = document.createElement('div');
-            noTransactionsMessage.classList.add('no-transactions-message', 'text-center', 'text-white');
-            const noTransactionsText = document.createElement('p');
-            noTransactionsText.textContent = "No transactions found";
-            noTransactionsMessage.appendChild(noTransactionsText);
-            while (activityContainer.firstChild) {
-                activityContainer.removeChild(activityContainer.firstChild);
-            }
-            activityContainer.appendChild(noTransactionsMessage);
-        }
-        if (loader) {
-            loader.style.display = 'none'; // Hide loader after timeout
-        }
-    }, 5000);
-
-    try {
-        const { authToken } = await chrome.storage.sync.get(['authToken']);
-        if (!authToken) {
-            console.error('Authorization token is missing');
-            redirectToLogin();
-            return;
-        }
-        const { authIV } = await chrome.storage.sync.get('authIV');
-        const decryptedAuthToken = await decryptText(authToken, authIV);
-
-        let response = null;
-
-        if (filter != ''){
-            response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}&filter=${filter}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
-            });
-        }else{
-            response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page=${page}&query=${query}`, {
-                method: 'GET',
-                headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
-            });
-        }
-        
-
-        clearTimeout(noDataTimeout); // Clear the timeout if data is fetched successfully
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.data.length > 0) {
-                updateTransactionHistoryUI(data.data); // Pass the transactions array
-
-                // Update pagination info
-                currentPage = data.page;
-                totalPages = data.page_count;
-
-                paginationInfo.textContent = `${(currentPage - 1) * 5 + 1}-${Math.min(currentPage * 5, data.count)} of ${data.count}`;
-                pageNumbers.textContent = `Page ${currentPage} of ${totalPages}`;
-
-                // Enable/disable buttons based on page info
-                prevButton.disabled = currentPage <= 1;
-                nextButton.disabled = currentPage >= totalPages;
-            } else if (!timeoutFlag) {
-                //Removed the innerHTML and used textContent
-                const noTransactionsMessage = document.createElement('div');
-                noTransactionsMessage.classList.add('no-transactions-message', 'text-center', 'text-white');
-                const noTransactionsText = document.createElement('p');
-                noTransactionsText.textContent = "No transactions found";
-                noTransactionsMessage.appendChild(noTransactionsText);
-                while (activityContainer.firstChild) {
-                    activityContainer.removeChild(activityContainer.firstChild);
-                }
-                activityContainer.appendChild(noTransactionsMessage);
-                paginationInfo.textContent = "0-0 of 0";
-                pageNumbers.textContent = "1";
-            }
-        } else if (response.status === 401) {
-            console.error('Token expired or invalid, redirecting to login.');
-            redirectToLogin();
-        } else {
-            console.error('Failed to fetch transactions:', response.statusText);
-        }
-    } catch (error) {
-        console.error('Error fetching transactions:', error);
-    } finally {
-        if (loader) {
-            loader.style.display = 'none'; // Hide loader after transactions are fetched
-        }
-    }
-}
 // // Fetch updated user profile from the API
 async function fetchUpdatedUserProfile() {
     showFullScreenLoader();
@@ -209,7 +51,6 @@ async function fetchUpdatedUserProfile() {
         }
         const { authIV } = await chrome.storage.sync.get('authIV');
         const decryptedAuthToken = await decryptText(authToken, authIV);
-
         const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
@@ -225,7 +66,7 @@ async function fetchUpdatedUserProfile() {
             redirectToLogin();
             hideFullScreenLoader();
         } else {
-            console.error('Failed to fetch user profile:', response.statusText);
+            console.error('Failed to fetch user profile:aaaaaaaaaaaaaaaa', response.statusText);
             hideFullScreenLoader();
             redirectToLogin();
         }
@@ -253,10 +94,10 @@ async function lockWallet() {
         hideFullScreenLoader();
         return;
     }
-    const { authIV } = await chrome.storage.sync.get('authIV');
-    const decryptedAuthToken = await decryptText(authToken, authIV);
 
     try {
+        const { authIV } = await chrome.storage.sync.get('authIV');
+        const decryptedAuthToken = await decryptText(authToken, authIV);
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
@@ -266,7 +107,7 @@ async function lockWallet() {
             const data = await response.json();
             hideFullScreenLoader();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';
@@ -433,11 +274,13 @@ async function fetchTransactionCount() {
         return;
     }
 
+    const { authIV } = await chrome.storage.sync.get('authIV');
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction-count?filter=count', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Authorization': `Bearer ${authToken.authToken}`, // Ensure this line is correct
+            'Authorization': `Bearer ${decryptedAuthToken}`, // Ensure this line is correct
             'Content-Type': 'application/json'
         }
     });
@@ -481,10 +324,12 @@ if (!authToken) {
     return;
 }
     try {
+        const { authIV } = await chrome.storage.sync.get('authIV');
+        const decryptedAuthToken = await decryptText(authToken, authIV);
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${decryptedAuthToken}`
             }
         });
         
@@ -643,8 +488,6 @@ function fetchQuickLinks() {
         }
     });
 }
-//     });
-// });
 
 async function getKey() {
     const keyMaterial = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"));
