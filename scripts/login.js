@@ -96,16 +96,27 @@ window.onload = function () {
     }
   });
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("forgot-password").addEventListener("click", function (event) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("forgot-password").addEventListener("click", async function (event) {
         event.preventDefault();
-        let IAM_URL = "";
-        if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://log-iam-temp.finloge.com/forgot-password/";
+        
+        // Define the API URL based on the environment
+        const apiUrl = baseApiUrl.includes('dev')
+            ? 'https://dev-wallet-api.dubaicustoms.network/api/forgot-password'
+            : 'https://wallet-api.dubaicustoms.network/api/forgot-password';  // Assuming you have a production URL
+
+        try {
+            // Fetch the forgot password URL from the API
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Network response was not ok.');
+
+            const data = await response.json();
+            const IAM_URL = data.forgotPassword;
+
+            // Open the URL in a new tab
+            window.open(IAM_URL, "_blank", "noopener,noreferrer");
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
         }
-        else{
-            IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";
-        }
-        window.open(IAM_URL, "_blank", "noopener,noreferrer");
     });
 });
