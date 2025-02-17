@@ -116,7 +116,6 @@ document.addEventListener('DOMContentLoaded', async () => {
 });
 
 async function lockWallet() {
-    alert("Rajithaaaaaaaaaaaaaaaaa 11111111111111 ");
     const { authToken } = await chrome.storage.sync.get('authToken');
     const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {
@@ -157,17 +156,29 @@ async function lockWallet() {
     }
 }
 
-document.getElementById('buy-aed-btn').addEventListener('click', function(event)  {
+document.getElementById('buy-aed-btn').addEventListener('click', async function(event) {
     event.preventDefault();
-        let IAM_URL = "";
-        if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://ime.finloge.com/payment/";
-        }
-        else{
-            IAM_URL = "https://ime.dubaicustoms.network/payment/";
-        }
+
+    // Define the API URL based on the environment
+    const apiUrl = baseApiUrl.includes('dev')
+        ? 'https://dev-wallet-api.dubaicustoms.network/api/buy-aed'
+        : 'https://wallet-api.dubaicustoms.network/api/buy-aed'; // Assuming a production URL
+
+    try {
+        // Fetch the payment URL from the API
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Network response was not ok.');
+
+        const data = await response.json();
+        const IAM_URL = data.buyAED;
+
+        // Open the URL in a new window
         window.open(IAM_URL);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 });
+
 
 const copyButton = document.getElementById('copy-button');
     if (copyButton) {
