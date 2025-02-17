@@ -1,5 +1,5 @@
 function redirectToLogin() {
-  chrome.storage.sync.remove(['authToken', 'connectedSites']);
+  chrome.storage.sync.remove(['authToken', 'connectedSites', 'authIV']);
   window.location.href = 'login.html';
 }
 
@@ -27,15 +27,17 @@ async function lockWallet() {
   }
 
   try {
+      const { authIV } = await chrome.storage.sync.get('authIV');
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
           method: 'GET',
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
       });
 
       if (response.ok) {
           const data = await response.json();
           if (data.message === "Successfully Logged Out") {
-              chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+              chrome.storage.sync.remove(['authToken', 'connectedSites', 'authIV'], () => {
                   chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                       if (response.success) {
                           window.location.href = 'login.html';
@@ -67,9 +69,11 @@ async function fetchUpdatedUserProfile() {
     }
   
     try {
+      const { authIV } = await chrome.storage.sync.get('authIV');
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
       });
   
       if (response.ok) {
@@ -100,7 +104,7 @@ async function fetchUpdatedUserProfile() {
         redirectToLogin();
         hideFullScreenLoader();  // Hide loader if token is invalid
       } else {
-        console.error('Failed to fetch user profile:', response.statusText);
+        console.error('Failed to fetch user profile: ddddddddd ', response.statusText);
         hideFullScreenLoader();
         redirectToLogin();  // Hide loader in case of error
       }
@@ -110,6 +114,52 @@ async function fetchUpdatedUserProfile() {
       redirectToLogin(); // Hide loader on error
     }
 }
+
+// function renderConnectedSites(sites) {
+//     if (!sites) {
+//         console.error('No connected sites data available');
+//         return;
+//     }
+
+//     const container = document.querySelector('.d-flex.flex-column'); // The container where connected sites should be appended
+//     container.innerHTML = ''; // Clear existing content
+
+//     sites.forEach(site => {
+//         const siteDiv = document.createElement('div');
+//         siteDiv.className = 'w-100 mb-4';
+//         siteDiv.innerHTML = `
+//             <div class="dropdown dropdown-menu-end w-100" style="background-color: #181b1c;">
+//                 <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
+//                     type="button" data-bs-toggle="dropdown" aria-expanded="false">
+//                     <div class="d-flex align-items-center">
+//                         <img src="${site.service_image}" alt="" class="img-fluid me-2" style="width: 10vh;">
+//                         <span class="mx-4">${site.service_name}</span>
+//                         <span class="text-color-cs">${site.service_url}</span>
+//                     </div>
+//                     <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
+//                 </a>
+//                 <ul class="dropdown-menu ms-4">
+//                     <li><button class="dropdown-item btn btn-transparent text-color-cs disconnect-btn">Disconnect</button></li>
+//                 </ul>
+//             </div>
+//         `;
+//         container.appendChild(siteDiv);
+//         siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+//             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
+            
+//             chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
+//                 if (result.authToken) {
+//                     deleteSite(site.service_url, result.authToken, result.authIV, "remove");
+//                     removeSiteFromStorage(site.service_url)
+//                     renderConnectedSites(updatedSites);
+//                 } else {
+//                     console.error("No authToken found.");
+//                 }
+//             });
+//         });
+//     });
+// }
+
 function renderConnectedSites(sites) {
     if (!sites) {
         console.error('No connected sites data available');
@@ -122,29 +172,68 @@ function renderConnectedSites(sites) {
     sites.forEach(site => {
         const siteDiv = document.createElement('div');
         siteDiv.className = 'w-100 mb-4';
-        siteDiv.innerHTML = `
-            <div class="dropdown dropdown-menu-end w-100" style="background-color: #181b1c;">
-                <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
-                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <img src="${site.service_image}" alt="" class="img-fluid me-2" style="width: 10vh;">
-                        <span class="mx-4">${site.service_name}</span>
-                        <span class="text-color-cs">${site.service_url}</span>
-                    </div>
-                    <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
-                </a>
-                <ul class="dropdown-menu ms-4">
-                    <li><button class="dropdown-item btn btn-transparent text-color-cs disconnect-btn">Disconnect</button></li>
-                </ul>
-            </div>
-        `;
+
+        // Create the dropdown structure manually without using innerHTML
+        const dropdownDiv = document.createElement('div');
+        dropdownDiv.className = 'dropdown dropdown-menu-end w-100';
+        dropdownDiv.style.backgroundColor = '#181b1c';
+
+        const dropdownLink = document.createElement('a');
+        dropdownLink.className = 'btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center';
+        dropdownLink.setAttribute('type', 'button');
+        dropdownLink.setAttribute('data-bs-toggle', 'dropdown');
+        dropdownLink.setAttribute('aria-expanded', 'false');
+
+        const dFlexDiv = document.createElement('div');
+        dFlexDiv.className = 'd-flex align-items-center';
+
+        const serviceImage = document.createElement('img');
+        serviceImage.src = site.service_image;
+        serviceImage.alt = '';
+        serviceImage.className = 'img-fluid me-2';
+        serviceImage.style.width = '10vh';
+
+        const serviceNameSpan = document.createElement('span');
+        serviceNameSpan.className = 'mx-4';
+        serviceNameSpan.textContent = site.service_name;
+
+        const serviceUrlSpan = document.createElement('span');
+        serviceUrlSpan.className = 'text-color-cs';
+        serviceUrlSpan.textContent = site.service_url;
+
+        const chevronIcon = document.createElement('i');
+        chevronIcon.className = 'fas fa-chevron-down me-3 text-color-cs-drop f-16';
+
+        dFlexDiv.appendChild(serviceImage);
+        dFlexDiv.appendChild(serviceNameSpan);
+        dFlexDiv.appendChild(serviceUrlSpan);
+
+        dropdownLink.appendChild(dFlexDiv);
+        dropdownLink.appendChild(chevronIcon);
+
+        const dropdownMenu = document.createElement('ul');
+        dropdownMenu.className = 'dropdown-menu ms-4';
+
+        const dropdownItem = document.createElement('li');
+        const disconnectButton = document.createElement('button');
+        disconnectButton.className = 'dropdown-item btn btn-transparent text-color-cs disconnect-btn';
+        disconnectButton.textContent = 'Disconnect';
+
+        dropdownItem.appendChild(disconnectButton);
+        dropdownMenu.appendChild(dropdownItem);
+
+        dropdownDiv.appendChild(dropdownLink);
+        dropdownDiv.appendChild(dropdownMenu);
+
+        siteDiv.appendChild(dropdownDiv);
         container.appendChild(siteDiv);
-        siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+
+        disconnectButton.addEventListener('click', function () {
             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
             
-            chrome.storage.sync.get(['authToken'], (result) => {
+            chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
                 if (result.authToken) {
-                    deleteSite(site.service_url, result.authToken, "remove");
+                    deleteSite(site.service_url, result.authToken, result.authIV, "remove");
                     removeSiteFromStorage(site.service_url)
                     renderConnectedSites(updatedSites);
                 } else {
@@ -155,7 +244,7 @@ function renderConnectedSites(sites) {
     });
 }
 
-function deleteSite(site, authToken, operation) {
+function deleteSite(site, authToken, authIV, operation) {
     // Replace the URL with your API endpoint
     const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-profile`;
 
@@ -164,11 +253,12 @@ function deleteSite(site, authToken, operation) {
         operation: operation, // Example of passing the second variable
     };
 
+    const decryptedAuthToken = decryptText(authToken, authIV);
     fetch(apiUrl, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "Authorization": `Bearer ${authToken}`,
+            "Authorization": `Bearer ${decryptedAuthToken}`,
         },
         body: JSON.stringify(requestBody),
     })
@@ -280,7 +370,7 @@ function removeSiteFromStorage(site) {
     }
 
     document.querySelector('#disconnect-all-btn').addEventListener('click', function () {
-        chrome.storage.sync.get(['authToken'], function(result) {
+        chrome.storage.sync.get(['authToken', 'authIV'], function(result) {
 
             if (!result.authToken) {
                 console.error("Auth token not found.");
@@ -288,7 +378,7 @@ function removeSiteFromStorage(site) {
             }
 
             chrome.storage.sync.set({ 'connectedSites': [] }, function () {
-                deleteSite("",result.authToken, "remove_all")
+                deleteSite("",result.authToken, result.authIV, "remove_all")
                 renderConnectedSites([]);
             });
 
@@ -296,3 +386,35 @@ function removeSiteFromStorage(site) {
     });
     
   });
+
+  function getKey() {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+        .then(keyMaterial => {
+            return crypto.subtle.importKey(
+                "raw",
+                keyMaterial,
+                { name: "AES-GCM" },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        });
+  }
+  
+  function decryptText(encryptedData, iv) {
+    return getKey()  // Get the AES key asynchronously
+        .then(key => {
+            const decoder = new TextDecoder();
+    
+            // Convert Base64 IV and Encrypted Data back to Uint8Array
+            const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+            const encryptedBytes = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+  
+            // Decrypt the data
+            return crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: ivBytes },
+                key,
+                encryptedBytes
+            ).then(decrypted => decoder.decode(decrypted));  // Convert back to string
+        });
+  }
+  

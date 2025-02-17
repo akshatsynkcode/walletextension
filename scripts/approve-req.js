@@ -69,12 +69,13 @@ document.addEventListener("DOMContentLoaded", () => {
         approveButton.disabled = true;
         approveButton.innerHTML = 'Processing... <span class="approve-loader"></span>'; // Adding loader
     
-        chrome.storage.sync.get(['authToken', 'transaction_id'], ({ authToken, transaction_id }) => {
+        chrome.storage.sync.get(['authToken', 'transaction_id', 'authIV'], ({ authToken, transaction_id, authIV }) => {
             chrome.runtime.sendMessage({
                 action: "approve_transaction",
                 transaction: {
                     authToken,
                     transaction_id,
+                    authIV,
                     status: "completed"
                 }
             }, (response) => {
@@ -93,12 +94,13 @@ document.addEventListener("DOMContentLoaded", () => {
     });
 
     document.querySelector(".reject-button").addEventListener("click", () => {
-        chrome.storage.sync.get(['transaction_id', 'authToken'], ({ transaction_id, authToken }) => {
+        chrome.storage.sync.get(['transaction_id', 'authToken', 'authIV'], ({ transaction_id, authToken, authIV }) => {
             chrome.runtime.sendMessage({
                 action: "reject_transaction",
                 transaction: {
                     transaction_id: transaction_id,
                     authToken: authToken,
+                    authIV: authIV,
                     status: "failed"
                 }
             }, (response) => {

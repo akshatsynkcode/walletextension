@@ -22,6 +22,7 @@ The **Dubai Customs Wallet Extension** is a Chrome extension designed to interac
 4. A `dist` folder will be generated, and the `manifest.json` file will be inside that folder.
 5. Open `about:debugging#/runtime/this-firefox` in your Firefox browser.
 6. Click on **Load Temporary Add-on** and select the `manifest.json` file inside the `dist` folder.
+7. To Check on how to submit it firstly go to the `dist` folder created and inside that please select all the files and folders with the help of ctrl+A or select all and then create a compressed zip of that and then upload it in the "about:debugging#/runtime/this-firefox" add on page
 
 
 ## Permissions
@@ -29,15 +30,11 @@ The **Dubai Customs Wallet Extension** is a Chrome extension designed to interac
 The extension requests the following permissions:
 
 - **Storage**: To save wallet information locally, including wallet addresses and balances.
-- **Active Tab**: To monitor wallet interactions across various tabs and ensure the correct dApp connection.
-- **Scripting**: To inject content scripts for interacting with dApps.
 - **Tabs**: To manage and monitor multiple browser tabs during wallet interactions.
-- **Web Navigation**: To navigate to dApps and handle interactions with blockchain-enabled websites.
 
 ## How to Install On Windows
 1. change the package.json change the build command with "build" : "node build-manifest.js chrome && cross-env TARGET=chrome webpack --config webpack.config.js" ,
 2. npm install --save-dev cross-env
-
 
 
 ## How to Install in Chrome
