@@ -5,6 +5,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const encryptedPassword = await encryptText(password);
     const errorMessage = document.getElementById('error-message');
     const loginButton = document.getElementById('login-btn');
     const loader = document.getElementById('loader');
@@ -34,9 +35,13 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         const data = await response.json();
 
         if (response.ok && data.token) {
+            encryptedData = await encryptText(data.token)
+            encryptedToken = encryptedData.encryptedText;
+            iv = encryptedData.iv;
             // Store the token in chrome.storage.sync
             chrome.storage.sync.set({
-                authToken: data.token,
+                authToken: encryptedToken,
+                authIV: iv,
                 connectedSites: data.connected_sites,
                 email:data.email
             }, function () {
@@ -109,3 +114,31 @@ document.addEventListener('DOMContentLoaded', () => {
         window.open(IAM_URL, "_blank", "noopener,noreferrer");
     });
 });
+
+async function getKey() {
+    const keyMaterial = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"));
+    return crypto.subtle.importKey(
+        "raw",
+        keyMaterial,
+        { name: "AES-GCM" },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function encryptText(password) {
+    const key = await getKey(); // Generate a valid 256-bit key
+    const encoder = new TextEncoder();
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // Generate a random IV
+
+    const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        encoder.encode(password)
+    );
+
+    return {
+        iv: btoa(String.fromCharCode(...iv)), // Convert IV to Base64
+        encryptedText: btoa(String.fromCharCode(...new Uint8Array(encrypted))) // Convert encrypted data to Base64
+    };
+}
