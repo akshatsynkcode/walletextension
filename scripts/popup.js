@@ -39,7 +39,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                             balanceElement.textContent = `AED ${formatAmount(balanceInfoData.balance.toFixed(3))}`;
                         }
                     } else if (balanceInfoResponse.status === 401) {
-                        chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                        chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                             chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                                 if (response.success) {
                                     window.location.href = 'popup-login.html';
@@ -58,7 +58,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     console.error('Username or address element not found');
                 }
             } else if (userInfoResponse.status === 401) {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -89,6 +89,14 @@ document.addEventListener('DOMContentLoaded', async () => {
             const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
             lockModal.show();
             const confirmButton = document.querySelector('.yes-btn');
+            const cancelButton = document.querySelector('.no-btn');
+            cancelButton.addEventListener('click', () => {
+                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
+                modalElement.addEventListener("hidden.bs.modal", function () {
+                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
+                });
+            })
             confirmButton.addEventListener('click', () => {
                 lockModal.hide();
                 lockWallet();
@@ -107,13 +115,14 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function lockWallet() {
     const { authToken } = await chrome.storage.sync.get('authToken');
+    const { email } = await chrome.storage.sync.get('email');
     if (!authToken) {
         console.error('No authToken found. Cannot log out.');
         return;
     }
 
     try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
+        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
             headers: { 'Authorization': `Bearer ${authToken}` }
         });
@@ -121,7 +130,7 @@ async function lockWallet() {
         if (response.ok) {
             const data = await response.json();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'popup-login.html';
@@ -189,57 +198,57 @@ const copyButton = document.getElementById('copy-button');
         }
     }
 
-    document.addEventListener('DOMContentLoaded', async () => { displayConnectedSites();
+    // document.addEventListener('DOMContentLoaded', async () => { displayConnectedSites();
 
-        // Other existing event listeners
-        // ...
-    });
+    //     // Other existing event listeners
+    //     // ...
+    // });
 
-    document.addEventListener('DOMContentLoaded', function() {
-        displayConnectedSites();
-    });
+    // document.addEventListener('DOMContentLoaded', function() {
+    //     displayConnectedSites();
+    // });
     
-    function displayConnectedSites() {
-        chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
-            const sitesContainer = document.getElementById('connected-sites-list');
-            if (sitesContainer) {
-                sitesContainer.innerHTML = ''; // Clear existing content
+    // function displayConnectedSites() {
+    //     chrome.storage.sync.get(['authToken', 'connectedSites'], function(result) {
+    //         const sitesContainer = document.getElementById('connected-sites-list');
+    //         if (sitesContainer) {
+    //             sitesContainer.innerHTML = ''; // Clear existing content
                 
-                const authToken = result.authToken;
-                const connectedSites = result.connectedSites || {};
-                if (Object.keys(connectedSites).length) {
-                    Object.keys(connectedSites).forEach(site => {
-                        const listItem = document.createElement('li');
-                        listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
+    //             const authToken = result.authToken;
+    //             const connectedSites = result.connectedSites || {};
+    //             if (Object.keys(connectedSites).length) {
+    //                 Object.keys(connectedSites).forEach(site => {
+    //                     const listItem = document.createElement('li');
+    //                     listItem.className = 'list-group-item d-flex justify-content-between align-items-center';
 
-                        // Text for the site
-                        const siteText = document.createElement('span');
-                        siteText.textContent = `${connectedSites[site]}`;
-                        listItem.appendChild(siteText);
+    //                     // Text for the site
+    //                     const siteText = document.createElement('span');
+    //                     siteText.textContent = `${connectedSites[site]}`;
+    //                     listItem.appendChild(siteText);
 
-                        // Cross button
-                        const deleteButton = document.createElement('button');
-                        deleteButton.textContent = 'x';
-                        deleteButton.className = 'btn btn-danger btn-sm';
-                        deleteButton.style.marginLeft = '10px';
+    //                     // Cross button
+    //                     const deleteButton = document.createElement('button');
+    //                     deleteButton.textContent = 'x';
+    //                     deleteButton.className = 'btn btn-danger btn-sm';
+    //                     deleteButton.style.marginLeft = '10px';
 
-                        deleteButton.addEventListener('click', function() {
-                            deleteSite(connectedSites[site], authToken,  () => {
-                                removeSiteFromStorage(connectedSites[site]);
-                                sitesContainer.removeChild(listItem);
-                            });
-                        });
-                        listItem.appendChild(deleteButton);
-                        sitesContainer.appendChild(listItem);
-                    });
-                } else {
-                    sitesContainer.innerHTML = '<li class="list-group-item">No connected sites</li>';
-                }
-            } else {
-                console.error("Connected sites list container not found.");
-            }
-        });
-    }
+    //                     deleteButton.addEventListener('click', function() {
+    //                         deleteSite(connectedSites[site], authToken,  () => {
+    //                             removeSiteFromStorage(connectedSites[site]);
+    //                             sitesContainer.removeChild(listItem);
+    //                         });
+    //                     });
+    //                     listItem.appendChild(deleteButton);
+    //                     sitesContainer.appendChild(listItem);
+    //                 });
+    //             } else {
+    //                 sitesContainer.innerHTML = '<li class="list-group-item">No connected sites</li>';
+    //             }
+    //         } else {
+    //             console.error("Connected sites list container not found.");
+    //         }
+    //     });
+    // }
     
     
     

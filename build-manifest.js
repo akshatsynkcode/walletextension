@@ -13,7 +13,7 @@ const firefoxSettings = `
     }
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://ime.dubaicustoms.network https://dev-wallet-api.dubaicustoms.network;"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://ime.finloge.com https://ime.dubaicustoms.network https://dev-wallet-api.dubaicustoms.network;"
   }
 `;
 
@@ -23,7 +23,7 @@ const chromeSettings = `
     "type": "module"
   },
   "content_security_policy": {
-    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://ime.dubaicustoms.network https://dev-wallet-api.dubaicustoms.network; frame-src 'none';"
+    "extension_pages": "script-src 'self'; object-src 'self'; connect-src 'self' https://ime.finloge.com https://ime.dubaicustoms.network https://dev-wallet-api.dubaicustoms.network; frame-src 'none';"
   },
 
   "externally_connectable": {
