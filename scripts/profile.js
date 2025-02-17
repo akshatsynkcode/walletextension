@@ -170,6 +170,72 @@ async function lockWallet() {
     if (usernameElement && walletAddressElement) {
         // Fetch updated profile
         const updatedProfile = await fetchUpdatedUserProfile();
+        // if (updatedProfile) {
+        //     const updatedUserInfo = {
+        //         services: updatedProfile.services,
+        //         balance: updatedProfile.balance,
+        //         fullName: updatedProfile.fullName,
+        //         walletAddress: updatedProfile.walletAddress,
+        //         email: updatedProfile.email
+        //     };
+        //     balanceElement.textContent = `AED ${formatAmount(parseFloat(updatedUserInfo.balance).toFixed(3))}`;
+        //     walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
+        //     walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
+        //     usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
+        //     emailElement.textContent = updatedUserInfo.email || 'N/A';
+        //     // **Services Section - Dynamically Generate Service Cards**
+        //     const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
+
+        //     // Clear previous content
+        //     servicesContainer.innerHTML = '';
+
+        //     let row = null; // Declare row outside loop
+
+        //     //Ensure only the first 9 services are displayed
+        //     const limitedServices = updatedUserInfo.services.slice(0, 3);
+        //     limitedServices.forEach((service, index) => {
+        //         if (index % 3 === 0) {
+        //             // Create a new row after every 3 items
+        //             row = document.createElement('div');
+        //             row.className = 'row g-3 mt-1';
+        //             servicesContainer.appendChild(row); // Append row to container
+        //         }
+
+        //         if (row) { // Ensure row exists before appending
+        //             // Create service column
+        //             const col = document.createElement('div');
+        //             col.className = 'col-md-4 col-4';
+
+        //             // Create anchor element (clickable link)
+        //             const link = document.createElement('a');
+        //             link.href = service.url;
+        //             link.target = '_blank'; // Open in a new tab
+        //             link.className = 'text-decoration-none text-white quicklink_button';
+
+        //             // Create image element
+        //             const img = document.createElement('img');
+        //             img.src = service.image;
+        //             img.alt = service.name;
+        //             img.className = 'img-fluid mx-auto d-block project-icons';
+
+        //             // Create text description
+        //             const p = document.createElement('p');
+        //             p.className = 'text-center font-12 mt-2';
+        //             p.innerHTML = `${service.name} <br> Management`;
+
+        //             // Append image and text inside anchor
+        //             link.appendChild(img);
+        //             link.appendChild(p);
+
+        //             // Append anchor inside column
+        //             col.appendChild(link);
+
+        //             // Append column to the row
+        //             row.appendChild(col);
+        //         }
+        //     });
+        // }
+
         if (updatedProfile) {
             const updatedUserInfo = {
                 services: updatedProfile.services,
@@ -187,12 +253,14 @@ async function lockWallet() {
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 
             // Clear previous content
-            servicesContainer.innerHTML = '';
+            while (servicesContainer.firstChild) {
+                servicesContainer.removeChild(servicesContainer.firstChild);
+            }
 
             let row = null; // Declare row outside loop
 
             //Ensure only the first 9 services are displayed
-            const limitedServices = updatedUserInfo.services.slice(0, 3);
+            const limitedServices = updatedUserInfo.services.slice(0, 9);
             limitedServices.forEach((service, index) => {
                 if (index % 3 === 0) {
                     // Create a new row after every 3 items
@@ -221,7 +289,8 @@ async function lockWallet() {
                     // Create text description
                     const p = document.createElement('p');
                     p.className = 'text-center font-12 mt-2';
-                    p.innerHTML = `${service.name} <br> Management`;
+                    const textNode = document.createTextNode(`${service.name} \n Management`); // Avoid using innerHTML
+                    p.appendChild(textNode);
 
                     // Append image and text inside anchor
                     link.appendChild(img);
@@ -346,6 +415,61 @@ if (!authToken) {
     }
 }
 
+// function updateTransactionTable(transactions) {
+//     const tableBody = document.querySelector('.table-dark tbody');
+//     tableBody.innerHTML = ''; // Clears the table
+//     const out_transaction_img = "./icons/withdrawal.svg";
+//     const in_transaction_img = "./icons/deposit.svg";
+//     transactions.forEach(transaction => {
+//         const row = document.createElement('tr');
+//         // Add cells and content to each row based on the transaction data
+//         row.innerHTML = `<td>
+//                             <span class="d-flex align-items-center">
+//                             <div style="width: max-content;">
+//                                 <img src="${
+//                                   transaction.debit
+//                                     ? out_transaction_img
+//                                     : in_transaction_img
+//                                 }" alt="" class="img-fluid type-img">
+//                             </div>
+//                                 <div class="ms-5">
+//                                     <p class="text-truncate mb-2 font-14">${  transaction.debit
+//                                     ? truncateWalletAddress(
+//                                         transaction.to_wallet_address
+//                                       )
+//                                     : truncateWalletAddress(
+//                                         transaction.from_wallet_address
+//                                       )}</p>
+//                                     <span class="text-gray-600 font-12">From: ${new Date(
+//                                         transaction.created_at
+//                                       ).toLocaleString()}</span>
+//                                 </div>
+//                             </span>
+//                         </td>
+//                        <td class="${
+//                       transaction.debit ? "text-danger" : "text-success"
+//                     } px-3">
+//                         ${transaction.debit ? "-" : "+"} AED ${
+//           transaction.amount
+//         }
+//                     </td>
+//                         <td><div class="position-relative"><span class="span-${getStatusClass(transaction.status)}"></span> ${transaction.status}</div></td>
+//                         <td class="px-3">
+//                        <p class="mb-2">${
+//                           transaction.module_id === "Top up wallet"
+//                             ? "Bank Transfer"
+//                             : "Wallet Transfer"
+//                         }</p>
+//                         <span
+//                             class="text-truncate text-gray-600 font-12">${
+//                                 truncateWalletAddress(transaction.extrinsic_hash) ||
+//                                 "N/A"
+//                               }</span>
+//                     </td>`;
+//         tableBody.appendChild(row);
+//     });
+// }
+
 function updateTransactionTable(transactions) {
     const tableBody = document.querySelector('.table-dark tbody');
     tableBody.innerHTML = ''; // Clears the table
@@ -353,50 +477,73 @@ function updateTransactionTable(transactions) {
     const in_transaction_img = "./icons/deposit.svg";
     transactions.forEach(transaction => {
         const row = document.createElement('tr');
-        // Add cells and content to each row based on the transaction data
-        row.innerHTML = `<td>
-                            <span class="d-flex align-items-center">
-                            <div style="width: max-content;">
-                                <img src="${
-                                  transaction.debit
-                                    ? out_transaction_img
-                                    : in_transaction_img
-                                }" alt="" class="img-fluid type-img">
-                            </div>
-                                <div class="ms-5">
-                                    <p class="text-truncate mb-2 font-14">${  transaction.debit
-                                    ? truncateWalletAddress(
-                                        transaction.to_wallet_address
-                                      )
-                                    : truncateWalletAddress(
-                                        transaction.from_wallet_address
-                                      )}</p>
-                                    <span class="text-gray-600 font-12">From: ${new Date(
-                                        transaction.created_at
-                                      ).toLocaleString()}</span>
-                                </div>
-                            </span>
-                        </td>
-                       <td class="${
-                      transaction.debit ? "text-danger" : "text-success"
-                    } px-3">
-                        ${transaction.debit ? "-" : "+"} AED ${
-          transaction.amount
-        }
-                    </td>
-                        <td><div class="position-relative"><span class="span-${getStatusClass(transaction.status)}"></span> ${transaction.status}</div></td>
-                        <td class="px-3">
-                       <p class="mb-2">${
-                          transaction.module_id === "Top up wallet"
-                            ? "Bank Transfer"
-                            : "Wallet Transfer"
-                        }</p>
-                        <span
-                            class="text-truncate text-gray-600 font-12">${
-                                truncateWalletAddress(transaction.extrinsic_hash) ||
-                                "N/A"
-                              }</span>
-                    </td>`;
+        // Create the first cell for the transaction type and wallet info
+        const td1 = document.createElement('td');
+        const span1 = document.createElement('span');
+        span1.classList.add('d-flex', 'align-items-center');
+        
+        const div1 = document.createElement('div');
+        div1.style.width = 'max-content';
+        const img = document.createElement('img');
+        img.src = transaction.debit ? out_transaction_img : in_transaction_img;
+        img.alt = '';
+        img.classList.add('img-fluid', 'type-img');
+        div1.appendChild(img);
+
+        const div2 = document.createElement('div');
+        div2.classList.add('ms-5');
+        const p = document.createElement('p');
+        p.classList.add('text-truncate', 'mb-2', 'font-14');
+        p.textContent = transaction.debit
+            ? truncateWalletAddress(transaction.to_wallet_address)
+            : truncateWalletAddress(transaction.from_wallet_address);
+
+        const spanDate = document.createElement('span');
+        spanDate.classList.add('text-gray-600', 'font-12');
+        spanDate.textContent = `From: ${new Date(transaction.created_at).toLocaleString()}`;
+
+        div2.appendChild(p);
+        div2.appendChild(spanDate);
+        span1.appendChild(div1);
+        span1.appendChild(div2);
+        td1.appendChild(span1);
+
+        // Create the second cell for the amount
+        const td2 = document.createElement('td');
+        td2.classList.add(transaction.debit ? 'text-danger' : 'text-success', 'px-3');
+        td2.textContent = `${transaction.debit ? '-' : '+'} AED ${transaction.amount}`;
+
+        // Create the third cell for the status
+        const td3 = document.createElement('td');
+        const divStatus = document.createElement('div');
+        divStatus.classList.add('position-relative');
+        const statusSpan = document.createElement('span');
+        statusSpan.classList.add(`span-${getStatusClass(transaction.status)}`);
+        statusSpan.textContent = transaction.status;
+        divStatus.appendChild(statusSpan);
+        td3.appendChild(divStatus);
+
+        // Create the fourth cell for the transaction method and extrinsic hash
+        const td4 = document.createElement('td');
+        td4.classList.add('px-3');
+        const pMethod = document.createElement('p');
+        pMethod.classList.add('mb-2');
+        pMethod.textContent = transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer";
+        
+        const spanHash = document.createElement('span');
+        spanHash.classList.add('text-truncate', 'text-gray-600', 'font-12');
+        spanHash.textContent = truncateWalletAddress(transaction.extrinsic_hash) || "N/A";
+
+        td4.appendChild(pMethod);
+        td4.appendChild(spanHash);
+
+        // Append all cells to the row
+        row.appendChild(td1);
+        row.appendChild(td2);
+        row.appendChild(td3);
+        row.appendChild(td4);
+
+        // Append the row to the table body
         tableBody.appendChild(row);
     });
 }
@@ -410,16 +557,61 @@ function getStatusClass(status) {
     }
 }
 
+// function fetchRecentServices() {
+//     chrome.storage.sync.get('recentServices', function (response) {
+//         let recentServicesArray = response.recentServices || [];
+//         let recentService = recentServicesArray.slice(0, 3);
+//         const recentServicesContainer = document.getElementById('recent-services');
+//         recentServicesContainer.innerHTML = '';
+
+//         let row = null;
+
+//         recentService.forEach((service, index) => {
+//             if (index % 3 === 0) {
+//                 row = document.createElement('div');
+//                 row.className = 'row g-3 mt-1';
+//                 recentServicesContainer.appendChild(row);
+//             }
+
+//             if (row) {
+//                 const col = document.createElement('div');
+//                 col.className = 'col-md-4 col-4';
+
+//                 const link = document.createElement('a');
+//                 link.href = service.url;
+//                 link.target = '_blank'; // Open in a new tab
+//                 link.className = 'text-decoration-none text-white quicklink_button';
+
+//                 const img = document.createElement('img');
+//                 img.src = service.imgSrc;
+//                 img.alt = service.label;
+//                 img.className = 'img-fluid mx-auto d-block project-icons';
+
+//                 const p = document.createElement('p');
+//                 p.className = 'text-center font-12 mt-2';
+//                 p.innerHTML = service.label;
+
+//                 link.appendChild(img);
+//                 link.appendChild(p);
+
+//                 col.appendChild(link);
+
+//                 row.appendChild(col);
+//             }
+//         });
+//     });
+// }
+
 function fetchRecentServices() {
     chrome.storage.sync.get('recentServices', function (response) {
-        let recentServicesArray = response.recentServices || [];
-        let recentService = recentServicesArray.slice(0, 3);
+        const recentServicesArray = response.recentServices || [];
         const recentServicesContainer = document.getElementById('recent-services');
-        recentServicesContainer.innerHTML = '';
+        recentServicesContainer.replaceChildren(); // Clear previous content
 
+        const recentServices = recentServicesArray.slice(0, 3);
         let row = null;
 
-        recentService.forEach((service, index) => {
+        recentServices.forEach((service, index) => {
             if (index % 3 === 0) {
                 row = document.createElement('div');
                 row.className = 'row g-3 mt-1';
@@ -442,7 +634,7 @@ function fetchRecentServices() {
 
                 const p = document.createElement('p');
                 p.className = 'text-center font-12 mt-2';
-                p.innerHTML = service.label;
+                p.textContent = service.label;
 
                 link.appendChild(img);
                 link.appendChild(p);
@@ -454,6 +646,7 @@ function fetchRecentServices() {
         });
     });
 }
+
 
 function fetchQuickLinks() {
     document.addEventListener('click', function(event) {

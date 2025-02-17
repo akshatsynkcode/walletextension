@@ -114,6 +114,52 @@ async function fetchUpdatedUserProfile() {
       redirectToLogin(); // Hide loader on error
     }
 }
+
+// function renderConnectedSites(sites) {
+//     if (!sites) {
+//         console.error('No connected sites data available');
+//         return;
+//     }
+
+//     const container = document.querySelector('.d-flex.flex-column'); // The container where connected sites should be appended
+//     container.innerHTML = ''; // Clear existing content
+
+//     sites.forEach(site => {
+//         const siteDiv = document.createElement('div');
+//         siteDiv.className = 'w-100 mb-4';
+//         siteDiv.innerHTML = `
+//             <div class="dropdown dropdown-menu-end w-100" style="background-color: #181b1c;">
+//                 <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
+//                     type="button" data-bs-toggle="dropdown" aria-expanded="false">
+//                     <div class="d-flex align-items-center">
+//                         <img src="${site.service_image}" alt="" class="img-fluid me-2" style="width: 10vh;">
+//                         <span class="mx-4">${site.service_name}</span>
+//                         <span class="text-color-cs">${site.service_url}</span>
+//                     </div>
+//                     <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
+//                 </a>
+//                 <ul class="dropdown-menu ms-4">
+//                     <li><button class="dropdown-item btn btn-transparent text-color-cs disconnect-btn">Disconnect</button></li>
+//                 </ul>
+//             </div>
+//         `;
+//         container.appendChild(siteDiv);
+//         siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+//             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
+            
+//             chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
+//                 if (result.authToken) {
+//                     deleteSite(site.service_url, result.authToken, result.authIV, "remove");
+//                     removeSiteFromStorage(site.service_url)
+//                     renderConnectedSites(updatedSites);
+//                 } else {
+//                     console.error("No authToken found.");
+//                 }
+//             });
+//         });
+//     });
+// }
+
 function renderConnectedSites(sites) {
     if (!sites) {
         console.error('No connected sites data available');
@@ -126,24 +172,63 @@ function renderConnectedSites(sites) {
     sites.forEach(site => {
         const siteDiv = document.createElement('div');
         siteDiv.className = 'w-100 mb-4';
-        siteDiv.innerHTML = `
-            <div class="dropdown dropdown-menu-end w-100" style="background-color: #181b1c;">
-                <a class="btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center"
-                    type="button" data-bs-toggle="dropdown" aria-expanded="false">
-                    <div class="d-flex align-items-center">
-                        <img src="${site.service_image}" alt="" class="img-fluid me-2" style="width: 10vh;">
-                        <span class="mx-4">${site.service_name}</span>
-                        <span class="text-color-cs">${site.service_url}</span>
-                    </div>
-                    <i class="fas fa-chevron-down me-3 text-color-cs-drop f-16"></i>
-                </a>
-                <ul class="dropdown-menu ms-4">
-                    <li><button class="dropdown-item btn btn-transparent text-color-cs disconnect-btn">Disconnect</button></li>
-                </ul>
-            </div>
-        `;
+
+        // Create the dropdown structure manually without using innerHTML
+        const dropdownDiv = document.createElement('div');
+        dropdownDiv.className = 'dropdown dropdown-menu-end w-100';
+        dropdownDiv.style.backgroundColor = '#181b1c';
+
+        const dropdownLink = document.createElement('a');
+        dropdownLink.className = 'btn btn-transparent custom-btn dropdown-toggle py-3 font-14 w-100 d-flex justify-content-between align-items-center';
+        dropdownLink.setAttribute('type', 'button');
+        dropdownLink.setAttribute('data-bs-toggle', 'dropdown');
+        dropdownLink.setAttribute('aria-expanded', 'false');
+
+        const dFlexDiv = document.createElement('div');
+        dFlexDiv.className = 'd-flex align-items-center';
+
+        const serviceImage = document.createElement('img');
+        serviceImage.src = site.service_image;
+        serviceImage.alt = '';
+        serviceImage.className = 'img-fluid me-2';
+        serviceImage.style.width = '10vh';
+
+        const serviceNameSpan = document.createElement('span');
+        serviceNameSpan.className = 'mx-4';
+        serviceNameSpan.textContent = site.service_name;
+
+        const serviceUrlSpan = document.createElement('span');
+        serviceUrlSpan.className = 'text-color-cs';
+        serviceUrlSpan.textContent = site.service_url;
+
+        const chevronIcon = document.createElement('i');
+        chevronIcon.className = 'fas fa-chevron-down me-3 text-color-cs-drop f-16';
+
+        dFlexDiv.appendChild(serviceImage);
+        dFlexDiv.appendChild(serviceNameSpan);
+        dFlexDiv.appendChild(serviceUrlSpan);
+
+        dropdownLink.appendChild(dFlexDiv);
+        dropdownLink.appendChild(chevronIcon);
+
+        const dropdownMenu = document.createElement('ul');
+        dropdownMenu.className = 'dropdown-menu ms-4';
+
+        const dropdownItem = document.createElement('li');
+        const disconnectButton = document.createElement('button');
+        disconnectButton.className = 'dropdown-item btn btn-transparent text-color-cs disconnect-btn';
+        disconnectButton.textContent = 'Disconnect';
+
+        dropdownItem.appendChild(disconnectButton);
+        dropdownMenu.appendChild(dropdownItem);
+
+        dropdownDiv.appendChild(dropdownLink);
+        dropdownDiv.appendChild(dropdownMenu);
+
+        siteDiv.appendChild(dropdownDiv);
         container.appendChild(siteDiv);
-        siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+
+        disconnectButton.addEventListener('click', function () {
             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
             
             chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
