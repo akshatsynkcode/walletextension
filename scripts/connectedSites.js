@@ -1,5 +1,5 @@
 function redirectToLogin() {
-  chrome.storage.sync.remove(['authToken', 'connectedSites']);
+  chrome.storage.sync.remove(['authToken', 'connectedSites', 'authIV']);
   window.location.href = 'login.html';
 }
 
@@ -27,15 +27,17 @@ async function lockWallet() {
   }
 
   try {
+      const { authIV } = await chrome.storage.sync.get('authIV');
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
           method: 'GET',
-          headers: { 'Authorization': `Bearer ${authToken}` }
+          headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
       });
 
       if (response.ok) {
           const data = await response.json();
           if (data.message === "Successfully Logged Out") {
-              chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+              chrome.storage.sync.remove(['authToken', 'connectedSites', 'authIV'], () => {
                   chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                       if (response.success) {
                           window.location.href = 'login.html';
@@ -67,9 +69,11 @@ async function fetchUpdatedUserProfile() {
     }
   
     try {
+      const { authIV } = await chrome.storage.sync.get('authIV');
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
         method: 'GET',
-        headers: { 'Authorization': `Bearer ${authToken}` }
+        headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
       });
   
       if (response.ok) {
@@ -100,7 +104,7 @@ async function fetchUpdatedUserProfile() {
         redirectToLogin();
         hideFullScreenLoader();  // Hide loader if token is invalid
       } else {
-        console.error('Failed to fetch user profile:', response.statusText);
+        console.error('Failed to fetch user profile: ddddddddd ', response.statusText);
         hideFullScreenLoader();
         redirectToLogin();  // Hide loader in case of error
       }
@@ -142,9 +146,9 @@ function renderConnectedSites(sites) {
         siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
             
-            chrome.storage.sync.get(['authToken'], (result) => {
+            chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
                 if (result.authToken) {
-                    deleteSite(site.service_url, result.authToken, "remove");
+                    deleteSite(site.service_url, result.authToken, result.authIV, "remove");
                     removeSiteFromStorage(site.service_url)
                     renderConnectedSites(updatedSites);
                 } else {
@@ -155,7 +159,7 @@ function renderConnectedSites(sites) {
     });
 }
 
-function deleteSite(site, authToken, operation) {
+function deleteSite(site, authToken, authIV, operation) {
     // Replace the URL with your API endpoint
     const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-profile`;
 
@@ -164,11 +168,12 @@ function deleteSite(site, authToken, operation) {
         operation: operation, // Example of passing the second variable
     };
 
+    const decryptedAuthToken = decryptText(authToken, authIV);
     fetch(apiUrl, {
         method: 'PUT',
         headers: {
             'Content-Type': 'application/json',
-            "Authorization": `Bearer ${authToken}`,
+            "Authorization": `Bearer ${decryptedAuthToken}`,
         },
         body: JSON.stringify(requestBody),
     })
@@ -280,7 +285,7 @@ function removeSiteFromStorage(site) {
     }
 
     document.querySelector('#disconnect-all-btn').addEventListener('click', function () {
-        chrome.storage.sync.get(['authToken'], function(result) {
+        chrome.storage.sync.get(['authToken', 'authIV'], function(result) {
 
             if (!result.authToken) {
                 console.error("Auth token not found.");
@@ -288,7 +293,7 @@ function removeSiteFromStorage(site) {
             }
 
             chrome.storage.sync.set({ 'connectedSites': [] }, function () {
-                deleteSite("",result.authToken, "remove_all")
+                deleteSite("",result.authToken, result.authIV, "remove_all")
                 renderConnectedSites([]);
             });
 
@@ -296,3 +301,35 @@ function removeSiteFromStorage(site) {
     });
     
   });
+
+  function getKey() {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+        .then(keyMaterial => {
+            return crypto.subtle.importKey(
+                "raw",
+                keyMaterial,
+                { name: "AES-GCM" },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        });
+  }
+  
+  function decryptText(encryptedData, iv) {
+    return getKey()  // Get the AES key asynchronously
+        .then(key => {
+            const decoder = new TextDecoder();
+    
+            // Convert Base64 IV and Encrypted Data back to Uint8Array
+            const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+            const encryptedBytes = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+  
+            // Decrypt the data
+            return crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: ivBytes },
+                key,
+                encryptedBytes
+            ).then(decrypted => decoder.decode(decrypted));  // Convert back to string
+        });
+  }
+  

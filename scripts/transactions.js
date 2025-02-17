@@ -7,7 +7,7 @@ function hideFullScreenLoader() {
   document.getElementById('full-screen-loader').style.display = 'none';
 }
 function redirectToLogin() {
-  chrome.storage.sync.remove(["authToken", "connectedSites"]);
+  chrome.storage.sync.remove(["authToken", "connectedSites", "authIV"]);
   window.location.href = "login.html";
 }
 function truncateWalletAddress(
@@ -33,19 +33,21 @@ async function lockWallet() {
     return;
   }
 
+  const { authIV } = await chrome.storage.sync.get("authIV");
+  const decryptedAuthToken = await decryptText(authToken, authIV);
   try {
     const response = await fetch(
       "https://dev-wallet-api.dubaicustoms.network/api/ext-logout",
       {
         method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
+        headers: { Authorization: `Bearer ${decryptedAuthToken}` },
       }
     );
-
+    console.log(response);
     if (response.ok) {
       const data = await response.json();
       if (data.message === "Successfully Logged Out") {
-        chrome.storage.sync.remove(["authToken", "connectedSites"], () => {
+        chrome.storage.sync.remove(["authToken", "connectedSites","authIV"], () => {
           chrome.runtime.sendMessage({ action: "lock_wallet" }, (response) => {
             if (response.success) {
               window.location.href = "login.html";
@@ -59,7 +61,7 @@ async function lockWallet() {
         alert("Logout failed. Please try again.");
       }
     } else {
-      alert("Logout failed. Please try again.");
+      alert("Logout failed. Please try again. ");
     }
   } catch (error) {
     console.error("Error during logout:", error);
@@ -68,20 +70,23 @@ async function lockWallet() {
     );
   }
 }
+
 async function fetchUpdatedUserProfile() {
   try {
     const { authToken } = await chrome.storage.sync.get("authToken");
+    const { authIV } = await chrome.storage.sync.get("authIV");
     if (!authToken) {
       console.error("Authorization token is missing");
       redirectToLogin();
       return;
     }
 
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch(
       "https://dev-wallet-api.dubaicustoms.network/api/ext-profile",
       {
         method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
+        headers: { Authorization: `Bearer ${decryptedAuthToken}` },
       }
     );
 
@@ -92,7 +97,7 @@ async function fetchUpdatedUserProfile() {
       console.error("Token expired or invalid, redirecting to login.");
       redirectToLogin();
     } else {
-      console.error("Failed to fetch user profile:", response.statusText);
+      console.error("Failed to fetch user profile :", response.statusText);
     }
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -137,12 +142,14 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
           return;
       }
 
+      const { authIV } = await chrome.storage.sync.get("authIV");
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch(
           `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}&page_size=${pageSize}&page=${page}`,
           {
               method: "GET",
               headers: {
-                  "Authorization": `Bearer ${authToken}`,
+                  "Authorization": `Bearer ${decryptedAuthToken}`,
                   "Accept": "application/json",
                   "Content-Type": "application/json"
               }
@@ -447,4 +454,35 @@ function updatePagination(totalPages, currentPage = 1) {
       paginationContainer.appendChild(createPageItem("...", currentPage + 1));
       paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
   }
+}
+
+function getKey() {
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+      .then(keyMaterial => {
+          return crypto.subtle.importKey(
+              "raw",
+              keyMaterial,
+              { name: "AES-GCM" },
+              false,
+              ["encrypt", "decrypt"]
+          );
+      });
+}
+
+function decryptText(encryptedData, iv) {
+  return getKey()  // Get the AES key asynchronously
+      .then(key => {
+          const decoder = new TextDecoder();
+  
+          // Convert Base64 IV and Encrypted Data back to Uint8Array
+          const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+          const encryptedBytes = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+
+          // Decrypt the data
+          return crypto.subtle.decrypt(
+              { name: "AES-GCM", iv: ivBytes },
+              key,
+              encryptedBytes
+          ).then(decrypted => decoder.decode(decrypted));  // Convert back to string
+      });
 }

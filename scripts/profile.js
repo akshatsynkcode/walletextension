@@ -8,7 +8,7 @@
 
 // // Redirect to login if no token or token is invalid
 function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email']);
+    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV']);
     window.location.href = 'login.html';
 }
 function formatAmount(amount) {
@@ -49,10 +49,11 @@ async function fetchUpdatedUserProfile() {
             hideFullScreenLoader();
             return;
         }
-
+        const { authIV } = await chrome.storage.sync.get('authIV');
+        const decryptedAuthToken = await decryptText(authToken, authIV);
         const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
+            headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
         });
 
         if (response.ok) {
@@ -95,16 +96,18 @@ async function lockWallet() {
     }
 
     try {
+        const { authIV } = await chrome.storage.sync.get('authIV');
+        const decryptedAuthToken = await decryptText(authToken, authIV);
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
+            headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
         });
 
         if (response.ok) {
             const data = await response.json();
             hideFullScreenLoader();
             if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
                             window.location.href = 'login.html';
@@ -264,18 +267,20 @@ async function lockWallet() {
   });
 
 async function fetchTransactionCount() {
-    const authToken = await chrome.storage.sync.get('authToken');
-    if (!authToken || !authToken.authToken) {
+    const { authToken } = await chrome.storage.sync.get('authToken');
+    if (!authToken) {
         console.error('Authorization token is missing');
         redirectToLogin(); // Redirect or handle the missing token case
         return;
     }
 
+    const { authIV } = await chrome.storage.sync.get('authIV');
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction-count?filter=count', {
         method: 'GET',
         headers: {
             'Accept': 'application/json',
-            'Authorization': `Bearer ${authToken.authToken}`, // Ensure this line is correct
+            'Authorization': `Bearer ${decryptedAuthToken}`, // Ensure this line is correct
             'Content-Type': 'application/json'
         }
     });
@@ -319,10 +324,12 @@ if (!authToken) {
     return;
 }
     try {
+        const { authIV } = await chrome.storage.sync.get('authIV');
+        const decryptedAuthToken = await decryptText(authToken, authIV);
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}`, {
             method: 'GET',
             headers: {
-                'Authorization': `Bearer ${authToken}`
+                'Authorization': `Bearer ${decryptedAuthToken}`
             }
         });
         
@@ -481,3 +488,76 @@ function fetchQuickLinks() {
         }
     });
 }
+
+async function getKey() {
+    const keyMaterial = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"));
+    return crypto.subtle.importKey(
+        "raw",
+        keyMaterial,
+        { name: "AES-GCM" },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function decryptText(encryptedData, iv) {
+    const key = await getKey(); // Get the same AES key
+    const decoder = new TextDecoder();
+
+    // Convert Base64 IV and Encrypted Password back to Uint8Array
+    const ivBytes = new Uint8Array(atob(iv).split("").map(char => char.charCodeAt(0)));
+    const encryptedBytes = new Uint8Array(atob(encryptedData).split("").map(char => char.charCodeAt(0)));
+
+    // Decrypt the data
+    const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: ivBytes },
+        key,
+        encryptedBytes
+    );
+
+    return decoder.decode(decrypted); // Convert back to string
+}
+
+document.addEventListener("DOMContentLoaded", function () {
+    const userConsent = localStorage.getItem("userConsent");
+    const consentModalElement = document.getElementById("userConsentModal");
+    const consentModal = new bootstrap.Modal(consentModalElement, {
+        backdrop: 'static', // Prevent closing when clicking outside
+        keyboard: false     // Prevent closing with Escape key
+    });
+
+    // Show the modal if consent is not given
+    if (!userConsent) {
+        consentModal.show();
+    }
+
+    // Accept Consent
+    document.getElementById("acceptConsent").addEventListener("click", function () {
+        if (document.getElementById("consentCheckbox").checked) {
+            localStorage.setItem("userConsent", "accepted");
+            alert("Thank you for providing consent!");
+            consentModal.hide(); // Hide modal after acceptance
+        } else {
+            alert("Please check the box to give consent.");
+        }
+    });
+
+    // Decline Consent (Keep the modal open)
+    document.getElementById("declineConsent").addEventListener("click", function (event) {
+        alert("Consent is mandatory to use the extension.");
+        
+        // Prevent modal from hiding
+        event.preventDefault();
+        event.stopImmediatePropagation();
+
+        // Keep the modal open
+        consentModal.show();
+    });
+
+    // Prevent modal from hiding on its own
+    consentModalElement.addEventListener("hidden.bs.modal", function (event) {
+        if (!localStorage.getItem("userConsent")) {
+            consentModal.show();
+        }
+    });
+});
