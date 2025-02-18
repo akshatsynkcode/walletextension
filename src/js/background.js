@@ -138,6 +138,53 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         sendResponse({ success: true });
     }
+    // Handle updating recent services
+    else if (message.action === 'updateRecentServices') {
+        const { authToken, service } = message;
+
+        // Fetch existing recent services for this user
+        chrome.storage.sync.get(authToken, (storedData) => {
+            let userData = storedData[authToken] || {};
+            let recentServicesArray = userData.recentServices || [];
+
+            // Remove duplicates and add new service
+            recentServicesArray = recentServicesArray.filter(existingService => existingService.url !== service.url);
+            recentServicesArray.unshift(service);
+
+            // Keep only the last 3 services
+            if (recentServicesArray.length > 3) {
+                recentServicesArray = recentServicesArray.slice(0, 3);
+            }
+
+            // Save updated recent services for this user
+            chrome.storage.sync.set({
+                [authToken]: { recentServices: recentServicesArray }
+            }, () => {
+                sendResponse({ success: true });
+            });
+        });
+
+        // Keep the response asynchronous
+        return true;
+    }
+    // Handle fetching recent services
+    else if (message.action === 'getRecentServices') {
+        const { authToken } = message;
+
+        // Fetch recent services for the given user
+        chrome.storage.sync.get(authToken, (storedData) => {
+            let userData = storedData[authToken] || {};
+            let recentServicesArray = userData.recentServices || [];
+
+            sendResponse({
+                success: true,
+                recentServices: recentServicesArray
+            });
+        });
+
+        // Keep the response asynchronous
+        return true;
+    }
     else {
         switch (message.action) {
             case 'lock_wallet':
@@ -555,34 +602,3 @@ function stopAuthCheck() {
         console.log("Auth check stopped.");
     }
 }
-
-chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
-    if (message.action === "storeURL") {
-        let url = message.url;
-        let imgSrc = message.imgSrc;
-        let label = message.label;
-        let imgName = message.imgName;
-
-        chrome.storage.sync.get('recentServices', function (result) {
-            let recentServicesArray = result.recentServices || [];
-            recentServicesArray.push({ url: url, imgSrc: imgSrc, label: label, imgName: imgName });
-
-            chrome.storage.sync.set({ 'recentServices': recentServicesArray }, function () {
-                chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                    if (tabs.length > 0) {
-                        chrome.tabs.update(tabs[0].id, { url: url });
-                    }
-                });
-                sendResponse({ status: "Recent service stored successfully  !" });
-            });
-        });
-        return true;
-    }
-    if (message.action === "getRecentServices") {
-        chrome.storage.sync.get('recentServices', function (result) {
-            let recentServicesArray = result.recentServices || [];
-            sendResponse({ recentServices: recentServicesArray.slice(-3).reverse() });
-        });
-        return true;
-    }
-});
