@@ -403,53 +403,72 @@ function getStatusClass(status) {
     }
 }
 
-function fetchRecentServices() {
-    chrome.storage.sync.get('recentServices', function (response) {
-        let recentServicesArray = response.recentServices || [];
-        let recentService = recentServicesArray.slice(0, 3);
-        const recentServicesContainer = document.getElementById('recent-services');
-        recentServicesContainer.innerHTML = '';
+async function fetchRecentServices() {
+    try {
+        // Get the current logged-in user's authToken
+        const { authToken } = await chrome.storage.sync.get('authToken');
+        if (!authToken) {
+            console.error('Authorization token is missing');
+            return;
+        }
 
-        let row = null;
+        console.log("Fetching services for user:", authToken);
 
-        recentService.forEach((service, index) => {
-            if (index % 3 === 0) {
-                row = document.createElement('div');
-                row.className = 'row g-3 mt-1';
-                recentServicesContainer.appendChild(row);
+        // Request recent services from the background script
+        chrome.runtime.sendMessage(
+            { action: "getRecentServices", authToken },
+            (response) => {
+                if (response.success) {
+                    const recentServicesArray = response.recentServices || [];
+
+                    // Update the UI
+                    const recentServicesContainer = document.getElementById('recent-services');
+                    recentServicesContainer.innerHTML = '';
+
+                    let row = null;
+                    recentServicesArray.forEach((service, index) => {
+                        if (index % 3 === 0) {
+                            row = document.createElement('div');
+                            row.className = 'row g-3 mt-1';
+                            recentServicesContainer.appendChild(row);
+                        }
+
+                        if (row) {
+                            const col = document.createElement('div');
+                            col.className = 'col-md-4 col-4';
+
+                            const link = document.createElement('a');
+                            link.href = service.url;
+                            link.target = '_blank';
+                            link.className = 'text-decoration-none text-white quicklink_button';
+
+                            const img = document.createElement('img');
+                            img.src = service.imgSrc;
+                            img.alt = service.label;
+                            img.className = 'img-fluid mx-auto d-block project-icons';
+
+                            const p = document.createElement('p');
+                            p.className = 'text-center font-12 mt-2';
+                            p.innerHTML = service.label;
+
+                            link.appendChild(img);
+                            link.appendChild(p);
+                            col.appendChild(link);
+                            row.appendChild(col);
+                        }
+                    });
+                } else {
+                    console.error('Failed to fetch recent services:', response.error);
+                }
             }
-
-            if (row) {
-                const col = document.createElement('div');
-                col.className = 'col-md-4 col-4';
-
-                const link = document.createElement('a');
-                link.href = service.url;
-                link.target = '_blank'; // Open in a new tab
-                link.className = 'text-decoration-none text-white quicklink_button';
-
-                const img = document.createElement('img');
-                img.src = service.imgSrc;
-                img.alt = service.label;
-                img.className = 'img-fluid mx-auto d-block project-icons';
-
-                const p = document.createElement('p');
-                p.className = 'text-center font-12 mt-2';
-                p.innerHTML = service.label;
-
-                link.appendChild(img);
-                link.appendChild(p);
-
-                col.appendChild(link);
-
-                row.appendChild(col);
-            }
-        });
-    });
+        );
+    } catch (error) {
+        console.error("Error fetching recent services:", error);
+    }
 }
 
-function fetchQuickLinks() {
-    document.addEventListener('click', function(event) {
+async function fetchQuickLinks() {
+    document.addEventListener('click', async function (event) {
         if (event.target.closest('.quicklink_button')) {
             event.preventDefault();
             var button = event.target.closest('.quicklink_button');
@@ -457,27 +476,34 @@ function fetchQuickLinks() {
             var imgSrc = button.querySelector('img').getAttribute('src');
             var label = button.querySelector('p').textContent.trim();
 
-            chrome.storage.sync.get('recentServices', function (response) {
-                let recentServicesArray = response.recentServices || [];
-
-                // Remove the existing entry if found
-                recentServicesArray = recentServicesArray.filter(service => service.url !== url);
-
-                // Add the new entry to the top
-                recentServicesArray.unshift({ url, imgSrc, label });
-
-                // Keep only the last 3 entries
-                if (recentServicesArray.length > 3) {
-                    recentServicesArray = recentServicesArray.slice(0, 3);
+            try {
+                // Fetch the current user's authToken
+                const { authToken } = await chrome.storage.sync.get('authToken');
+                if (!authToken) {
+                    console.error('Authorization token is missing');
+                    redirectToLogin();
+                    hideFullScreenLoader();
+                    return;
                 }
 
-                chrome.storage.sync.set({ recentServices: recentServicesArray }, function() {
-                    console.log("Updated recent services:", recentServicesArray);
-                    fetchRecentServices();
-                });
-            });
+                // Send a message to the background script to update recent services
+                chrome.runtime.sendMessage(
+                    { action: "updateRecentServices", authToken, service: { url, imgSrc, label } },
+                    (response) => {
+                        if (response.success) {
+                            console.log("Updated recent services for user:", authToken);
 
-            window.open(url, '_blank');
+                            // Refresh recent services (UI will be updated via background.js)
+                            fetchRecentServices();
+                            window.open(url, '_blank');
+                        } else {
+                            console.error('Failed to update recent services:', response.error);
+                        }
+                    }
+                );
+            } catch (error) {
+                console.error("Error updating quick links:", error);
+            }
         }
     });
 }
