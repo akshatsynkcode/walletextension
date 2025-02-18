@@ -7,7 +7,7 @@ function hideFullScreenLoader() {
   document.getElementById('full-screen-loader').style.display = 'none';
 }
 function redirectToLogin() {
-  chrome.storage.sync.remove(["authToken", "connectedSites"]);
+  chrome.storage.sync.remove(["authToken", "connectedSites", "authIV"]);
   window.location.href = "login.html";
 }
 function truncateWalletAddress(
@@ -33,19 +33,21 @@ async function lockWallet() {
     return;
   }
 
+  const { authIV } = await chrome.storage.sync.get("authIV");
+  const decryptedAuthToken = await decryptText(authToken, authIV);
   try {
     const response = await fetch(
       "https://dev-wallet-api.dubaicustoms.network/api/ext-logout",
       {
         method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
+        headers: { Authorization: `Bearer ${decryptedAuthToken}` },
       }
     );
-
+    console.log(response);
     if (response.ok) {
       const data = await response.json();
       if (data.message === "Successfully Logged Out") {
-        chrome.storage.sync.remove(["authToken", "connectedSites"], () => {
+        chrome.storage.sync.remove(["authToken", "connectedSites","authIV"], () => {
           chrome.runtime.sendMessage({ action: "lock_wallet" }, (response) => {
             if (response.success) {
               window.location.href = "login.html";
@@ -59,7 +61,7 @@ async function lockWallet() {
         alert("Logout failed. Please try again.");
       }
     } else {
-      alert("Logout failed. Please try again.");
+      alert("Logout failed. Please try again. ");
     }
   } catch (error) {
     console.error("Error during logout:", error);
@@ -68,20 +70,23 @@ async function lockWallet() {
     );
   }
 }
+
 async function fetchUpdatedUserProfile() {
   try {
     const { authToken } = await chrome.storage.sync.get("authToken");
+    const { authIV } = await chrome.storage.sync.get("authIV");
     if (!authToken) {
       console.error("Authorization token is missing");
       redirectToLogin();
       return;
     }
 
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch(
       "https://dev-wallet-api.dubaicustoms.network/api/ext-profile",
       {
         method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
+        headers: { Authorization: `Bearer ${decryptedAuthToken}` },
       }
     );
 
@@ -92,7 +97,7 @@ async function fetchUpdatedUserProfile() {
       console.error("Token expired or invalid, redirecting to login.");
       redirectToLogin();
     } else {
-      console.error("Failed to fetch user profile:", response.statusText);
+      console.error("Failed to fetch user profile :", response.statusText);
     }
   } catch (error) {
     console.error("Error fetching user profile:", error);
@@ -137,12 +142,14 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
           return;
       }
 
+      const { authIV } = await chrome.storage.sync.get("authIV");
+      const decryptedAuthToken = await decryptText(authToken, authIV);
       const response = await fetch(
           `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}&page_size=${pageSize}&page=${page}`,
           {
               method: "GET",
               headers: {
-                  "Authorization": `Bearer ${authToken}`,
+                  "Authorization": `Bearer ${decryptedAuthToken}`,
                   "Accept": "application/json",
                   "Content-Type": "application/json"
               }
@@ -201,73 +208,175 @@ function updateTransactionTable(result) {
     const tableBody = document.querySelector(".custom-table tbody");
 
     // Function to display transactions based on filter type
+    // function displayTransactions(filterType = "all") {
+    //     tableBody.innerHTML = ""; // Clear previous data
+
+    //     const filteredTransactions = transactions.filter(transaction => {
+    //         if (filterType === "completed") return transaction.status === "completed";
+    //         if (filterType === "failed") return transaction.status === "failed";
+    //         return true; // Show all if filter is "all"
+    //     });
+
+    //     filteredTransactions.forEach(transaction => {
+    //         const row = document.createElement("tr");
+    //         row.classList.add("border-bottom");
+
+    //         row.innerHTML = `
+    //             <td>
+    //                 <span class="d-flex align-items-center">
+    //                     <div style="width: max-content;">
+    //                         <img src="${
+    //                           transaction.debit ? "./icons/withdrawal.svg" : "./icons/deposit.svg"
+    //                         }" alt="" class="img-fluid type-img">
+    //                     </div>
+    //                     <div class="ms-4">
+    //                         <p class="text-truncate mb-2 font-14">${
+    //                           transaction.debit
+    //                             ? truncateWalletAddress(transaction.to_wallet_address)
+    //                             : truncateWalletAddress(transaction.from_wallet_address)
+    //                         }</p>
+    //                         <span class="text-gray-600 font-12">From: ${new Date(
+    //                           transaction.created_at
+    //                         ).toLocaleString()}</span>
+    //                     </div>
+    //                 </span>
+    //             </td>
+    //             <td class="${transaction.debit ? "text-danger" : "text-success"} px-3">
+    //                 ${transaction.debit ? "-" : "+"} AED ${transaction.amount}
+    //             </td>
+    //             <td class="px-3">
+    //                 <div class="position-relative">
+    //                     <span class="${
+    //                       transaction.status === "completed" ? "span-success" : "span-danger"
+    //                     }"></span> ${transaction.status}
+    //                 </div>
+    //             </td>
+    //             <td class="px-3">
+    //                 <p class="mb-2">${
+    //                   transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"
+    //                 }</p>
+    //                 <span class="text-truncate text-gray-600 font-12">${
+    //                   truncateWalletAddress(transaction.extrinsic_hash) || "N/A"
+    //                 }</span>
+    //             </td>
+    //             <td class="px-3">
+    //                 <div class="d-flex align-items-center">
+    //                     <span class="status-indicator span-department"></span>
+    //                     ${transaction.module_type || "N/A"}
+    //                 </div>
+    //             </td>
+    //             <td class="px-3">
+    //                 <span class="text-truncate font-12">${new Date(
+    //                   transaction.created_at
+    //                 ).toLocaleString()}</span>
+    //             </td>
+    //         `;
+
+    //         tableBody.appendChild(row);
+    //     });
+    // }
+
     function displayTransactions(filterType = "all") {
-        tableBody.innerHTML = ""; // Clear previous data
-
-        const filteredTransactions = transactions.filter(transaction => {
-            if (filterType === "completed") return transaction.status === "completed";
-            if (filterType === "failed") return transaction.status === "failed";
-            return true; // Show all if filter is "all"
-        });
-
-        filteredTransactions.forEach(transaction => {
-            const row = document.createElement("tr");
-            row.classList.add("border-bottom");
-
-            row.innerHTML = `
-                <td>
-                    <span class="d-flex align-items-center">
-                        <div style="width: max-content;">
-                            <img src="${
-                              transaction.debit ? "./icons/withdrawal.svg" : "./icons/deposit.svg"
-                            }" alt="" class="img-fluid type-img">
-                        </div>
-                        <div class="ms-4">
-                            <p class="text-truncate mb-2 font-14">${
-                              transaction.debit
-                                ? truncateWalletAddress(transaction.to_wallet_address)
-                                : truncateWalletAddress(transaction.from_wallet_address)
-                            }</p>
-                            <span class="text-gray-600 font-12">From: ${new Date(
-                              transaction.created_at
-                            ).toLocaleString()}</span>
-                        </div>
-                    </span>
-                </td>
-                <td class="${transaction.debit ? "text-danger" : "text-success"} px-3">
-                    ${transaction.debit ? "-" : "+"} AED ${transaction.amount}
-                </td>
-                <td class="px-3">
-                    <div class="position-relative">
-                        <span class="${
-                          transaction.status === "completed" ? "span-success" : "span-danger"
-                        }"></span> ${transaction.status}
-                    </div>
-                </td>
-                <td class="px-3">
-                    <p class="mb-2">${
-                      transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"
-                    }</p>
-                    <span class="text-truncate text-gray-600 font-12">${
-                      truncateWalletAddress(transaction.extrinsic_hash) || "N/A"
-                    }</span>
-                </td>
-                <td class="px-3">
-                    <div class="d-flex align-items-center">
-                        <span class="status-indicator span-department"></span>
-                        ${transaction.module_type || "N/A"}
-                    </div>
-                </td>
-                <td class="px-3">
-                    <span class="text-truncate font-12">${new Date(
-                      transaction.created_at
-                    ).toLocaleString()}</span>
-                </td>
-            `;
-
-            tableBody.appendChild(row);
-        });
-    }
+      tableBody.innerHTML = ""; // Clear previous data
+  
+      const filteredTransactions = transactions.filter(transaction => {
+          if (filterType === "completed") return transaction.status === "completed";
+          if (filterType === "failed") return transaction.status === "failed";
+          return true; // Show all if filter is "all"
+      });
+  
+      filteredTransactions.forEach(transaction => {
+          const row = document.createElement("tr");
+          row.classList.add("border-bottom");
+  
+          // Create the first cell
+          const cell1 = document.createElement("td");
+          const span1 = document.createElement("span");
+          span1.classList.add("d-flex", "align-items-center");
+  
+          const div1 = document.createElement("div");
+          div1.style.width = "max-content";
+          const img = document.createElement("img");
+          img.src = transaction.debit ? "./icons/withdrawal.svg" : "./icons/deposit.svg";
+          img.alt = "";
+          img.classList.add("img-fluid", "type-img");
+          div1.appendChild(img);
+  
+          const div2 = document.createElement("div");
+          div2.classList.add("ms-4");
+          const p = document.createElement("p");
+          p.classList.add("text-truncate", "mb-2", "font-14");
+          p.textContent = transaction.debit
+              ? truncateWalletAddress(transaction.to_wallet_address)
+              : truncateWalletAddress(transaction.from_wallet_address);
+          const span2 = document.createElement("span");
+          span2.classList.add("text-gray-600", "font-12");
+          span2.textContent = `From: ${new Date(transaction.created_at).toLocaleString()}`;
+          div2.appendChild(p);
+          div2.appendChild(span2);
+  
+          span1.appendChild(div1);
+          span1.appendChild(div2);
+          cell1.appendChild(span1);
+          row.appendChild(cell1);
+  
+          // Create the second cell
+          const cell2 = document.createElement("td");
+          cell2.classList.add(transaction.debit ? "text-danger" : "text-success", "px-3");
+          cell2.textContent = `${transaction.debit ? "-" : "+"} AED ${transaction.amount}`;
+          row.appendChild(cell2);
+  
+          // Create the third cell
+          const cell3 = document.createElement("td");
+          cell3.classList.add("px-3");
+          const div3 = document.createElement("div");
+          div3.classList.add("position-relative");
+          const span3 = document.createElement("span");
+          span3.classList.add(transaction.status === "completed" ? "span-success" : "span-danger");
+          div3.appendChild(span3);
+          div3.appendChild(document.createTextNode(` ${transaction.status}`));
+          cell3.appendChild(div3);
+          row.appendChild(cell3);
+  
+          // Create the fourth cell
+          const cell4 = document.createElement("td");
+          cell4.classList.add("px-3");
+          const p2 = document.createElement("p");
+          p2.classList.add("mb-2");
+          p2.textContent = transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer";
+          const span4 = document.createElement("span");
+          span4.classList.add("text-truncate", "text-gray-600", "font-12");
+          span4.textContent = truncateWalletAddress(transaction.extrinsic_hash) || "N/A";
+          cell4.appendChild(p2);
+          cell4.appendChild(span4);
+          row.appendChild(cell4);
+  
+          // Create the fifth cell
+          const cell5 = document.createElement("td");
+          cell5.classList.add("px-3");
+          const div4 = document.createElement("div");
+          div4.classList.add("d-flex", "align-items-center");
+          const span5 = document.createElement("span");
+          span5.classList.add("status-indicator", "span-department");
+          div4.appendChild(span5);
+          div4.appendChild(document.createTextNode(` ${transaction.module_type || "N/A"}`));
+          cell5.appendChild(div4);
+          row.appendChild(cell5);
+  
+          // Create the sixth cell
+          const cell6 = document.createElement("td");
+          cell6.classList.add("px-3");
+          const span6 = document.createElement("span");
+          span6.classList.add("text-truncate", "font-12");
+          span6.textContent = new Date(transaction.created_at).toLocaleString();
+          cell6.appendChild(span6);
+          row.appendChild(cell6);
+  
+          // Append the row to the table body
+          tableBody.appendChild(row);
+      });
+  }
+  
 
     // Function to handle button clicks and apply active state
     function handleButtonClick(button, filterType) {
@@ -447,4 +556,35 @@ function updatePagination(totalPages, currentPage = 1) {
       paginationContainer.appendChild(createPageItem("...", currentPage + 1));
       paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
   }
+}
+
+function getKey() {
+  return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+      .then(keyMaterial => {
+          return crypto.subtle.importKey(
+              "raw",
+              keyMaterial,
+              { name: "AES-GCM" },
+              false,
+              ["encrypt", "decrypt"]
+          );
+      });
+}
+
+function decryptText(encryptedData, iv) {
+  return getKey()  // Get the AES key asynchronously
+      .then(key => {
+          const decoder = new TextDecoder();
+  
+          // Convert Base64 IV and Encrypted Data back to Uint8Array
+          const ivBytes = Uint8Array.from(atob(iv), c => c.charCodeAt(0));
+          const encryptedBytes = Uint8Array.from(atob(encryptedData), c => c.charCodeAt(0));
+
+          // Decrypt the data
+          return crypto.subtle.decrypt(
+              { name: "AES-GCM", iv: ivBytes },
+              key,
+              encryptedBytes
+          ).then(decrypted => decoder.decode(decrypted));  // Convert back to string
+      });
 }
