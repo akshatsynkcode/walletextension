@@ -145,6 +145,16 @@ module.exports = (env, argv) => {
         filename: 'connectedSites.html',
         chunks: ['connectedSites', 'vendors'] // Include vendor chunk
       }),
+      new HtmlWebpackPlugin({
+        template: './components/settings.html',
+        filename: 'settings.html',
+        chunks: ['settings', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/help.html',
+        filename: 'help.html',
+        chunks: ['help', 'vendors'] // Include vendor chunk
+      }),
       new CopyWebpackPlugin({
         patterns: [
           { from: './src/manifest.json', to: 'manifest.json' },

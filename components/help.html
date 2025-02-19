@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Help</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link href="./css/style.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <style>
+        /* Custom styling for the activity loader */
+        #activities-loader {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            margin-top: 20px;
+        }
+
+        #activities-loader .spinner-border {
+            margin-bottom: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="full-screen-loader" style="display: none;">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <div class="col-lg-2 col-12">
+                <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
+                    <div class="row g-0">
+                        <div class="col-lg-12 col-12">
+                            <a class="navbar-brand m-0">
+                                <img src="./icons/logo-dark.svg" class="img-fluid logo" />
+                            </a>
+                            <hr class="border-0">
+                            <ul class="nav flex-column siderbar-nav">
+                                <li class="nav-item">
+                                    <a class="nav-link" aria-current="page" href="profile.html">
+                                        <div>
+                                            <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2">
+                                            Dashboard
+                                        </div>
+
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link active" href="transactions.html">
+                                        <div>
+                                            <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2">
+                                            Transactions
+                                        </div>
+                                        <div>
+                                            <img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="connectedSites.html">
+                                        <div>
+                                            <img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2">
+                                            Linked Sites
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <div>
+                                            <img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
+                                            Settings
+                                        </div>
+                                    </a>
+                                </li>
+                                <li class="nav-item">
+                                    <a class="nav-link" href="#">
+                                        <div>
+                                            <img src="./icons/help-icon.svg" alt="" class="img-fluid me-2">
+                                            Help
+                                        </div>
+                                    </a>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-lg-10 col-12">
+                <nav class="navbar navbar-expand-sm header custom-border-color">
+                    <div class="container-fluid z-2">
+                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
+                            aria-expanded="false" aria-label="Toggle navigation">
+                            <span class="navbar-toggler-icon"></span>
+                        </button>
+                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                            <ul class="navbar-nav me-auto me-auto mb-2 mb-sm-0">
+                                <li class="nav-item">
+
+                                </li>
+                            </ul>
+                            <div>
+                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white">
+                                    <div class="card-body p-2">
+                                        <div class="d-flex align-items-center">
+                                            <div class="ms-2">
+                                                <storng class="font-16">Wallet ID</storng>
+                                                <span id="wallet-address"
+                                                    class="ms-3 font-14 text-gray-600 text-truncate"></span>
+                                            </div>
+                                            <div class="ms-5">
+                                                <a href="#" id="copy-button">
+                                                    <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
+                                                </a>
+                                                <span id="copy-message" style="display: none;"
+                                                    class="font-12 text-color-cs">Copied!</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="d-flex align-items-center right-nav ps-4">
+                                <div class="dropdown">
+                                    <i class="fa-duotone fa-solid fa-user user-icon"></i>
+                                    <button class="btn text-white ps-1 border-0" type="button" id="dropdownMenuButton1"
+                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                        <div class="d-flex">
+                                            <div class="text-start">
+                                                <p id="username" class="f-14 mb-0">Username</p>
+                                                <span class="font-12 text-color-cs" id="email"></span>
+                                            </div>
+                                            <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
+                                        </div>
+                                    </button>
+                                    <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
+                                        <li>
+                                            <button class="dropdown-item btn text-white font-14" data-bs-toggle="modal"
+                                                data-bs-target="#exampleModal" id="lock-wallet-btn">
+                                                <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
+                                            </button>
+                                        </li>
+                                    </ul>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </nav>
+                <div class="main-container p-4">
+                    <!--begin::Row-->
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <!-- Heading -->
+                            <h1 class="text-white mb-3 text-start font-24 font-regular">Help</h1>
+                           

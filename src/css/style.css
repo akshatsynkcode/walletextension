@@ -888,8 +888,8 @@ h1, h2, h3, h4, h5, h6, p{
   color: #828F98 !important;
 }
 
-.text-color-cs-drop{
-  color: #113449 !important;
+.radio-background{
+  background-color: #2369935E !important;
 }
 
 .dropdown-toggle::after{
@@ -938,4 +938,58 @@ h1, h2, h3, h4, h5, h6, p{
   background-color: rgba(255, 255, 255, 0.1);
   transform: scale(1.1);
   transition: all 0.2s ease;
+}
+
+.radio-background input[type="radio"] {
+  display: none;
+}
+
+
+.radio-background label {
+  position: relative;
+  padding-left: 30px;
+  font-size: 16px;
+  cursor: pointer;
+}
+
+
+.radio-background label::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  background-color: #2369935E;
+  border: 2px solid #ddd;
+}
+
+.radio-background input[type="radio"]:checked + label::after {
+  content: "✔";
+  position: absolute;
+  left: 5px;
+  top: 50%;
+  transform: translateY(-50%) rotate(-5deg);
+  font-size: 14px;
+  color: #000435;
+  font-weight: bold;
+}
+
+.radio-background input[type="radio"]:checked + label::before {
+  background-color: white;
+}
+
+.form-check-input:checked{
+  background-color: #4485B7!important;
+  border-color: #4485B7 !important ;
+}
+
+.text-color-link{
+  color: #4485B7;
+}
+
+.parent img{
+  cursor: pointer;
 }
