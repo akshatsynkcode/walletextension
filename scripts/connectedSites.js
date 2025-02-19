@@ -119,77 +119,77 @@ function renderConnectedSites(sites) {
     const container = document.querySelector('.d-flex.flex-column'); // The container where connected sites should be appended
     container.innerHTML = ''; // Clear existing content
 
-    //     sites.forEach(site => {
-    //         const siteDiv = document.createElement('div');
-    //         siteDiv.className = 'w-100 mb-4';
-    //         siteDiv.innerHTML = `
-    //             <ul class="w-100 list-unstyled" style="background-color: #181b1c;">
-    //                 <li class="w-100">
-    //                     <div class="btn btn-transparent custom-btn py-3 font-14 w-100 d-flex justify-content-between align-items-center">
-    //                         <div class="d-flex align-items-center">
-    //                             <img src="${site.service_image}" alt="" class="img-fluid me-2 custom-img">
-    //                             <span class="mx-4">${site.service_name}</span>
-    //                             <span class="text-color-cs">${site.service_url}</span>
-    //                         </div>
-    //                         <i class="btn fa fa-times me-3 text-danger f-16 disconnect-btn"></i>
-    //                     </div>
-    //                 </li>
-    //             </ul>
-    //         `;
-    //         container.appendChild(siteDiv);
-    //         siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
-    //             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
+        sites.forEach(site => {
+            const siteDiv = document.createElement('div');
+            siteDiv.className = 'w-100 mb-4';
+            siteDiv.innerHTML = `
+                <ul class="w-100 list-unstyled" style="background-color: #181b1c;">
+                    <li class="w-100">
+                        <div class="btn btn-transparent custom-btn py-3 font-14 w-100 d-flex justify-content-between align-items-center">
+                            <div class="d-flex align-items-center">
+                                <img src="${site.service_image}" alt="" class="img-fluid me-2 custom-img">
+                                <span class="mx-4">${site.service_name}</span>
+                                <span class="text-color-cs">${site.service_url}</span>
+                            </div>
+                            <i class="btn fa fa-times me-3 text-danger f-16 disconnect-btn"></i>
+                        </div>
+                    </li>
+                </ul>
+            `;
+            container.appendChild(siteDiv);
+            siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+                const updatedSites = sites.filter(s => s.service_name !== site.service_name);
 
-    //             chrome.storage.sync.get(['authToken'], (result) => {
-    //                 if (result.authToken) {
-    //                     deleteSite(site.service_url, result.authToken, "remove");
-    //                     removeSiteFromStorage(site.service_url)
-    //                     renderConnectedSites(updatedSites);
-    //                 } else {
-    //                     console.error("No authToken found.");
-    //                 }
-    //             });
-    //         });
-    //     });
-    // }
-
-
-
-    sites.forEach(site => {
-        const siteDiv = document.createElement('div');
-        siteDiv.className = 'col-lg-3 col-md-4 mb-1';
-        siteDiv.innerHTML = `
-        <div class="card shadow-sm border-0" style="background-color: #181b1c;">
-            <div class="card-body p-3 d-flex flex-column">
-                <div class="text-center mb-2">
-                    <img src="${site.service_image}" class="img-fluid rounded-circle mb-3" style="width:100px; height:100px">
-                </div>
-                <h5 class="card-title text-truncate text-light text-center">${site.service_name}</h5>
-                <p class="card-text small text-truncate mb-2 text-light text-center">${site.service_url}</p>
-                <div class="mt-auto">
-                    <button class="btn btn-outline-danger w-100 disconnect-btn">
-                        <i class="fa fa-unlink me-2"></i>Disconnect
-                    </button>
-                </div>
-            </div>
-        </div>
-`;
-        container.appendChild(siteDiv);
-        siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
-            const updatedSites = sites.filter(s => s.service_name !== site.service_name);
-
-            chrome.storage.sync.get(['authToken'], (result) => {
-                if (result.authToken) {
-                    deleteSite(site.service_url, result.authToken, "remove");
-                    removeSiteFromStorage(site.service_url)
-                    renderConnectedSites(updatedSites);
-                } else {
-                    console.error("No authToken found.");
-                }
+                chrome.storage.sync.get(['authToken'], (result) => {
+                    if (result.authToken) {
+                        deleteSite(site.service_url, result.authToken, "remove");
+                        removeSiteFromStorage(site.service_url)
+                        renderConnectedSites(updatedSites);
+                    } else {
+                        console.error("No authToken found.");
+                    }
+                });
             });
         });
-    });
-}
+    }
+
+
+
+//     sites.forEach(site => {
+//         const siteDiv = document.createElement('div');
+//         siteDiv.className = 'col-lg-3 col-md-4 mb-1';
+//         siteDiv.innerHTML = `
+//         <div class="card shadow-sm border-0" style="background-color: #181b1c;">
+//             <div class="card-body p-3 d-flex flex-column">
+//                 <div class="text-center mb-2">
+//                     <img src="${site.service_image}" class="img-fluid rounded-circle mb-3" style="width:100px; height:100px">
+//                 </div>
+//                 <h5 class="card-title text-truncate text-light text-center">${site.service_name}</h5>
+//                 <p class="card-text small text-truncate mb-2 text-light text-center">${site.service_url}</p>
+//                 <div class="mt-auto">
+//                     <button class="btn btn-outline-danger w-100 disconnect-btn">
+//                         <i class="fa fa-unlink me-2"></i>Disconnect
+//                     </button>
+//                 </div>
+//             </div>
+//         </div>
+// `;
+//         container.appendChild(siteDiv);
+//         siteDiv.querySelector('.disconnect-btn').addEventListener('click', function () {
+//             const updatedSites = sites.filter(s => s.service_name !== site.service_name);
+
+//             chrome.storage.sync.get(['authToken'], (result) => {
+//                 if (result.authToken) {
+//                     deleteSite(site.service_url, result.authToken, "remove");
+//                     removeSiteFromStorage(site.service_url)
+//                     renderConnectedSites(updatedSites);
+//                 } else {
+//                     console.error("No authToken found.");
+//                 }
+//             });
+//         });
+//     });
+// }
 
 
 
