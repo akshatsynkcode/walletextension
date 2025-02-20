@@ -993,3 +993,25 @@ h1, h2, h3, h4, h5, h6, p{
 .parent img{
   cursor: pointer;
 }
+
+.accordion-item {
+  border: none;
+}
+
+.accordion-button {
+  border: none !important;
+  box-shadow: none !important;
+}
+
+.accordion-collapse {
+  border: none;
+}
+
+.accordion-body {
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
+  padding: 1rem 1.25rem;
+}
+
+.accordion-button::after {
+  filter: brightness(0) invert(1);
+}

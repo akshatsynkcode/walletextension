@@ -5,12 +5,15 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Help</title>
+    <script src=".js/jquery-3.7.1.min.js"></script>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+    <script src="./js/bootstrap.bundle.min.js"></script>
+
     <style>
         /* Custom styling for the activity loader */
         #activities-loader {
@@ -159,4 +162,65 @@
                         <div class="col-12">
                             <!-- Heading -->
                             <h1 class="text-white mb-3 text-start font-24 font-regular">Help</h1>
-                           
+                            <!-- Query-start -->
+                            <div class="p-3">
+                                <h1 class="text-white text-start font-20 font-regular">
+                                    Ask if you have any query!!
+                                </h1>
+                                <div class="position-relative mt-3">
+                                    <input type="text"
+                                        class="form-control custom-border-color bg-dark rounded-3 text-white p-4" />
+                                    <button
+                                        class="btn btn-primary position-absolute end-0 top-50 translate-middle-y me-4"
+                                        style="background-color: #4485B7;">Submit</button>
+                                </div>
+                            </div>
+                            <!-- Query-end -->
+                            <!-- FAQ - Starts -->
+                            <div class="p-3">
+                                <h1 class="text-white text-start font-20 font-regular">
+                                    FAQ
+                                </h1>
+                                <div class="accordion mt-3" id="customAccordion">
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button bg-dark text-light" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapseOne"
+                                                aria-expanded="true" aria-controls="collapseOne">
+                                                1. How can I do Transaction?
+                                            </button>
+                                        </h2>
+                                        <div id="collapseOne" class="accordion-collapse collapse bg-dark text-light">
+                                            <div class="accordion-body">
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="accordion-item mt-3">
+                                        <h2 class="accordion-header">
+                                            <button class="accordion-button bg-dark text-light" type="button"
+                                                data-bs-toggle="collapse" data-bs-target="#collapsetwo"
+                                                aria-expanded="true" aria-controls="collapsetwo">
+                                                1. How can I do Transaction?
+                                            </button>
+                                        </h2>
+                                        <div id="collapsetwo" class="accordion-collapse collapse bg-dark text-light">
+                                            <div class="accordion-body font-16 fw-400">
+                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
+                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
+                                                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
+                                                commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
+                                                velit esse cillum dolore eu fugiat nulla pariatur.
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- FAQ - Ends -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
