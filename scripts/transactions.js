@@ -448,3 +448,83 @@ function updatePagination(totalPages, currentPage = 1) {
       paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
   }
 }
+document.addEventListener('DOMContentLoaded', () => {
+  // Setup event listeners for each dropdown item
+  document.querySelectorAll('.dropdown-item').forEach(item => {
+      item.addEventListener('click', (event) => {
+          event.preventDefault();
+          const range = item.getAttribute('data-range');
+          sendTransactionPDF(range);
+      });
+  });
+});
+
+async function sendTransactionPDF(range) {
+  const { authToken } = await chrome.storage.sync.get("authToken");
+  if (!authToken) {
+      console.error("Authorization token is missing");
+      redirectToLogin();
+      return;
+  }
+
+  const { startDate, endDate } = getDateRange(range);
+
+  const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction-pdf/?start_date=${startDate}&end_date=${endDate}`;
+  try {
+      const response = await fetch(apiUrl, {
+          method: 'GET',
+          headers: {
+              'Authorization': `Bearer ${authToken}`,
+              'Cookie': 'csrftoken=S5PcdDgSrNo0FW7ZLBuBobHoWeCplg0d'
+          }
+      });
+
+      if (response.status === 200) {
+          const result = await response.json();
+          
+          // Check if the response contains "No data available"
+          if (result && result.mssg && result.mssg === "No data available") {
+              alert("No transactions found for the current time frame.");
+          } else {
+              // Alert success when the API confirms the PDF has been emailed
+              alert("PDF has been emailed successfully.");
+          }
+      } else if (response.status === 400) {
+          alert("No transactions found.");
+      } else {
+          console.error("Failed to send PDF via email:", response.statusText);
+          alert("Failed to send PDF. Please try again.");
+      }
+  } catch (error) {
+      console.error("Error during PDF email sending:", error);
+      alert("An error occurred while sending the PDF. Please try again.");
+  }
+}
+
+function getDateRange(range) {
+  const now = new Date();
+  let startDate, endDate;
+
+  switch (range) {
+      case 'current-month':
+          startDate = new Date(now.getFullYear(), now.getMonth(), 1).getTime() / 1000;
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+          break;
+      case 'last-3-months':
+          startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime() / 1000;
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+          break;
+      case 'last-6-months':
+          startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1).getTime() / 1000;
+          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+          break;
+      case 'this-year':
+          startDate = new Date(now.getFullYear(), 0, 1).getTime() / 1000;
+          endDate = new Date(now.getFullYear(), 11, 31).getTime() / 1000;
+          break;
+  }
+
+  return { startDate, endDate };
+}
+
+
