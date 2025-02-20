@@ -44,7 +44,7 @@
                         <div class="row g-0">
                             <div class="col-lg-12 col-12">
                                 <a class="navbar-brand m-0">
-                                    <img src="./icons/logo-dark.svg" class="img-fluid logo" />
+                                    <img src="./icons/logo-light.svg" class="img-fluid logo" />
                                 </a>
                                 <hr class="border-0">
                                 <ul class="nav flex-column siderbar-nav">
@@ -76,7 +76,7 @@
                                             </div>
                                         </a>
                                     </li>
-                                    <!-- <li class="nav-item">
+                                    <li class="nav-item">
                                         <a class="nav-link" href="#">
                                             <div>
                                                 <img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2">
@@ -91,7 +91,7 @@
                                                 Help
                                             </div>
                                         </a>
-                                    </li> -->
+                                    </li>
                                 </ul>
                             </div>
                         </div>
@@ -113,17 +113,17 @@
                                 </li>
                             </ul>
                             <div>
-                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white">
+                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white text-white-light">
                                     <div class="card-body p-2">
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
                                                 <storng class="font-16">Wallet ID</storng>
                                                 <span id="wallet-address"
-                                                    class="ms-3 font-14 text-gray-600 text-truncate"></span>
+                                                    class="ms-3 font-14 text-gray-600 text-truncate text-gray-light-600"></span>
                                             </div>
                                             <div class="ms-5">
                                                 <a href="#" id="copy-button">
-                                                    <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
+                                                    <img src="./icons/copy-icon-light.svg" alt="" class="img-fluid">
                                                 </a>
                                                 <span id="copy-message" style="display: none;" class="font-12 text-color-cs">Copied!</span>
                                             </div>
@@ -134,7 +134,7 @@
                             <div class="d-flex align-items-center right-nav ps-4">
                                 <div class="dropdown">
                                     <i class="fa-duotone fa-solid fa-user user-icon"></i>
-                                    <button class="btn text-white ps-1 border-0" type="button" id="dropdownMenuButton1"
+                                    <button class="btn text-white text-white-light ps-1 border-0" type="button" id="dropdownMenuButton1"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex">
                                             <div class="text-start">
@@ -146,7 +146,7 @@
                                     </button>
                                     <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
                                         <li>
-                                            <button class="dropdown-item btn text-white font-14" data-bs-toggle="modal"
+                                            <button class="dropdown-item btn text-white text-white-light font-14" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal" id="lock-wallet-btn">
                                                 <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
                                             </button>
@@ -162,7 +162,7 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white mb-5 text-start font-24 font-regular">Linked Sites</h1>
+                            <h1 class="text-white text-white-light mb-5 text-start font-24 font-regular">Linked Sites</h1>
                             <div class="d-flex flex-column">
                             </div>
                         </div>
@@ -178,7 +178,7 @@
         <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content popup-modal p-4">
-                    <div class="modal-body text-center text-white pb-0">
+                    <div class="modal-body text-center text-white pb-0 dark-black">
                         <div class="font-24">Confirm Logout</div>
                         <p class="dark-black pt-2 font-16">
                             Are you sure you want to logout?
@@ -186,12 +186,12 @@
                     </div>
                     <div class="modal-footer justify-content-between border-0">
                         <div class="d-flex w-100">
-                            <button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white"
+                            <button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white dark-black"
                                 data-bs-dismiss="modal">
                                 No
                             </button>
                             <button type="button"
-                                class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">
+                                class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 dark-black">
                                 Yes
                             </button>
                         </div>
@@ -199,7 +199,6 @@
                 </div>
             </div>
         </div>
-        <!-- <script src="profile.bundle.js"></script> -->
         <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
 

@@ -123,12 +123,12 @@ function renderConnectedSites(sites) {
             const siteDiv = document.createElement('div');
             siteDiv.className = 'w-100 mb-4';
             siteDiv.innerHTML = `
-                <ul class="w-100 list-unstyled" style="background-color: #181b1c;">
+                <ul class="w-100 list-unstyled custom-btn-dark">
                     <li class="w-100">
                         <div class="btn btn-transparent custom-btn py-3 font-14 w-100 d-flex justify-content-between align-items-center">
                             <div class="d-flex align-items-center">
                                 <img src="${site.service_image}" alt="" class="img-fluid me-2 custom-img">
-                                <span class="mx-4">${site.service_name}</span>
+                                <span class="mx-4 text-color-ls">${site.service_name}</span>
                                 <span class="text-color-cs">${site.service_url}</span>
                             </div>
                             <i class="btn fa fa-times me-3 text-danger f-16 disconnect-btn"></i>

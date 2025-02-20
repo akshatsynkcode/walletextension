@@ -5,7 +5,6 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Help</title>
-    <script src=".js/jquery-3.7.1.min.js"></script>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
     <link href="./css/style.css" rel="stylesheet" />
     <link
@@ -111,13 +110,13 @@
                                 </li>
                             </ul>
                             <div>
-                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white">
+                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white text-white-light">
                                     <div class="card-body p-2">
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
                                                 <storng class="font-16">Wallet ID</storng>
                                                 <span id="wallet-address"
-                                                    class="ms-3 font-14 text-gray-600 text-truncate"></span>
+                                                    class="ms-3 font-14 text-gray-600 text-truncate text-gray-light-600">stru23421fwewri554...</span>
                                             </div>
                                             <div class="ms-5">
                                                 <a href="#" id="copy-button">
@@ -133,19 +132,19 @@
                             <div class="d-flex align-items-center right-nav ps-4">
                                 <div class="dropdown">
                                     <i class="fa-duotone fa-solid fa-user user-icon"></i>
-                                    <button class="btn text-white ps-1 border-0" type="button" id="dropdownMenuButton1"
+                                    <button class="btn text-white text-white-light ps-1 border-0" type="button" id="dropdownMenuButton1"
                                         data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex">
                                             <div class="text-start">
                                                 <p id="username" class="f-14 mb-0">Username</p>
-                                                <span class="font-12 text-color-cs" id="email"></span>
+                                                <span class="font-12 text-color-cs" id="email">ahmed.khan@gmail.com</span>
                                             </div>
                                             <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
                                         </div>
                                     </button>
                                     <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
                                         <li>
-                                            <button class="dropdown-item btn text-white font-14" data-bs-toggle="modal"
+                                            <button class="dropdown-item btn text-white  text-white-light font-14" data-bs-toggle="modal"
                                                 data-bs-target="#exampleModal" id="lock-wallet-btn">
                                                 <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
                                             </button>
@@ -161,19 +160,20 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white mb-3 text-start font-24 font-regular">Help</h1>
+                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Help</h1>
                             <!-- Query-start -->
                             <div class="p-3">
-                                <h1 class="text-white text-start font-20 font-regular">
+                                <h1 class="text-white text-white-light text-start font-20 font-regular">
                                     Ask if you have any query!!
                                 </h1>
                                 <div class="position-relative mt-3">
-                                    <input type="text"
-                                        class="form-control custom-border-color bg-dark rounded-3 text-white p-4" />
-                                    <button
+                                    <textarea 
+                                        class="form-control custom-border-color bg-dark-custom rounded-3 text-white text-wrap p-4" 
+                                        rows="1"></textarea>
+                                    <button 
                                         class="btn btn-primary position-absolute end-0 top-50 translate-middle-y me-4"
                                         style="background-color: #4485B7;">Submit</button>
-                                </div>
+                                </div>                                
                             </div>
                             <!-- Query-end -->
                             <!-- FAQ - Starts -->
@@ -184,13 +184,13 @@
                                 <div class="accordion mt-3" id="customAccordion">
                                     <div class="accordion-item">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button bg-dark text-light" type="button"
+                                            <button class="accordion-button bg-dark-custom text-light text-white-light" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapseOne"
                                                 aria-expanded="true" aria-controls="collapseOne">
                                                 1. How can I do Transaction?
                                             </button>
                                         </h2>
-                                        <div id="collapseOne" class="accordion-collapse collapse bg-dark text-light">
+                                        <div id="collapseOne" class="accordion-collapse collapse bg-dark-custom text-light text-white-light">
                                             <div class="accordion-body">
 
                                             </div>
@@ -198,13 +198,13 @@
                                     </div>
                                     <div class="accordion-item mt-3">
                                         <h2 class="accordion-header">
-                                            <button class="accordion-button bg-dark text-light" type="button"
+                                            <button class="accordion-button bg-dark-custom text-light text-white-light" type="button"
                                                 data-bs-toggle="collapse" data-bs-target="#collapsetwo"
                                                 aria-expanded="true" aria-controls="collapsetwo">
                                                 1. How can I do Transaction?
                                             </button>
                                         </h2>
-                                        <div id="collapsetwo" class="accordion-collapse collapse bg-dark text-light">
+                                        <div id="collapsetwo" class="accordion-collapse collapse bg-dark-custom text-light text-white-light">
                                             <div class="accordion-body font-16 fw-400">
                                                 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
                                                 tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
@@ -223,4 +223,29 @@
             </div>
         </div>
     </div>
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+		<div class="modal-dialog modal-dialog-centered">
+			<div class="modal-content popup-modal p-4">
+				<div class="modal-body text-center text-white pb-0">
+					<div class="font-24">Confirm Logout</div>
+					<p class="dark-black pt-2 font-16">
+						Are you sure you want to logout?
+					</p>
+				</div>
+				<div class="modal-footer justify-content-between border-0">
+					<div class="d-flex w-100">
+						<button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white"
+							data-bs-dismiss="modal">
+							No
+						</button>
+						<button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">
+							Yes
+						</button>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+    <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
+</html>
