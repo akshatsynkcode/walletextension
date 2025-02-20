@@ -449,15 +449,38 @@ function updatePagination(totalPages, currentPage = 1) {
   }
 }
 document.addEventListener('DOMContentLoaded', () => {
-  // Setup event listeners for each dropdown item
-  document.querySelectorAll('.dropdown-item').forEach(item => {
-      item.addEventListener('click', (event) => {
-          event.preventDefault();
-          const range = item.getAttribute('data-range');
-          sendTransactionPDF(range);
-      });
+  // Setup event listeners for each dropdown item using unique ids
+  document.getElementById('dropdown-export-current-month').addEventListener('click', (event) => {
+      event.preventDefault();
+      const range = event.target.getAttribute('data-range');
+      sendTransactionPDF(range);
+  });
+
+  document.getElementById('dropdown-export-last-3-months').addEventListener('click', (event) => {
+      event.preventDefault();
+      const range = event.target.getAttribute('data-range');
+      sendTransactionPDF(range);
+  });
+
+  document.getElementById('dropdown-export-last-6-months').addEventListener('click', (event) => {
+      event.preventDefault();
+      const range = event.target.getAttribute('data-range');
+      sendTransactionPDF(range);
+  });
+
+  document.getElementById('dropdown-export-this-year').addEventListener('click', (event) => {
+      event.preventDefault();
+      const range = event.target.getAttribute('data-range');
+      sendTransactionPDF(range);
+  });
+
+  document.getElementById('dropdown-export-previous-year').addEventListener('click', (event) => {
+      event.preventDefault();
+      const range = event.target.getAttribute('data-range');
+      sendTransactionPDF(range);
   });
 });
+
 
 async function sendTransactionPDF(range) {
   const { authToken } = await chrome.storage.sync.get("authToken");
@@ -490,7 +513,7 @@ async function sendTransactionPDF(range) {
               alert("PDF has been emailed successfully.");
           }
       } else if (response.status === 400) {
-          alert("No transactions found.");
+          alert("No transactions foundeee.");
       } else {
           console.error("Failed to send PDF via email:", response.statusText);
           alert("Failed to send PDF. Please try again.");
@@ -506,23 +529,28 @@ function getDateRange(range) {
   let startDate, endDate;
 
   switch (range) {
-      case 'current-month':
-          startDate = new Date(now.getFullYear(), now.getMonth(), 1).getTime() / 1000;
-          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
-          break;
-      case 'last-3-months':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime() / 1000;
-          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
-          break;
-      case 'last-6-months':
-          startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1).getTime() / 1000;
-          endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
-          break;
-      case 'this-year':
-          startDate = new Date(now.getFullYear(), 0, 1).getTime() / 1000;
-          endDate = new Date(now.getFullYear(), 11, 31).getTime() / 1000;
-          break;
-  }
+    case 'current-month':
+        startDate = new Date(now.getFullYear(), now.getMonth(), 1).getTime() / 1000;
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+        break;
+    case 'last-3-months':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 2, 1).getTime() / 1000;
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+        break;
+    case 'last-6-months':
+        startDate = new Date(now.getFullYear(), now.getMonth() - 5, 1).getTime() / 1000;
+        endDate = new Date(now.getFullYear(), now.getMonth() + 1, 0).getTime() / 1000;
+        break;
+    case 'this-year':
+        startDate = new Date(now.getFullYear(), 0, 1).getTime() / 1000;
+        endDate = new Date(now.getFullYear(), 11, 31).getTime() / 1000;
+        break;
+    case 'previous-year':
+        startDate = new Date(now.getFullYear() - 1, 0, 1).getTime() / 1000;  // January 1st of the previous year
+        endDate = new Date(now.getFullYear() - 1, 11, 31).getTime() / 1000;  // December 31st of the previous year
+        break;
+}
+
 
   return { startDate, endDate };
 }
