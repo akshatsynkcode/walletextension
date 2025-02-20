@@ -297,6 +297,7 @@ function updateTransactionTable(result) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
+  await loadNavbarAndSidebar();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
   await fetchAndUpdateTransactionHistory(defaultSelectedText);
   setupDateRangeListeners();
@@ -447,4 +448,52 @@ function updatePagination(totalPages, currentPage = 1) {
       paginationContainer.appendChild(createPageItem("...", currentPage + 1));
       paginationContainer.appendChild(createPageItem(totalPages, totalPages, currentPage === totalPages));
   }
+}
+
+// Function to load Navbar & Sidebar dynamically
+async function loadNavbarAndSidebar() {
+  let sidebarContainer = document.getElementById("sidebar-container");
+  await Promise.all([
+    fetch('navbar.html')
+      .then(response => response.text())
+      .then(html => {
+          document.getElementById('navbar-container').innerHTML = html;
+      }),
+
+    fetch("sidebar.html")
+      .then(response => {
+          if (!response.ok) {
+              throw new Error(`HTTP error! Status: ${response.status}`);
+          }
+          return response.text();
+      })
+      .then(data => {
+        sidebarContainer.innerHTML = data;
+
+        // Now dynamically highlight the active menu item
+        let currentPage = window.location.pathname.split("/").pop();
+
+        let links = {
+            "profile.html": "dashboard-link",
+            "transactions.html": "transactions-link",
+            "connectedSites.html": "linked-sites-link"
+        };
+
+        document.querySelectorAll(".nav-link").forEach(link => {
+            link.classList.remove("active");
+            let arrow = link.querySelector(".arrow-icon");
+            if (arrow) arrow.style.display = "none";
+        });
+
+        if (links[currentPage]) {
+            let activeLink = document.getElementById(links[currentPage]);
+            if (activeLink) {
+                activeLink.classList.add("active");
+                let arrow = activeLink.querySelector(".arrow-icon");
+                if (arrow) arrow.style.display = "block";
+            }
+        }
+      })
+    .catch(error => console.error("Error loading sidebar:", error))
+  ]);
 }

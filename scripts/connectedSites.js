@@ -205,6 +205,7 @@ function removeSiteFromStorage(site) {
 
 
   document.addEventListener('DOMContentLoaded', async () => {
+    await loadNavbarAndSidebar();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
   
     if (!authToken) {
@@ -217,6 +218,7 @@ function removeSiteFromStorage(site) {
     const emailElement = document.getElementById('email');
     const copyButton = document.getElementById('copy-button');
     const copyMessage = document.getElementById('copy-message');
+    const disconnectAllBtn = document.querySelector('#disconnect-all-btn');
     if(copyButton){
         copyButton.addEventListener('click', () => {
             const fullWalletAddress = walletAddressElement.getAttribute('data-full-address'); // Get full address
@@ -245,10 +247,16 @@ function removeSiteFromStorage(site) {
                 walletAddress: updatedProfile.walletAddress,
                 email: updatedProfile.email
             };
-            walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
-            walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
-            usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
-            emailElement.textContent = updatedProfile.email || 'N/A';
+            if (walletAddressElement) {
+                walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
+                walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
+            }
+            if (usernameElement) {
+                usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
+            }
+            if (emailElement) {
+                emailElement.textContent = updatedProfile.email || 'N/A';
+            }
 
         }
         
@@ -279,20 +287,71 @@ function removeSiteFromStorage(site) {
         });
     }
 
-    document.querySelector('#disconnect-all-btn').addEventListener('click', function () {
-        chrome.storage.sync.get(['authToken'], function(result) {
+    if(disconnectAllBtn) {
+        disconnectAllBtn.addEventListener('click', function () {
+            chrome.storage.sync.get(['authToken'], function(result) {
 
-            if (!result.authToken) {
-                console.error("Auth token not found.");
-                return;
-            }
+                if (!result.authToken) {
+                    console.error("Auth token not found.");
+                    return;
+                }
 
-            chrome.storage.sync.set({ 'connectedSites': [] }, function () {
-                deleteSite("",result.authToken, "remove_all")
-                renderConnectedSites([]);
+                chrome.storage.sync.set({ 'connectedSites': [] }, function () {
+                    deleteSite("",result.authToken, "remove_all")
+                    renderConnectedSites([]);
+                });
+
             });
-
         });
-    });
+    }
     
   });
+
+// Function to load Navbar & Sidebar dynamically
+async function loadNavbarAndSidebar() {
+    let sidebarContainer = document.getElementById("sidebar-container");
+    await Promise.all([
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+            }),
+
+        fetch("sidebar.html")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                sidebarContainer.innerHTML = data;
+
+                // Now dynamically highlight the active menu item
+                let currentPage = window.location.pathname.split("/").pop();
+
+                let links = {
+                    "profile.html": "dashboard-link",
+                    "transactions.html": "transactions-link",
+                    "connectedSites.html": "linked-sites-link"
+                };
+
+                document.querySelectorAll(".nav-link").forEach(link => {
+                    link.classList.remove("active");
+                    let arrow = link.querySelector(".arrow-icon");
+                    if (arrow) arrow.style.display = "none";
+                });
+
+                if (links[currentPage]) {
+                    let activeLink = document.getElementById(links[currentPage]);
+                    if (activeLink) {
+                        activeLink.classList.add("active");
+                        let arrow = activeLink.querySelector(".arrow-icon");
+                        if (arrow) arrow.style.display = "block";
+                    }
+                }
+            })
+            .catch(error => console.error("Error loading sidebar:", error))
+
+    ]);
+}

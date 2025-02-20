@@ -18,10 +18,10 @@ module.exports = (env, argv) => {
       background: './src/js/background.js',
       content: './src/js/content.js',
       welcome: './scripts/welcome.js',
-      login: './scripts/login.js',
+      auth: './scripts/auth.js',
       popup: './scripts/popup.js',
       profile: './scripts/profile.js',
-      popupLogin: './scripts/popup-login.js',
+      auth: './scripts/auth.js',
       connectWallet: './scripts/connectWallet.js',
       approveReq: './scripts/approve-req.js',
       connectedSites: './scripts/connectedSites.js',
@@ -108,7 +108,7 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/login.html',
         filename: 'login.html',
-        chunks: ['login', 'vendors'] // Include vendor chunk
+        chunks: ['auth', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/popup.html',
@@ -133,7 +133,7 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/popup-login.html',
         filename: 'popup-login.html',
-        chunks: ['popupLogin', 'vendors'] // Include vendor chunk
+        chunks: ['auth', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/transactions.html',
@@ -144,6 +144,16 @@ module.exports = (env, argv) => {
         template: './components/connectedSites.html',
         filename: 'connectedSites.html',
         chunks: ['connectedSites', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/sidebar.html',
+        filename: 'sidebar.html',
+        chunks: ['sidebar', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/navbar.html',
+        filename: 'navbar.html',
+        chunks: ['navbar', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [

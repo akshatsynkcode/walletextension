@@ -131,6 +131,7 @@ async function lockWallet() {
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
+    await loadNavbarAndSidebar();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
@@ -175,15 +176,24 @@ async function lockWallet() {
                 walletAddress: updatedProfile.walletAddress,
                 email: updatedProfile.email
             };
-            balanceElement.textContent = `AED ${formatAmount(parseFloat(updatedUserInfo.balance).toFixed(3))}`;
-            walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
-            walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
-            usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
-            emailElement.textContent = updatedUserInfo.email || 'N/A';
+            if (balanceElement) {
+                balanceElement.textContent = `AED ${formatAmount(parseFloat(updatedUserInfo.balance).toFixed(3))}`;
+            }
+            if (walletAddressElement) {
+                walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
+                walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
+            }
+            if (usernameElement) {
+                usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
+            }
+            if (emailElement) {
+                emailElement.textContent = updatedUserInfo.email || 'N/A';
+            }
             // **Services Section - Dynamically Generate Service Cards**
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 
             // Clear previous content
+            if (servicesContainer) {
             servicesContainer.innerHTML = '';
 
             let row = null; // Declare row outside loop
@@ -232,7 +242,7 @@ async function lockWallet() {
                 }
             });
         }
-        
+    }
         fetchQuickLinks();
         fetchRecentServices();
         // Fetch transaction history
@@ -506,4 +516,53 @@ async function fetchQuickLinks() {
             }
         }
     });
+}
+
+// Function to load Navbar & Sidebar dynamically
+async function loadNavbarAndSidebar() {
+    let sidebarContainer = document.getElementById("sidebar-container");
+    await Promise.all([
+        fetch('navbar.html')
+            .then(response => response.text())
+            .then(html => {
+                document.getElementById('navbar-container').innerHTML = html;
+            }),
+        
+        fetch("sidebar.html")
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+                return response.text();
+            })
+            .then(data => {
+                sidebarContainer.innerHTML = data;
+        
+                // Now dynamically highlight the active menu item
+                let currentPage = window.location.pathname.split("/").pop();
+        
+                let links = {
+                    "profile.html": "dashboard-link",
+                    "transactions.html": "transactions-link",
+                    "connectedSites.html": "linked-sites-link"
+                };
+        
+                document.querySelectorAll(".nav-link").forEach(link => {
+                    link.classList.remove("active");
+                    let arrow = link.querySelector(".arrow-icon");
+                    if (arrow) arrow.style.display = "none";
+                });
+        
+                if (links[currentPage]) {
+                    let activeLink = document.getElementById(links[currentPage]);
+                    if (activeLink) {
+                        activeLink.classList.add("active");
+                        let arrow = activeLink.querySelector(".arrow-icon");
+                        if (arrow) arrow.style.display = "block";
+                    }
+                }
+            })
+        .catch(error => console.error("Error loading sidebar:", error))
+      
+    ]);
 }
