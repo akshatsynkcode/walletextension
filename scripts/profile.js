@@ -209,9 +209,9 @@ function updateTransactionCountUI(data) {
     // Check if data and elements are available
     if (data && debitCountElement && creditCountElement && totalCountElement) {
         // Update the text content of each element with data from the API
-        debitCountElement.textContent = data.stats.monthly_debit_count;
-        creditCountElement.textContent = data.stats.monthly_credit_count;
-        totalCountElement.textContent = data.stats.monthly_total_count;
+        debitCountElement.textContent = data.stats.monthly_debit_sum;
+        creditCountElement.textContent = data.stats.monthly_credit_sum;
+        totalCountElement.textContent = data.stats.monthly_total_sum;
     }
 }
 
