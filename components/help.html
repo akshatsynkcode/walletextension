@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Help</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <link href="./css/style.css" rel="stylesheet" />
+    <link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
         rel="stylesheet" />
@@ -42,7 +42,7 @@
                     <div class="row g-0">
                         <div class="col-lg-12 col-12">
                             <a class="navbar-brand m-0">
-                                <img src="./icons/logo-dark.svg" class="img-fluid logo" />
+                                <img src="./icons/logo-light.svg" class="img-fluid logo" />
                             </a>
                             <hr class="border-0">
                             <ul class="nav flex-column siderbar-nav">
@@ -120,7 +120,7 @@
                                             </div>
                                             <div class="ms-5">
                                                 <a href="#" id="copy-button">
-                                                    <img src="./icons/copy-icon.svg" alt="" class="img-fluid">
+                                                    <img src="./icons/copy-icon-light.svg" alt="" class="img-fluid">
                                                 </a>
                                                 <span id="copy-message" style="display: none;"
                                                     class="font-12 text-color-cs">Copied!</span>
@@ -223,29 +223,6 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-		<div class="modal-dialog modal-dialog-centered">
-			<div class="modal-content popup-modal p-4">
-				<div class="modal-body text-center text-white pb-0">
-					<div class="font-24">Confirm Logout</div>
-					<p class="dark-black pt-2 font-16">
-						Are you sure you want to logout?
-					</p>
-				</div>
-				<div class="modal-footer justify-content-between border-0">
-					<div class="d-flex w-100">
-						<button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white"
-							data-bs-dismiss="modal">
-							No
-						</button>
-						<button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">
-							Yes
-						</button>
-					</div>
-				</div>
-			</div>
-		</div>
-	</div>
-    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/theme-switcher.js"></script>
 </body>
 </html>

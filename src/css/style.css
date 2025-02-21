@@ -243,7 +243,6 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .dropdown-menu{
 min-width: 7rem;
 background-color: rgba(35, 105, 147, 0.05);
-;
 }
 .dropdown-menu[data-bs-popper] {
   right: 0 !important;
@@ -892,6 +891,7 @@ h1, h2, h3, h4, h5, h6, p{
 
 .table.custom-table thead th {
   border-bottom: none !important;
+  background-color: #2369930D;
 }
 
 
@@ -920,6 +920,12 @@ h1, h2, h3, h4, h5, h6, p{
 .text-color-ls{
     color: rgba(17, 52, 73, 1);
 
+}
+
+.dropdown .btn:focus,
+.dropdown .btn.show,
+.dropdown .btn:hover{
+    color: #828F98;
 }
 .radio-background{
   background-color: #2369935E !important;
