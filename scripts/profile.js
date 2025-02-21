@@ -2,7 +2,7 @@ import {
     redirectToLogin,
     hideFullScreenLoader,
     showFullScreenLoader,
-    loadNavbarAndSidebar,
+    loadLayoutComponents,
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
@@ -68,7 +68,7 @@ async function fetchUpdatedUserProfile() {
 //   // Event listener for DOM content loading
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
-    await loadNavbarAndSidebar();
+    await loadLayoutComponents();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {

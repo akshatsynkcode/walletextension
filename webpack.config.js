@@ -156,6 +156,11 @@ module.exports = (env, argv) => {
         filename: 'navbar.html',
         chunks: ['navbar', 'vendors'] // Include vendor chunk
       }),
+      new HtmlWebpackPlugin({
+        template: './components/logout-modal.html',
+        filename: 'logout-modal.html',
+        chunks: ['logout-modal', 'vendors'] // Include vendor chunk
+      }),
       new CopyWebpackPlugin({
         patterns: [
           { from: './src/manifest.json', to: 'manifest.json' },

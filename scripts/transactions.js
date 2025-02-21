@@ -2,7 +2,7 @@ import {
   redirectToLogin,
   hideFullScreenLoader,
   showFullScreenLoader,
-  loadNavbarAndSidebar,
+  loadLayoutComponents,
   truncateWalletAddress,
   handleLogout,
   handleCopyWalletAddress,
@@ -237,7 +237,7 @@ function updateTransactionTable(result) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
-  await loadNavbarAndSidebar();
+  await loadLayoutComponents();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
   await fetchAndUpdateTransactionHistory(defaultSelectedText);
   setupDateRangeListeners();

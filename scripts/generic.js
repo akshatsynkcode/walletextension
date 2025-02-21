@@ -14,8 +14,8 @@ export function showFullScreenLoader() {
     document.getElementById('full-screen-loader').style.display = 'flex';
 }
 
-// Function to load Navbar & Sidebar dynamically
-export async function loadNavbarAndSidebar() {
+// Function to load Navbar, Sidebar & Logout Modal dynamically
+export async function loadLayoutComponents() {
     let sidebarContainer = document.getElementById("sidebar-container");
     await Promise.all([
         fetch('navbar.html')
@@ -58,10 +58,18 @@ export async function loadNavbarAndSidebar() {
                     }
                 }
             })
-            .catch(error => console.error("Error loading sidebar:", error))
+            .catch(error => console.error("Error loading sidebar:", error)),
 
+        // Fetch and inject Logout Modal
+        fetch("logout-modal.html")
+            .then(response => response.text())
+            .then(html => {
+                document.body.insertAdjacentHTML("beforeend", html);
+            })
+            .catch(error => console.error("Error loading logout modal:", error))
     ]);
 }
+
 
 // Function to truncate the wallet address
 export function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, separator = '.......') {

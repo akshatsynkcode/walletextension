@@ -2,7 +2,7 @@ import {
     redirectToLogin,
     hideFullScreenLoader,
     showFullScreenLoader,
-    loadNavbarAndSidebar,
+    loadLayoutComponents,
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
@@ -157,7 +157,7 @@ function removeSiteFromStorage(site) {
 
 
   document.addEventListener('DOMContentLoaded', async () => {
-    await loadNavbarAndSidebar();
+    await loadLayoutComponents();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
   
     if (!authToken) {
