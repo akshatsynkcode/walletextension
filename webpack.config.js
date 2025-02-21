@@ -26,6 +26,7 @@ module.exports = (env, argv) => {
       approveReq: './scripts/approve-req.js',
       connectedSites: './scripts/connectedSites.js',
       transactions: './scripts/transactions.js',
+      walletPageUrl: './scripts/walletpageurl.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -144,6 +145,11 @@ module.exports = (env, argv) => {
         template: './components/connectedSites.html',
         filename: 'connectedSites.html',
         chunks: ['connectedSites', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/walletpageurl.html',
+        filename: 'walletpageurl.html',
+        chunks: ['walletPageUrl', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [

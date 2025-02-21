@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile Popup</title>
+  <link href="./css/bootstrap.min.css" rel="stylesheet">
+  <link href="./css/style.css" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+<body>
+    <div class="popup-container p-4 bg-color border-0">
+      <nav class="navbar navbar-expand-lg d-flex align-items-center">
+        <!-- Back Button (Left) -->
+        <div class="back-arrow-container me-auto">
+            <button id="back-btn" class="back-arrow">
+                <i class="fas fa-arrow-left"></i>
+            </button>
+        </div>
+    
+        <!-- Centered URL Info -->
+        <div class="url-info mx-auto d-flex align-items-center">
+            <div class="icon-container">
+                <img id="current-site-favicon" src="" alt="Site Icon" class="favicon">
+            </div>
+            <span id="current-url-name">Site Name</span>
+        </div>
+      </nav>
+    
+      <div class="connection-info mt-3">
+        <div class="text-center">
+          <p class="font-regular font-24 mb-0 mt-3"></p>
+          <p class="f-14 dark-black"></p>
+        </div>
+      </div> 
+      <!-- Logout Button at the Bottom -->
+      <div class="logout-container">
+        <button id="logout-btn" class="logout-button">
+          <i class="fas fa-sign-out-alt"></i> Disconnect
+        </button>
+      </div>
+    </div>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+</body>
+</html>

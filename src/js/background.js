@@ -138,6 +138,27 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         }
         sendResponse({ success: true });
     }
+    else if (message.action === "checkSession") {
+        console.log("🔥 Received request in background.js:", message);
+
+        if (message.action === "checkSession") {
+            console.log("✅ Handling checkSession for:", message.domain);
+            
+            fetch(message.domain + "/check-session", { credentials: "include" })
+                .then(response => response.json())
+                .then(data => {
+                    console.log("📝 Session response:", data);
+                    sendResponse(data);
+                })
+                .catch(error => {
+                    console.error("❌ Error fetching session:", error);
+                    sendResponse({ success: false, error: error.message });
+                });
+
+            return true; // Required for async sendResponse
+    }
+        console.warn("⚠️ Unknown action:", message.action);
+    }
     else {
         switch (message.action) {
             case 'lock_wallet':

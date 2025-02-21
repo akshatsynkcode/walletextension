@@ -16,7 +16,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
             });
 
             const userInfoData = await userInfoResponse.json();
-
+        
             if (userInfoResponse.ok) {
                 const usernameElement = document.getElementById('username');
                 const addressElement = document.getElementById('address');
@@ -111,6 +111,110 @@ document.addEventListener('DOMContentLoaded', async () => {
             window.open('profile.html', '_blank');
         });
     }
+
+    const currentUrlElement = document.getElementById("current-url");
+    const faviconImage = document.getElementById("active-tab-favicon");
+    const defaultWebIcon = "https://cdn.jsdelivr.net/gh/twitter/twemoji@latest/assets/svg/1f310.svg"; // Web icon
+    const logoutContainer = document.querySelector(".logout-container");
+    const walletInfoText = document.querySelector(".wallet-info p");
+
+    // Fetch active tab info
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs.length > 0) {
+            let tabFavicon = tabs[0].favIconUrl || `https://www.google.com/s2/favicons?sz=64&domain=${tabs[0].url}`;
+
+            // Preload favicon to check if it's accessible
+            let img = new Image();
+            img.src = tabFavicon;
+            img.onload = function () {
+                faviconImage.src = tabFavicon; // Use tab's favicon if accessible
+            };
+            img.onerror = function () {
+                faviconImage.src = defaultWebIcon; // Use fallback web icon if favicon fails
+            };
+            // Show the current site URL in wallet info page
+            let url = new URL(tabs[0].url);
+            currentUrlElement.textContent = url.hostname;
+        }
+    });
+
+    chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
+        if (tabs.length === 0) {
+            return;
+        }
+    
+        let activeTab = tabs[0];
+    
+        try {
+            let domain = new URL(activeTab.url).origin;
+            console.log("Checking session for domain:", domain);
+    
+            chrome.runtime.sendMessage({ action: "checkSession", domain: domain }, function (response) {
+                updateWalletStatus(response.authenticated, domain);
+            });
+    
+        } catch (error) {
+            console.error("Error processing tab URL:", error);
+        }
+    });
+    
+    // sourcery skip: avoid-function-declarations-in-blocks
+    function updateWalletStatus(isConnected,domain) {
+        const statusContainer = document.getElementById("active-tab-favicon");
+        const statusDot = document.getElementById("wallet-status");
+    
+        const tooltipText = isConnected ? `Connected to: ${domain}` : "Wallet is not connected";
+        console.log("tooltipText",tooltipText)
+        if (isConnected) {
+            statusDot.classList.add("active-status"); // Green for active
+        } else {
+            statusDot.classList.remove("active-status"); // Grey for inactive
+        }
+
+        // statusContainer.setAttribute("title", tooltipText);
+        // statusContainer.setAttribute("data-bs-toggle", "tooltip");
+        
+    
+        // let existingTooltip = bootstrap.Tooltip.getInstance(statusContainer);
+        // if (existingTooltip) {
+        //     existingTooltip.dispose();
+        // }
+
+        // // Reinitialize Bootstrap Tooltip after a small delay to avoid flickering
+        // setTimeout(() => {
+        //     new bootstrap.Tooltip(statusContainer);
+        // }, 100);
+        // Set tooltip content dynamically
+        // Update tooltip text dynamically
+        // Update tooltip text dynamically
+        statusContainer.setAttribute("title", tooltipText);
+        statusContainer.setAttribute("data-bs-toggle", "tooltip");
+        statusContainer.setAttribute("data-bs-placement", "bottom");
+        statusContainer.setAttribute("data-bs-custom-class", "custom-tooltip");
+
+        console.log("Tooltip updated:", tooltipText); // Debugging check
+
+        // Dispose of existing tooltip to avoid conflicts
+        let existingTooltip = bootstrap.Tooltip.getInstance(statusContainer);
+        if (existingTooltip) {
+            existingTooltip.dispose();
+        }
+
+        // Initialize Bootstrap Tooltip
+        setTimeout(() => {
+            new bootstrap.Tooltip(statusContainer, {
+                placement: "bottom",
+                customClass: "custom-tooltip",
+                container: "body",
+                trigger: "hover",
+            });
+            console.log("Tooltip initialized successfully!"); // Debugging check
+        }, 200);
+    }
+    document.getElementById('open-wallet-info').onclick = function() {
+        // Redirect to the desired page (replace 'wallet_page_url.html' with the actual URL)
+        window.location.href = 'walletpageurl.html';
+    };
 });
 
 async function lockWallet() {

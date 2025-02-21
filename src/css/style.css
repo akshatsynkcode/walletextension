@@ -928,3 +928,155 @@ h1, h2, h3, h4, h5, h6, p{
   width: 3rem;
   height: 3rem;
 }
+
+.circle-container {
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(88, 72, 72, 0.2); /* Light transparent white */
+  border-radius: 50%; /* Circular shape */
+  cursor: pointer;
+  position: relative; /* For absolute positioning of status dot */
+
+}
+
+.circle-container .favicon {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+}
+.status-indicator1 {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  position: absolute;
+  bottom: 2px;
+  right: 2px;
+  background-color: grey; /* Default to inactive */
+}
+
+/* Active status (Green when true) */
+.active-status {
+    background-color: #28a745 !important; /* Bootstrap success green */
+}
+
+
+/* Custom Bootstrap Tooltip Styling */
+.custom-tooltip .tooltip-inner {
+  background: rgba(0, 0, 0, 0.85) !important; /* Dark semi-transparent */
+  color: white !important;
+  font-size: 14px;
+  padding: 8px 12px;
+  border-radius: 6px;
+  text-align: center;
+}
+
+/* Custom arrow color */
+.custom-tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+  border-bottom-color: rgba(0, 0, 0, 0.85) !important;
+}
+
+
+/* styles.css */
+.back-arrow-container {
+  position: absolute;
+  left: 10px;
+}
+
+.back-arrow {
+  background: none;
+  border: none;
+  font-size: 20px;
+  cursor: pointer;
+  color: white; /* Makes the arrow white */
+}
+
+
+.url-info {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.favicon {
+  width: 20px;
+  height: 20px;
+}
+
+#current-url-name {
+  font-size: 16px;
+  font-weight: bold;
+}
+
+/* Content section styling */
+.content {
+  padding: 20px;
+}
+
+.icon-container {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-right: 5px;
+}
+
+.content {
+  padding-top: 60px; /* Adjust this based on header height */
+}
+.navbar {
+  width: 100%;
+  padding: 10px;
+}
+.popup-container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh; /* Full height */
+  justify-content: space-between;
+
+}
+
+.connection-info {
+  flex-grow: 1; /* Pushes the button down */
+  display: flex;
+  flex-direction: column;
+  justify-content: center; /* Centers content */
+  align-items: center;
+  text-align: center;
+}
+.logout-container {
+  width: 100%;
+  padding: 15px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+#logout-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  max-width: 250px;
+  background-color: red;
+  color: white;
+  border: none;
+  padding: 12px;
+  border-radius: 25px;
+  font-size: 16px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+#logout-btn i {
+  margin-right: 10px;
+  font-size: 18px;
+}
+
+#logout-btn:hover {
+  background-color: darkred;
+}
