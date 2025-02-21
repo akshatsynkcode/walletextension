@@ -1,61 +1,13 @@
-function redirectToLogin() {
-  chrome.storage.sync.remove(['authToken', 'connectedSites']);
-  window.location.href = 'login.html';
-}
+import {
+    redirectToLogin,
+    hideFullScreenLoader,
+    showFullScreenLoader,
+    loadNavbarAndSidebar,
+    truncateWalletAddress,
+    handleLogout,
+    handleCopyWalletAddress,
+} from './generic.js';
 
-function showFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'flex';
-  }
-  
-  // Hide the full-screen loader
-  function hideFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'none';
-  }
-function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, separator = '.......') {
-  if (!walletAddress || walletAddress.length <= startChars + endChars) {
-      return walletAddress; // Return the full address if it's too short to truncate
-  }
-  return `${walletAddress.substring(0, startChars)}${separator}${walletAddress.substring(walletAddress.length - endChars)}`;
-}
-
-// // Lock wallet and redirect to login
-async function lockWallet() {
-  const { authToken } = await chrome.storage.sync.get('authToken');
-  if (!authToken) {
-      console.error('No authToken found. Cannot log out.');
-      return;
-  }
-
-  try {
-      const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
-          method: 'GET',
-          headers: { 'Authorization': `Bearer ${authToken}` }
-      });
-
-      if (response.ok) {
-          const data = await response.json();
-          if (data.message === "Successfully Logged Out") {
-              chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
-                  chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
-                      if (response.success) {
-                          window.location.href = 'login.html';
-                      } else {
-                          console.error('Failed to close full-screen tab.');
-                      }
-                  });
-              });
-              chrome.runtime.sendMessage({ action: 'logout' });
-          } else {
-              alert('Logout failed. Please try again.');
-          }
-      } else {
-          alert('Logout failed. Please try again.');
-      }
-  } catch (error) {
-      console.error('Error during logout:', error);
-      alert('An error occurred during logout. Please try again.' + response.status);
-  }
-}
 async function fetchUpdatedUserProfile() {
     showFullScreenLoader();  // Show loader before making the API call
     const { authToken } = await chrome.storage.sync.get('authToken');
@@ -216,27 +168,8 @@ function removeSiteFromStorage(site) {
     const usernameElement = document.getElementById('username');
     const walletAddressElement = document.getElementById('wallet-address');
     const emailElement = document.getElementById('email');
-    const copyButton = document.getElementById('copy-button');
-    const copyMessage = document.getElementById('copy-message');
-    const disconnectAllBtn = document.querySelector('#disconnect-all-btn');
-    if(copyButton){
-        copyButton.addEventListener('click', () => {
-            const fullWalletAddress = walletAddressElement.getAttribute('data-full-address'); // Get full address
 
-            if (fullWalletAddress) {
-                navigator.clipboard.writeText(fullWalletAddress)
-                .then(() => {
-                    copyMessage.style.display = 'inline';
-                    setTimeout(() => {
-                    copyMessage.style.display = 'none';
-                    }, 1000);
-                })
-                .catch(err => {
-                    console.error('Could not copy text: ', err);
-                });
-            }
-        });
-    }
+    handleCopyWalletAddress()
   
     if (usernameElement && walletAddressElement) {
         // Fetch updated profile
@@ -265,28 +198,9 @@ function removeSiteFromStorage(site) {
   
         // Periodic balance update
     }
-    // Logout functionality
-    const lockButton = document.getElementById('lock-wallet-btn');
-    if (lockButton) {
-        lockButton.addEventListener('click', () => {
-            const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-            lockModal.show();
-            const confirmButton = document.querySelector('.yes-btn');
-            const cancelButton = document.querySelector('.no-btn');
-            cancelButton.addEventListener('click', () => {
-                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
-                modalElement.addEventListener("hidden.bs.modal", function () {
-                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
-                });
-            })
-            confirmButton.addEventListener('click', () => {
-                lockModal.hide();
-                lockWallet();
-            }, { once: true });
-        });
-    }
+    handleLogout();
 
+    const disconnectAllBtn = document.querySelector('#disconnect-all-btn');
     if(disconnectAllBtn) {
         disconnectAllBtn.addEventListener('click', function () {
             chrome.storage.sync.get(['authToken'], function(result) {
@@ -306,52 +220,3 @@ function removeSiteFromStorage(site) {
     }
     
   });
-
-// Function to load Navbar & Sidebar dynamically
-async function loadNavbarAndSidebar() {
-    let sidebarContainer = document.getElementById("sidebar-container");
-    await Promise.all([
-        fetch('navbar.html')
-            .then(response => response.text())
-            .then(html => {
-                document.getElementById('navbar-container').innerHTML = html;
-            }),
-
-        fetch("sidebar.html")
-            .then(response => {
-                if (!response.ok) {
-                    throw new Error(`HTTP error! Status: ${response.status}`);
-                }
-                return response.text();
-            })
-            .then(data => {
-                sidebarContainer.innerHTML = data;
-
-                // Now dynamically highlight the active menu item
-                let currentPage = window.location.pathname.split("/").pop();
-
-                let links = {
-                    "profile.html": "dashboard-link",
-                    "transactions.html": "transactions-link",
-                    "connectedSites.html": "linked-sites-link"
-                };
-
-                document.querySelectorAll(".nav-link").forEach(link => {
-                    link.classList.remove("active");
-                    let arrow = link.querySelector(".arrow-icon");
-                    if (arrow) arrow.style.display = "none";
-                });
-
-                if (links[currentPage]) {
-                    let activeLink = document.getElementById(links[currentPage]);
-                    if (activeLink) {
-                        activeLink.classList.add("active");
-                        let arrow = activeLink.querySelector(".arrow-icon");
-                        if (arrow) arrow.style.display = "block";
-                    }
-                }
-            })
-            .catch(error => console.error("Error loading sidebar:", error))
-
-    ]);
-}

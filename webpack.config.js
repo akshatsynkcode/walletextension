@@ -26,6 +26,7 @@ module.exports = (env, argv) => {
       approveReq: './scripts/approve-req.js',
       connectedSites: './scripts/connectedSites.js',
       transactions: './scripts/transactions.js',
+      generic: './scripts/generic.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -118,7 +119,7 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/profile.html',
         filename: 'profile.html',
-        chunks: ['profile', 'vendors'] // Include vendor chunk
+        chunks: ['profile', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/connectWallet.html',
@@ -138,12 +139,12 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/transactions.html',
         filename: 'transactions.html',
-        chunks: ['transactions', 'vendors'] // Include vendor chunk
+        chunks: ['transactions', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/connectedSites.html',
         filename: 'connectedSites.html',
-        chunks: ['connectedSites', 'vendors'] // Include vendor chunk
+        chunks: ['connectedSites', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/sidebar.html',
