@@ -6,12 +6,18 @@ export function redirectToLogin() {
 
 // Function to hide the full screen loader
 export function hideFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'none';
+    const loader = document.getElementById('full-screen-loader');
+    if (loader) {
+        loader.style.display = 'none';
+    }
 }
 
 // Function to show the full screen loader
 export function showFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'flex';
+    const loader = document.getElementById('full-screen-loader');
+    if (loader) {
+        loader.style.display = 'flex';
+    }
 }
 
 // Function to load Navbar, Sidebar & Logout Modal dynamically
@@ -79,8 +85,8 @@ export function truncateWalletAddress(walletAddress, startChars = 6, endChars = 
     return `${walletAddress.substring(0, startChars)}${separator}${walletAddress.substring(walletAddress.length - endChars)}`;
 }
 
-// Lock wallet and redirect to login
-async function lockWallet() {
+// Lock wallet and redirect to a specified page
+async function lockWallet(redirectUrl = 'login.html') {
     showFullScreenLoader();
     const { authToken } = await chrome.storage.sync.get('authToken');
     const { email } = await chrome.storage.sync.get('email');
@@ -102,7 +108,7 @@ async function lockWallet() {
                 chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
                     chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
                         if (response.success) {
-                            window.location.href = 'login.html';
+                            window.location.href = redirectUrl; // Redirect based on the parameter
                             hideFullScreenLoader();
                         } else {
                             console.error('Failed to close full-screen tab.');
@@ -127,7 +133,7 @@ async function lockWallet() {
 /**
  * Function for handling the logout
  */
-export function handleLogout() {
+export function handleLogout(redirectUrl = 'login.html') {
     const lockButton = document.getElementById('lock-wallet-btn');
     if (lockButton) {
         lockButton.addEventListener('click', () => {
@@ -141,10 +147,10 @@ export function handleLogout() {
                     document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
                     document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
                 });
-            })
+            });
             confirmButton.addEventListener('click', () => {
                 lockModal.hide();
-                lockWallet();
+                lockWallet(redirectUrl); // Pass the redirect URL to lockWallet()
             }, { once: true });
         });
     }

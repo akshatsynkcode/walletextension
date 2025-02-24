@@ -1,5 +1,7 @@
 // Fetch user info and update UI
 
+import { handleLogout } from "./generic";
+
 const baseApiUrl = 'https://dev-wallet-api.dubaicustoms.network';
 
 chrome.storage.sync.get(['authToken'], async function(result) {
@@ -83,26 +85,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
 });
 
 document.addEventListener('DOMContentLoaded', async () => {
-    const lockButton = document.getElementById('lock-wallet-btn');
-    if (lockButton) {
-        lockButton.addEventListener('click', () => {
-            const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-            lockModal.show();
-            const confirmButton = document.querySelector('.yes-btn');
-            const cancelButton = document.querySelector('.no-btn');
-            cancelButton.addEventListener('click', () => {
-                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
-                modalElement.addEventListener("hidden.bs.modal", function () {
-                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
-                });
-            })
-            confirmButton.addEventListener('click', () => {
-                lockModal.hide();
-                lockWallet();
-            }, { once: true });
-        });
-    }
+    handleLogout('popup-login.html');
 
     const expandButton = document.getElementById('expand-btn');
     if (expandButton) {
@@ -112,45 +95,6 @@ document.addEventListener('DOMContentLoaded', async () => {
         });
     }
 });
-
-async function lockWallet() {
-    const { authToken } = await chrome.storage.sync.get('authToken');
-    const { email } = await chrome.storage.sync.get('email');
-    if (!authToken) {
-        console.error('No authToken found. Cannot log out.');
-        return;
-    }
-
-    try {
-        const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
-                    chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
-                        if (response.success) {
-                            window.location.href = 'popup-login.html';
-                        } else {
-                            console.error('Failed to close full-screen tab.');
-                        }
-                    });
-                });
-                chrome.runtime.sendMessage({ action: 'logout' });
-            } else {
-                alert('Logout failed. Please try again.');
-            }
-        } else {
-            alert('Logout failed. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error during logout:', error);
-        alert('An error occurred during logout. Please try again.' + response.status);
-    }
-}
 
 document.getElementById('buy-aed-btn').addEventListener('click', async function(event) {
     event.preventDefault();
