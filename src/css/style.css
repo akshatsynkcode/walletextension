@@ -654,6 +654,10 @@ h1, h4 {
   color: #bbb;
 }
 
+.img-theme{
+    filter: invert(1);
+}
+
 .input[type="password"] {
   padding-right: 30px;
 }
