@@ -240,10 +240,12 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .nav-icon{
   height: 30px;
 }
+
 .dropdown-menu{
 min-width: 7rem;
 background-color: rgba(35, 105, 147, 0.05);
 }
+
 .dropdown-menu[data-bs-popper] {
   right: 0 !important;
   left: auto !important;
@@ -931,6 +933,12 @@ h1, h2, h3, h4, h5, h6, p{
 .dropdown .btn:hover{
     color: #828F98;
 }
+
+.dropdown .custom-btn{
+    background-color: white ;
+}
+
+
 .radio-background{
   background-color: #2369935E !important;
 }
