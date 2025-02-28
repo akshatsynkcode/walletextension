@@ -18,14 +18,15 @@ module.exports = (env, argv) => {
       background: './src/js/background.js',
       content: './src/js/content.js',
       welcome: './scripts/welcome.js',
-      login: './scripts/login.js',
+      auth: './scripts/auth.js',
       popup: './scripts/popup.js',
       profile: './scripts/profile.js',
-      popupLogin: './scripts/popup-login.js',
+      auth: './scripts/auth.js',
       connectWallet: './scripts/connectWallet.js',
       approveReq: './scripts/approve-req.js',
       connectedSites: './scripts/connectedSites.js',
       transactions: './scripts/transactions.js',
+      generic: './scripts/generic.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -108,7 +109,7 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/login.html',
         filename: 'login.html',
-        chunks: ['login', 'vendors'] // Include vendor chunk
+        chunks: ['auth', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/popup.html',
@@ -118,7 +119,7 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/profile.html',
         filename: 'profile.html',
-        chunks: ['profile', 'vendors'] // Include vendor chunk
+        chunks: ['profile', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/connectWallet.html',
@@ -133,17 +134,32 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/popup-login.html',
         filename: 'popup-login.html',
-        chunks: ['popupLogin', 'vendors'] // Include vendor chunk
+        chunks: ['auth', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/transactions.html',
         filename: 'transactions.html',
-        chunks: ['transactions', 'vendors'] // Include vendor chunk
+        chunks: ['transactions', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/connectedSites.html',
         filename: 'connectedSites.html',
-        chunks: ['connectedSites', 'vendors'] // Include vendor chunk
+        chunks: ['connectedSites', 'generic', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/sidebar.html',
+        filename: 'sidebar.html',
+        chunks: ['sidebar', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/navbar.html',
+        filename: 'navbar.html',
+        chunks: ['navbar', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
+        template: './components/logout-modal.html',
+        filename: 'logout-modal.html',
+        chunks: ['logout-modal', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [
