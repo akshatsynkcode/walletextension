@@ -1,61 +1,13 @@
-function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'connectedSites']);
-    window.location.href = 'login.html';
-}
+import {
+    redirectToLogin,
+    hideFullScreenLoader,
+    showFullScreenLoader,
+    loadLayoutComponents,
+    truncateWalletAddress,
+    handleLogout,
+    handleCopyWalletAddress,
+} from './generic.js';
 
-function showFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'flex';
-}
-
-// Hide the full-screen loader
-function hideFullScreenLoader() {
-    document.getElementById('full-screen-loader').style.display = 'none';
-}
-function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, separator = '.......') {
-    if (!walletAddress || walletAddress.length <= startChars + endChars) {
-        return walletAddress; // Return the full address if it's too short to truncate
-    }
-    return `${walletAddress.substring(0, startChars)}${separator}${walletAddress.substring(walletAddress.length - endChars)}`;
-}
-
-// // Lock wallet and redirect to login
-async function lockWallet() {
-    const { authToken } = await chrome.storage.sync.get('authToken');
-    if (!authToken) {
-        console.error('No authToken found. Cannot log out.');
-        return;
-    }
-
-    try {
-        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
-            method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
-        });
-
-        if (response.ok) {
-            const data = await response.json();
-            if (data.message === "Successfully Logged Out") {
-                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
-                    chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
-                        if (response.success) {
-                            window.location.href = 'login.html';
-                        } else {
-                            console.error('Failed to close full-screen tab.');
-                        }
-                    });
-                });
-                chrome.runtime.sendMessage({ action: 'logout' });
-            } else {
-                alert('Logout failed. Please try again.');
-            }
-        } else {
-            alert('Logout failed. Please try again.');
-        }
-    } catch (error) {
-        console.error('Error during logout:', error);
-        alert('An error occurred during logout. Please try again.' + response.status);
-    }
-}
 async function fetchUpdatedUserProfile() {
     showFullScreenLoader();  // Show loader before making the API call
     const { authToken } = await chrome.storage.sync.get('authToken');
@@ -243,7 +195,8 @@ function removeSiteFromStorage(site) {
 
 
 
-document.addEventListener('DOMContentLoaded', async () => {
+  document.addEventListener('DOMContentLoaded', async () => {
+    await loadLayoutComponents();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
 
     if (!authToken) {
@@ -254,27 +207,9 @@ document.addEventListener('DOMContentLoaded', async () => {
     const usernameElement = document.getElementById('username');
     const walletAddressElement = document.getElementById('wallet-address');
     const emailElement = document.getElementById('email');
-    const copyButton = document.getElementById('copy-button');
-    const copyMessage = document.getElementById('copy-message');
-    if (copyButton) {
-        copyButton.addEventListener('click', () => {
-            const fullWalletAddress = walletAddressElement.getAttribute('data-full-address'); // Get full address
 
-            if (fullWalletAddress) {
-                navigator.clipboard.writeText(fullWalletAddress)
-                    .then(() => {
-                        copyMessage.style.display = 'inline';
-                        setTimeout(() => {
-                            copyMessage.style.display = 'none';
-                        }, 1000);
-                    })
-                    .catch(err => {
-                        console.error('Could not copy text: ', err);
-                    });
-            }
-        });
-    }
-
+    handleCopyWalletAddress()
+  
     if (usernameElement && walletAddressElement) {
         // Fetch updated profile
         const updatedProfile = await fetchUpdatedUserProfile();
@@ -284,28 +219,15 @@ document.addEventListener('DOMContentLoaded', async () => {
                 walletAddress: updatedProfile.walletAddress,
                 email: updatedProfile.email
             };
-            walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
-            walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
-            usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
-            emailElement.textContent = updatedProfile.email || 'N/A';
-
-            // **Fetch and replace the stored icon**
-            const storedIcon = await fetchStoredIcon();
-            if (storedIcon) {
-                let userIconElement = document.querySelector(".user-icon");
-
-                if (userIconElement) {
-                    // Replace the existing <i> element with an <img> tag
-                    let userIconImg = document.createElement("img");
-                    userIconImg.src = storedIcon.src;
-                    userIconImg.alt = "User Icon";
-                    userIconImg.className = "rounded-circle"; // Style similar to the existing icon
-                    userIconImg.style.width = "40px";
-                    userIconImg.style.height = "40px";
-
-                    // Replace the existing icon with the new image
-                    userIconElement.replaceWith(userIconImg);
-                }
+            if (walletAddressElement) {
+                walletAddressElement.setAttribute('data-full-address', updatedUserInfo.walletAddress);
+                walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
+            }
+            if (usernameElement) {
+                usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
+            }
+            if (emailElement) {
+                emailElement.textContent = updatedProfile.email || 'N/A';
             }
 
         }
@@ -315,54 +237,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
         // Periodic balance update
     }
-    // Logout functionality
-    const lockButton = document.getElementById('lock-wallet-btn');
-    if (lockButton) {
-        lockButton.addEventListener('click', () => {
-            const lockModal = new bootstrap.Modal(document.getElementById('exampleModal'));
-            lockModal.show();
-            const confirmButton = document.querySelector('.yes-btn');
-            const cancelButton = document.querySelector('.no-btn');
-            cancelButton.addEventListener('click', () => {
-                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
-                modalElement.addEventListener("hidden.bs.modal", function () {
-                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
+    handleLogout();
+
+    const disconnectAllBtn = document.querySelector('#disconnect-all-btn');
+    if(disconnectAllBtn) {
+        disconnectAllBtn.addEventListener('click', function () {
+            chrome.storage.sync.get(['authToken'], function(result) {
+
+                if (!result.authToken) {
+                    console.error("Auth token not found.");
+                    return;
+                }
+
+                chrome.storage.sync.set({ 'connectedSites': [] }, function () {
+                    deleteSite("",result.authToken, "remove_all")
+                    renderConnectedSites([]);
                 });
-            })
-            confirmButton.addEventListener('click', () => {
-                lockModal.hide();
-                lockWallet();
-            }, { once: true });
+
+            });
         });
     }
-
-    document.querySelector('#disconnect-all-btn').addEventListener('click', function () {
-        chrome.storage.sync.get(['authToken'], function (result) {
-
-            if (!result.authToken) {
-                console.error("Auth token not found.");
-                return;
-            }
-
-            chrome.storage.sync.set({ 'connectedSites': [] }, function () {
-                deleteSite("", result.authToken, "remove_all")
-                renderConnectedSites([]);
-            });
-
-        });
-    });
-
-});
-
-async function fetchStoredIcon() {
-    return new Promise((resolve) => {
-        chrome.runtime.sendMessage({ action: "getStoredIcon" }, (response) => {
-            if (response?.success && response.icon) {
-                resolve(response.icon);
-            } else {
-                resolve(null);
-            }
-        });
-    });
-}
+    
+  });

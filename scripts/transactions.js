@@ -1,73 +1,13 @@
-function showFullScreenLoader() {
-  document.getElementById('full-screen-loader').style.display = 'flex';
-}
+import {
+  redirectToLogin,
+  hideFullScreenLoader,
+  showFullScreenLoader,
+  loadLayoutComponents,
+  truncateWalletAddress,
+  handleLogout,
+  handleCopyWalletAddress,
+} from './generic.js';
 
-// Hide the full-screen loader
-function hideFullScreenLoader() {
-  document.getElementById('full-screen-loader').style.display = 'none';
-}
-function redirectToLogin() {
-  chrome.storage.sync.remove(["authToken", "connectedSites"]);
-  window.location.href = "login.html";
-}
-function truncateWalletAddress(
-  walletAddress,
-  startChars = 6,
-  endChars = 6,
-  separator = "......."
-) {
-  if (!walletAddress || walletAddress.length <= startChars + endChars) {
-    return walletAddress; // Return the full address if it's too short to truncate
-  }
-  return `${walletAddress.substring(
-    0,
-    startChars
-  )}${separator}${walletAddress.substring(walletAddress.length - endChars)}`;
-}
-
-// // Lock wallet and redirect to login
-async function lockWallet() {
-  const { authToken } = await chrome.storage.sync.get("authToken");
-  if (!authToken) {
-    console.error("No authToken found. Cannot log out.");
-    return;
-  }
-
-  try {
-    const response = await fetch(
-      "https://dev-wallet-api.dubaicustoms.network/api/ext-logout",
-      {
-        method: "GET",
-        headers: { Authorization: `Bearer ${authToken}` },
-      }
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      if (data.message === "Successfully Logged Out") {
-        chrome.storage.sync.remove(["authToken", "connectedSites"], () => {
-          chrome.runtime.sendMessage({ action: "lock_wallet" }, (response) => {
-            if (response.success) {
-              window.location.href = "login.html";
-            } else {
-              console.error("Failed to close full-screen tab.");
-            }
-          });
-        });
-        chrome.runtime.sendMessage({ action: "logout" });
-      } else {
-        alert("Logout failed. Please try again.");
-      }
-    } else {
-      alert("Logout failed. Please try again.");
-    }
-  } catch (error) {
-    console.error("Error during logout:", error);
-    alert(
-      "An error occurred during logout. Please try again." + response.status
-    );
-  }
-}
 async function fetchUpdatedUserProfile() {
   try {
     const { authToken } = await chrome.storage.sync.get("authToken");
@@ -100,7 +40,7 @@ async function fetchUpdatedUserProfile() {
 }
 
 async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=1) {
-  pageSize = 7
+  const pageSize = 7
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
   if (dropdownButton) {
@@ -297,6 +237,7 @@ function updateTransactionTable(result) {
 
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
+  await loadLayoutComponents();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
   await fetchAndUpdateTransactionHistory(defaultSelectedText);
   setupDateRangeListeners();
@@ -311,28 +252,7 @@ document.addEventListener("DOMContentLoaded", async () => {
   const walletAddressElement = document.getElementById("wallet-address");
   const emailElement = document.getElementById('email');
 
-  const copyButton = document.getElementById("copy-button");
-  const copyMessage = document.getElementById("copy-message");
-  if (copyButton) {
-    copyButton.addEventListener("click", () => {
-      const fullWalletAddress =
-        walletAddressElement.getAttribute("data-full-address"); // Get full address
-
-      if (fullWalletAddress) {
-        navigator.clipboard
-          .writeText(fullWalletAddress)
-          .then(() => {
-            copyMessage.style.display = "inline";
-            setTimeout(() => {
-              copyMessage.style.display = "none";
-            }, 1000);
-          })
-          .catch((err) => {
-            console.error("Could not copy text: ", err);
-          });
-      }
-    });
-  }
+  handleCopyWalletAddress();
 
   if (usernameElement && walletAddressElement) {
     // Fetch updated profile
@@ -376,33 +296,7 @@ document.addEventListener("DOMContentLoaded", async () => {
     hideFullScreenLoader();
     // Periodic balance update
   }
-  // Logout functionality
-  const lockButton = document.getElementById("lock-wallet-btn");
-  if (lockButton) {
-    lockButton.addEventListener("click", () => {
-      const lockModal = new bootstrap.Modal(
-        document.getElementById("exampleModal")
-      );
-      lockModal.show();
-      const confirmButton = document.querySelector(".yes-btn");
-      const cancelButton = document.querySelector('.no-btn');
-            cancelButton.addEventListener('click', () => {
-                const modalElement = document.getElementById("exampleModal"); // Replace with your modal ID
-                modalElement.addEventListener("hidden.bs.modal", function () {
-                    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
-                    document.body.classList.remove("modal-open"); // Ensure scrolling is re-enabled
-                });
-            })
-      confirmButton.addEventListener(
-        "click",
-        () => {
-          lockModal.hide();
-          lockWallet();
-        },
-        { once: true }
-      );
-    });
-  }
+  handleLogout();
 });
 
 
@@ -532,7 +426,7 @@ async function sendTransactionPDF(range) {
               alert("PDF has been emailed successfully.");
           }
       } else if (response.status === 400) {
-          alert("No transactions foundeee.");
+          alert("No transactions found.");
       } else {
           console.error("Failed to send PDF via email:", response.statusText);
           alert("Failed to send PDF. Please try again.");
