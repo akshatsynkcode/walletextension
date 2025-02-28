@@ -289,6 +289,25 @@ document.addEventListener('DOMContentLoaded', async () => {
             usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
             emailElement.textContent = updatedProfile.email || 'N/A';
 
+            // **Fetch and replace the stored icon**
+            const storedIcon = await fetchStoredIcon();
+            if (storedIcon) {
+                let userIconElement = document.querySelector(".user-icon");
+
+                if (userIconElement) {
+                    // Replace the existing <i> element with an <img> tag
+                    let userIconImg = document.createElement("img");
+                    userIconImg.src = storedIcon.src;
+                    userIconImg.alt = "User Icon";
+                    userIconImg.className = "rounded-circle"; // Style similar to the existing icon
+                    userIconImg.style.width = "40px";
+                    userIconImg.style.height = "40px";
+
+                    // Replace the existing icon with the new image
+                    userIconElement.replaceWith(userIconImg);
+                }
+            }
+
         }
 
         // Fetch transaction history
@@ -335,3 +354,15 @@ document.addEventListener('DOMContentLoaded', async () => {
     });
 
 });
+
+async function fetchStoredIcon() {
+    return new Promise((resolve) => {
+        chrome.runtime.sendMessage({ action: "getStoredIcon" }, (response) => {
+            if (response?.success && response.icon) {
+                resolve(response.icon);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}

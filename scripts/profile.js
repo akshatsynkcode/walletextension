@@ -180,6 +180,26 @@ async function lockWallet() {
             walletAddressElement.textContent = truncateWalletAddress(updatedUserInfo.walletAddress) || 'Guest';
             usernameElement.textContent = updatedUserInfo.fullName || 'N/A';
             emailElement.textContent = updatedUserInfo.email || 'N/A';
+
+            // **Fetch and replace the stored icon**
+            const storedIcon = await fetchStoredIcon();
+            if (storedIcon) {
+                let userIconElement = document.querySelector(".user-icon");
+
+                if (userIconElement) {
+                    // Replace the existing <i> element with an <img> tag
+                    let userIconImg = document.createElement("img");
+                    userIconImg.src = storedIcon.src;
+                    userIconImg.alt = "User Icon";
+                    userIconImg.className = "rounded-circle"; // Style similar to the existing icon
+                    userIconImg.style.width = "40px";
+                    userIconImg.style.height = "40px";
+
+                    // Replace the existing icon with the new image
+                    userIconElement.replaceWith(userIconImg);
+                }
+            }
+
             // **Services Section - Dynamically Generate Service Cards**
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 
@@ -505,5 +525,17 @@ async function fetchQuickLinks() {
                 console.error("Error updating quick links:", error);
             }
         }
+    });
+}
+
+async function fetchStoredIcon() {
+    return new Promise((resolve) => {
+        chrome.runtime.sendMessage({ action: "getStoredIcon" }, (response) => {
+            if (response?.success && response.icon) {
+                resolve(response.icon);
+            } else {
+                resolve(null);
+            }
+        });
     });
 }
