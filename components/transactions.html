@@ -47,7 +47,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link" aria-current="page" href="profile.html">
                                         <div>
-                                            <img src="./icons/dashboard-icon.svg" alt="" class="img-fluid me-2 img-theme">
+                                            <img src="./icons/dashboard-icon.svg" alt=""
+                                                class="img-fluid me-2 img-theme">
                                             Dashboard
                                         </div>
 
@@ -56,7 +57,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link active" href="transactions.html">
                                         <div>
-                                            <img src="./icons/transitions-icon.svg" alt="" class="img-fluid me-2 img-theme">
+                                            <img src="./icons/transitions-icon.svg" alt=""
+                                                class="img-fluid me-2 img-theme">
                                             Transactions
                                         </div>
                                         <div>
@@ -67,7 +69,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="connectedSites.html">
                                         <div>
-                                            <img src="./icons/connected-sites-icon.svg" alt="" class="img-fluid me-2 img-theme">
+                                            <img src="./icons/connected-sites-icon.svg" alt=""
+                                                class="img-fluid me-2 img-theme">
                                             Linked Sites
                                         </div>
                                     </a>
@@ -75,7 +78,8 @@
                                 <li class="nav-item">
                                     <a class="nav-link" href="settings.html">
                                         <div>
-                                            <img src="./icons/settings-icon.svg" alt="" class="img-fluid me-2 img-theme">
+                                            <img src="./icons/settings-icon.svg" alt=""
+                                                class="img-fluid me-2 img-theme">
                                             Settings
                                         </div>
                                     </a>
@@ -108,7 +112,8 @@
                                 </li>
                             </ul>
                             <div>
-                                <div class="card border border-dashed rounded me-3 p-0 bg-transparent text-white text-white-light">
+                                <div
+                                    class="card border border-dashed rounded me-3 p-0 bg-transparent text-white text-white-light">
                                     <div class="card-body p-2">
                                         <div class="d-flex align-items-center">
                                             <div class="ms-2">
@@ -129,9 +134,9 @@
                             </div>
                             <div class="d-flex align-items-center right-nav ps-4">
                                 <div class="dropdown">
-                                    <i class="fa-duotone fa-solid fa-user user-icon"></i>
-                                    <button class="btn text-white text-white-light ps-1 border-0" type="button" id="dropdownMenuButton1"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
+                                    <img src="./icons/user-icon.svg" alt="user-icon" class="me-2"></img>
+                                    <button class="btn text-white text-white-light ps-1 border-0" type="button"
+                                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
                                         <div class="d-flex">
                                             <div class="text-start">
                                                 <p id="username" class="f-14 mb-0">Username</p>
@@ -142,8 +147,9 @@
                                     </button>
                                     <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
                                         <li>
-                                            <button class="dropdown-item btn text-white text-white-light font-14" data-bs-toggle="modal"
-                                                data-bs-target="#exampleModal" id="lock-wallet-btn">
+                                            <button class="dropdown-item btn text-white text-white-light font-14"
+                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
+                                                id="lock-wallet-btn">
                                                 <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
                                             </button>
                                         </li>
@@ -158,7 +164,8 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Transactions</h1>
+                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Transactions
+                            </h1>
                             <div class="d-flex justify-content-start align-items-center mb-3">
                                 <div class="input-group">
                                     <div class="dropdown">
@@ -168,19 +175,25 @@
                                             All Time
                                         </button>
                                         <ul class="dropdown-menu custom-btn" id="dateRangeMenu">
-                                            <li><a class="dropdown-item text-color-cs" href="#" data-value="All Time">All Time</a></li>
-                                            <li><a class="dropdown-item text-color-cs" href="#" data-value="Last 7 Days">Last 7 Days</a></li>
-                                            <li><a class="dropdown-item text-color-cs" href="#" data-value="Last 15 Days">Last 15 Days</a></li>
-                                            <li><a class="dropdown-item text-color-cs" href="#" data-value="Last 30 Days">Last 30 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="All Time">All Time</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 7 Days">Last 7 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 15 Days">Last 15 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 30 Days">Last 30 Days</a></li>
                                         </ul>
                                     </div>
                                     <div class="d-flex align-items-center ms-4">
                                         <button id="allTransactionbtn"
                                             class="btn custom-btn border-right-0 rounded-end-0 bg-color-button font-14">All
                                             0</button>
-                                        <button id="successfulTransactionbtn" class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
+                                        <button id="successfulTransactionbtn"
+                                            class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
                                             0</button>
-                                        <button id="failedTransactionbtn" class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
+                                        <button id="failedTransactionbtn"
+                                            class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
                                             0</button>
                                     </div>
                                 </div>
@@ -192,13 +205,22 @@
                                         <i class="fas fa-chevron-down ms-2 me-3 text-color-cs"></i>
                                     </a>
                                     <ul class="dropdown-menu font-14 custom-btn">
-                                        <li><a id="dropdown-export-current-month" class="dropdown-item text-color-cs my-2" data-range="current-month" href="#">Current Month</a></li>
-                                        <li><a id="dropdown-export-last-3-months" class="dropdown-item text-color-cs my-2" data-range="last-3-months" href="#">Last 3 Months</a></li>
-                                        <li><a id="dropdown-export-last-6-months" class="dropdown-item text-color-cs my-2" data-range="last-6-months" href="#">Last 6 Months</a></li>
-                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2" data-range="this-year" href="#">Current Year</a></li>
-                                        <li><a id="dropdown-export-previous-year" class="dropdown-item text-color-cs my-2" data-range="previous-year" href="#">Previous Year</a></li>
-                                    </ul>                                    
-                                                              
+                                        <li><a id="dropdown-export-current-month"
+                                                class="dropdown-item text-color-cs my-2" data-range="current-month"
+                                                href="#">Current Month</a></li>
+                                        <li><a id="dropdown-export-last-3-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-3-months"
+                                                href="#">Last 3 Months</a></li>
+                                        <li><a id="dropdown-export-last-6-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-6-months"
+                                                href="#">Last 6 Months</a></li>
+                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2"
+                                                data-range="this-year" href="#">Current Year</a></li>
+                                        <li><a id="dropdown-export-previous-year"
+                                                class="dropdown-item text-color-cs my-2" data-range="previous-year"
+                                                href="#">Previous Year</a></li>
+                                    </ul>
+
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -208,7 +230,7 @@
                                         <tr>
                                             <th class="px-3 font-14 text-white">TYPE</th>
                                             <th class="px-3 font-14 text-white">AMOUNT</th>
-                                            
+
                                             <th class="px-3 font-14 text-white">STATUS</th>
                                             <th class="px-3 font-14 text-white">METHOD</th>
                                             <th class="px-3 font-14 text-white">DEPARTMENT</th>
@@ -216,14 +238,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
+
                                     </tbody>
                                 </table>
                             </div>
                             <!--begin::Pagination-->
                             <nav class="d-flex justify-content-end">
                                 <ul class="pagination d-inline-flex custom-border-color rounded p-2">
-                                    
+
                                 </ul>
                             </nav>
                             <!--end:: Pagination-->
