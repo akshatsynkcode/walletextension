@@ -230,3 +230,42 @@ function truncateWalletAddress(walletAddress, startChars = 6, endChars = 6, sepa
     }
     return `${walletAddress.substring(0, startChars)}${separator}${walletAddress.substring(walletAddress.length - endChars)}`;
 }
+
+// // Lock wallet and redirect to login
+async function lockWallet() {
+    const { authToken } = await chrome.storage.sync.get('authToken');
+    if (!authToken) {
+        console.error('No authToken found. Cannot log out.');
+        return;
+    }
+
+    try {
+        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-logout', {
+            method: 'GET',
+            headers: { 'Authorization': `Bearer ${authToken}` }
+        });
+
+        if (response.ok) {
+            const data = await response.json();
+            if (data.message === "Successfully Logged Out") {
+                chrome.storage.sync.remove(['authToken', 'connectedSites'], () => {
+                    chrome.runtime.sendMessage({ action: 'lock_wallet' }, (response) => {
+                        if (response.success) {
+                            window.location.href = 'login.html';
+                        } else {
+                            console.error('Failed to close full-screen tab.');
+                        }
+                    });
+                });
+                chrome.runtime.sendMessage({ action: 'logout' });
+            } else {
+                alert('Logout failed. Please try again.');
+            }
+        } else {
+            alert('Logout failed. Please try again.');
+        }
+    } catch (error) {
+        console.error('Error during logout:', error);
+        alert('An error occurred during logout. Please try again.' + response.status);
+    }
+}
