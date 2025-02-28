@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Transactions</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <link href="./css/style.css" rel="stylesheet" />
+    <link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
         rel="stylesheet" />
@@ -30,7 +30,8 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white mb-3 text-start font-24 font-regular">Transactions</h1>
+                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Transactions
+                            </h1>
                             <div class="d-flex justify-content-start align-items-center mb-3">
                                 <div class="input-group">
                                     <div class="dropdown">
@@ -39,20 +40,26 @@
                                             aria-expanded="false">
                                             All Time
                                         </button>
-                                        <ul class="dropdown-menu" id="dateRangeMenu">
-                                            <li><a class="dropdown-item text-white" href="#" data-value="All Time">All Time</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 7 Days">Last 7 Days</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 15 Days">Last 15 Days</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 30 Days">Last 30 Days</a></li>
+                                        <ul class="dropdown-menu custom-btn" id="dateRangeMenu">
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="All Time">All Time</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 7 Days">Last 7 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 15 Days">Last 15 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 30 Days">Last 30 Days</a></li>
                                         </ul>
                                     </div>
                                     <div class="d-flex align-items-center ms-4">
                                         <button id="allTransactionbtn"
                                             class="btn custom-btn border-right-0 rounded-end-0 bg-color-button font-14">All
                                             0</button>
-                                        <button id="successfulTransactionbtn" class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
+                                        <button id="successfulTransactionbtn"
+                                            class="btn custom-btn rounded-start-0 rounded-end-0 font-14">Successful
                                             0</button>
-                                        <button id="failedTransactionbtn" class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
+                                        <button id="failedTransactionbtn"
+                                            class="btn custom-btn border-left-0 rounded-start-0 font-14">Failed
                                             0</button>
                                     </div>
                                 </div>
@@ -64,13 +71,22 @@
                                         <i class="fas fa-chevron-down ms-2 me-3 text-color-cs"></i>
                                     </a>
                                     <ul class="dropdown-menu font-14 custom-btn">
-                                        <li><a id="dropdown-export-current-month" class="dropdown-item text-color-cs my-2" data-range="current-month" href="#">Current Month</a></li>
-                                        <li><a id="dropdown-export-last-3-months" class="dropdown-item text-color-cs my-2" data-range="last-3-months" href="#">Last 3 Months</a></li>
-                                        <li><a id="dropdown-export-last-6-months" class="dropdown-item text-color-cs my-2" data-range="last-6-months" href="#">Last 6 Months</a></li>
-                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2" data-range="this-year" href="#">Current Year</a></li>
-                                        <li><a id="dropdown-export-previous-year" class="dropdown-item text-color-cs my-2" data-range="previous-year" href="#">Previous Year</a></li>
-                                    </ul>                                    
-                                                              
+                                        <li><a id="dropdown-export-current-month"
+                                                class="dropdown-item text-color-cs my-2" data-range="current-month"
+                                                href="#">Current Month</a></li>
+                                        <li><a id="dropdown-export-last-3-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-3-months"
+                                                href="#">Last 3 Months</a></li>
+                                        <li><a id="dropdown-export-last-6-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-6-months"
+                                                href="#">Last 6 Months</a></li>
+                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2"
+                                                data-range="this-year" href="#">Current Year</a></li>
+                                        <li><a id="dropdown-export-previous-year"
+                                                class="dropdown-item text-color-cs my-2" data-range="previous-year"
+                                                href="#">Previous Year</a></li>
+                                    </ul>
+
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -80,7 +96,7 @@
                                         <tr>
                                             <th class="px-3 font-14 text-white">TYPE</th>
                                             <th class="px-3 font-14 text-white">AMOUNT</th>
-                                            
+
                                             <th class="px-3 font-14 text-white">STATUS</th>
                                             <th class="px-3 font-14 text-white">METHOD</th>
                                             <th class="px-3 font-14 text-white">DEPARTMENT</th>
@@ -88,14 +104,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
+
                                     </tbody>
                                 </table>
                             </div>
                             <!--begin::Pagination-->
                             <nav class="d-flex justify-content-end">
                                 <ul class="pagination d-inline-flex custom-border-color rounded p-2">
-                                    
+
                                 </ul>
                             </nav>
                             <!--end:: Pagination-->
@@ -112,6 +128,7 @@
         <div id="logout-modal-container"></div>
         <!-- <script src="profile.bundle.js"></script> -->
         <script src="./js/bootstrap.bundle.min.js"></script>
+        <script src="./js/theme-switcher.js"></script>
 </body>
 
 </html>

@@ -168,7 +168,7 @@ function updateTransactionTable(result) {
                                 ? truncateWalletAddress(transaction.to_wallet_address)
                                 : truncateWalletAddress(transaction.from_wallet_address)
                             }</p>
-                            <span class="text-gray-600 font-12">From: ${new Date(
+                            <span class="text-gray-600 font-12 text-gray-light-600">From: ${new Date(
                               transaction.created_at
                             ).toLocaleString()}</span>
                         </div>
@@ -188,7 +188,7 @@ function updateTransactionTable(result) {
                     <p class="mb-2">${
                       transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"
                     }</p>
-                    <span class="text-truncate text-gray-600 font-12">${
+                    <span class="text-truncate text-gray-600 font-12 text-gray-light-600">${
                       truncateWalletAddress(transaction.extrinsic_hash) || "N/A"
                     }</span>
                 </td>
@@ -271,6 +271,25 @@ document.addEventListener("DOMContentLoaded", async () => {
         truncateWalletAddress(updatedUserInfo.walletAddress) || "Guest";
       usernameElement.textContent = updatedUserInfo.fullName || "N/A";
       emailElement.textContent = updatedUserInfo.email || 'N/A';
+
+      // **Fetch and replace the stored icon**
+      const storedIcon = await fetchStoredIcon();
+      if (storedIcon) {
+          let userIconElement = document.querySelector(".user-icon");
+
+          if (userIconElement) {
+              // Replace the existing <i> element with an <img> tag
+              let userIconImg = document.createElement("img");
+              userIconImg.src = storedIcon.src;
+              userIconImg.alt = "User Icon";
+              userIconImg.className = "rounded-circle"; // Style similar to the existing icon
+              userIconImg.style.width = "40px";
+              userIconImg.style.height = "40px";
+
+              // Replace the existing icon with the new image
+              userIconElement.replaceWith(userIconImg);
+          }
+      }
     }
 
 
@@ -449,4 +468,14 @@ function getDateRange(range) {
   return { startDate, endDate };
 }
 
-
+async function fetchStoredIcon() {
+  return new Promise((resolve) => {
+      chrome.runtime.sendMessage({ action: "getStoredIcon" }, (response) => {
+          if (response?.success && response.icon) {
+              resolve(response.icon);
+          } else {
+              resolve(null);
+          }
+      });
+  });
+}
