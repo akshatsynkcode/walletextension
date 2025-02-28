@@ -6,7 +6,7 @@
 	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	<title>Profile</title>
 	<link href="./css/bootstrap.min.css" rel="stylesheet" />
-	<link href="./css/style.css" rel="stylesheet" />
+	<link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
 	<link
 		href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
 		rel="stylesheet" />
@@ -27,25 +27,25 @@
 				<div class="main-container p-4">
 					<div class="row g-3">
 						<div class="col-md-4 col-12">
-							<div class="card h-100 bg-dark text-white card-bordered">
+							<div class="card h-100 bg-dark text-white text-white-light card-bordered">
 								<div class="card-header d-block py-3 border-0 bg-color-header">
 									<div class="d-flex align-items-center justify-content-between">
 										<div>
 											<p class="mb-0">Overview</p>
 										</div>
 										<div>
-											<p class="text-white mb-0 font-14">This Month</p>
+											<p class="text-white text-white-light mb-0 font-14">This Month</p>
 										</div>
 									</div>
 								</div>
 								<div class="card-body custom-card-border">
 									<div class="row g-3 mt-2">
 										<div class="col-md-4 col-4">
-											<h2 class="font-28 text-center" id ="total-count"></h2>
+											<h2 class="font-28 text-center" id="total-count"></h2>
 											<p class="text-center mt-2 text-gray-600">Transactions</p>
 										</div>
 										<div class="col-md-4 col-4">
-											<h2 class="font-28 text-center" id = "credit-count"></h2>
+											<h2 class="font-28 text-center" id="credit-count"></h2>
 											<p class="text-center mt-2 text-gray-600">Credit</p>
 										</div>
 										<div class="col-md-4 col-4">
@@ -57,7 +57,7 @@
 							</div>
 						</div>
 						<div class="col-md-4 col-12">
-							<div class="card h-100 bg-dark text-white card-bordered">
+							<div class="card h-100 bg-dark text-white text-white-light card-bordered">
 								<!--begin::Header-->
 								<div class="card-header d-block py-3 border-0 bg-color-header">
 									<div class="d-flex align-items-center justify-content-between">
@@ -65,7 +65,7 @@
 											<p class="mb-0">Your Balance</p>
 										</div>
 										<div>
-											<p class="text-white mb-0 font-14">AED</p>
+											<p class="text-white text-white-light mb-0 font-14">AED</p>
 										</div>
 									</div>
 								</div>
@@ -83,7 +83,7 @@
 							</div>
 						</div>
 						<div class="col-md-4 col-12">
-							<div class="card h-100 bg-dark text-white card-bordered">
+							<div class="card h-100 bg-dark text-white text-white-light card-bordered">
 								<div class="card-header d-block py-3 border-0 bg-color-header">
 									<div class="d-flex align-items-center justify-content-between">
 										<div>
@@ -110,7 +110,7 @@
 					<!--begin::Row-->
 					<div class="row g-3 mt-1">
 						<div class="col-md-8 col-12">
-							<div class="card h-100 bg-dark text-white card-bordered">
+							<div class="card h-100 bg-dark text-white text-white-light card-bordered">
 								<!--begin::Header-->
 								<div class="card-header d-block py-3 border-0 bg-color-header">
 									<div class="d-flex align-items-center justify-content-between">
@@ -118,7 +118,8 @@
 											<p>Recent Transactions</p>
 										</div>
 										<div>
-											<a href="transactions.html" class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View
+											<a href="transactions.html"
+												class="d-flex-inline align-items-center p-0 cta-action-link ms-5">View
 												More</a>
 										</div>
 									</div>
@@ -129,7 +130,8 @@
 									<div class="row">
 										<div class="col-md-12 col-12">
 											<div class="table-responsive">
-												<table class="table table-dark align-middle font-medium text-sm custom-rows">
+												<table
+													class="table table-dark align-middle font-medium text-sm custom-rows">
 													<thead>
 														<tr>
 															<th class="text-gray-600">TYPE</th>
@@ -139,7 +141,7 @@
 														</tr>
 													</thead>
 													<tbody>
-														
+
 													</tbody>
 												</table>
 											</div>
@@ -150,7 +152,7 @@
 							</div>
 						</div>
 						<div class="col-md-4 col-12">
-							<div class="card h-100 bg-dark text-white card-bordered">
+							<div class="card h-100 bg-dark text-white text-white-light card-bordered">
 								<!--begin::Header-->
 								<div class="card-header d-block py-3 border-0 bg-color-header">
 									<div class="d-flex align-items-center justify-content-between">
@@ -159,7 +161,7 @@
 										</div>
 										<div>
 											<a href=""
-												class="d-flex-inline align-items-center p-0 cta-action-link text-white">Manage</a>
+												class="d-flex-inline align-items-center p-0 cta-action-link">Manage</a>
 										</div>
 									</div>
 								</div>
@@ -191,6 +193,7 @@
 	<div id="logout-modal-container"></div>
 	<!-- <script src="profile.bundle.js"></script> -->
 	<script src="./js/bootstrap.bundle.min.js"></script>
+	<script src="./js/theme-switcher.js"></script>
 </body>
 
 </html>

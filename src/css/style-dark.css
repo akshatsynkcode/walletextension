@@ -7,9 +7,9 @@ body{
     font-style: normal;
     font-size: 1rem;
     font-weight: 400;
-    background-color: #FFFFFF;
+    background-color: black;
     /* overflow: hidden; */
-    color: rgba(17, 52, 73, 1) !important;
+    color: rgba(255, 255, 255, 1) !important;
 }
 @media screen and (max-width: 992px) {
   body{
@@ -21,15 +21,8 @@ body{
 }
 
 .bg-color-header{
-  border: 1px solid rgba(35, 105, 147, 1);
   background-color: rgba(35, 105, 147, 0.05);
-  
 }
-
-.bg-transparent{
-    background-color: rgba(35, 105, 147, 0.05)!important;
-}
-
 .img-login-container {
   position: relative;
   overflow: hidden;
@@ -124,18 +117,13 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .dark-blue-gradient{
   background: linear-gradient(90deg, rgba(65, 89, 185, 1) 20%, rgba(29, 40, 83, 1) 100%);
 }
-
-.text-white-light{
-    color: rgba(17, 52, 73, 1) !important;
-}
-
 .header{
   height: 80px;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background-color:rgba(255, 255, 255, 1)!important;
-  border-bottom: 1px solid rgba(35, 105, 147, 0.15);
+  background-color: #181b1c !important;
+  border-bottom: 1px solid #4B4B4B;
 }
 #middle-div {
   display: flex;
@@ -240,12 +228,10 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
 .nav-icon{
   height: 30px;
 }
-
 .dropdown-menu{
 min-width: 7rem;
-background-color: rgba(35, 105, 147, 0.05);
+background-color: rgba(20, 20, 20, 1);
 }
-
 .dropdown-menu[data-bs-popper] {
   right: 0 !important;
   left: auto !important;
@@ -540,7 +526,6 @@ h1, h4 {
   background-color: rgba(20, 20, 20, 1);
   border-radius: 20px;
 }
-
 .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
   border: none;
 }
@@ -656,10 +641,6 @@ h1, h4 {
   color: #bbb;
 }
 
-.img-theme{
-    filter: invert(1);
-}
-
 .input[type="password"] {
   padding-right: 30px;
 }
@@ -730,9 +711,9 @@ th, td{
 }
 
 .sidebar{
-  background-color: rgba(35, 105, 147, 0.05);
+  background-color: #181b1c;
   padding: 12px;
-  border-right: 1px solid rgba(35, 105, 147, 0.15);
+  border-right: 1px solid #4B4B4B;
 }
 
 button.btn-link{
@@ -751,35 +732,29 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .bg-dark, .table-dark{
-  background-color:#FFFFFF !important;
-  --bs-table-bg: #FFFFFF !important;
-  color: rgba(17, 52, 73, 1) !important;
-  --bs-table-color: none !important;
+  background-color: #181b1c !important;
+  --bs-table-bg: #181b1c !important;
 }
 
 .bg-dark-custom{
-    background-color: rgba(35, 105, 147, 0.05) !important;
-  }
+  background-color: #181b1c !important;
+}
 
 .cta-action-link{
   text-decoration: none;
-  color: rgba(35, 105, 147, 1);
+  color: white;
   font-size: 14px;
 }
 
 .cta-action-link:hover{
   text-decoration: underline;
+  color: white;
   cursor: pointer;
 }
 
 .text-gray-600{
-  color: rgba(17, 52, 73, 1);
+  color: #8A9393;
   font-size: 14px;
-}
-
-.text-gray-light-600{
-    color: rgba(130, 143, 152, 1)!important;
-
 }
 
 .border-dashed{
@@ -787,12 +762,8 @@ h1, h2, h3, h4, h5, h6, p{
   border-color: #236993 !important;
 }
 
-.border-dark{
-    border: 1px solid rgba(35, 105, 147, 1) !important;
-}
-
 .table-dark th{
-  color: rgba(17, 52, 73, 1) !important;
+  color: white !important;
   font-size: 14px;
   font-weight: 500;
 }
@@ -802,7 +773,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .siderbar-nav .nav-item .nav-link{
-    color:rgba(17, 52, 73, 1);
+  color: white;
   padding: 8px 16px;
   border-radius: 8px;
   font-size: 14px;
@@ -854,7 +825,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .card-bordered {
-  border: 1px solid rgba(35, 105, 147, 0.15) !important;
+  border: 1px solid #2d3748 !important;
 }
 
 
@@ -897,7 +868,6 @@ h1, h2, h3, h4, h5, h6, p{
 
 .table.custom-table thead th {
   border-bottom: none !important;
-  background-color: #2369930D;
 }
 
 
@@ -912,32 +882,19 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .custom-btn{
-    border-width: 1px, 0px, 1px, 1px;
+  border-width: 1px 1px 1px 1px;
     border-style: solid;
-    border-color: rgba(35, 105, 147, 0.15);
+    border-color: #23699326;
     color: #828F98;
-    background-color: rgba(35, 105, 147, 0.05);
+}
+
+.custom-btn-dark{
+  background-color: #181b1c;
 }
 
 .text-color-cs{
   color: #828F98 !important;
 }
-
-.text-color-ls{
-    color: rgba(17, 52, 73, 1);
-
-}
-
-.dropdown .btn:focus,
-.dropdown .btn.show,
-.dropdown .btn:hover{
-    color: #828F98;
-}
-
-.dropdown .custom-btn{
-    background-color: white ;
-}
-
 
 .radio-background{
   background-color: #2369935E !important;
@@ -953,8 +910,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .custom-border-color{
-    border: 1px solid rgba(35, 105, 147, 0.15);
-    background-color: rgba(35, 105, 147, 0.05);
+  border: 1px solid #23699326;
 }
 
 .custom-spinner {
@@ -979,26 +935,6 @@ h1, h2, h3, h4, h5, h6, p{
 .spinner-border {
   width: 3rem;
   height: 3rem;
-}
-.btn-expand {
-  border: none;
-  background: none;
-  color: white; /* Match this color to your design */
-  position: absolute;
-  right: 10px;
-  top: 10px;
-}
-/* Custom styling for the activity loader */
-#activities-loader {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  flex-direction: column;
-  margin-top: 20px;
-}
-
-#activities-loader .spinner-border {
-  margin-bottom: 10px;
 }
 
 .custom-img{
@@ -1082,4 +1018,8 @@ h1, h2, h3, h4, h5, h6, p{
 .accordion-body {
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 1rem 1.25rem;
+}
+
+.accordion-button::after {
+  filter: brightness(0) invert(1);
 }

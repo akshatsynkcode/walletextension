@@ -46,7 +46,9 @@ export async function loadLayoutComponents() {
                 let links = {
                     "profile.html": "dashboard-link",
                     "transactions.html": "transactions-link",
-                    "connectedSites.html": "linked-sites-link"
+                    "connectedSites.html": "linked-sites-link",
+                    "settings.html": "settings-link",
+                    "help.html": "help-link"
                 };
 
                 document.querySelectorAll(".nav-link").forEach(link => {
