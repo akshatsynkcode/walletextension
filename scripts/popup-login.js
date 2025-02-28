@@ -51,10 +51,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
             const data = await response.json();
 
+            encryptedData = await encryptText(data.token)
+            encryptedToken = encryptedData.encryptedPassword;
+            iv = encryptedData.iv;
             if (response.ok && data.token) {
                 // Store the auth token in chrome storage
                 chrome.storage.sync.set({
-                    authToken: data.token,
+                    authToken: encryptedToken,
+                    authIV: iv,
                     connectedSites: data.connected_sites,
                     email:data.email
                 }, () => {
@@ -92,9 +96,57 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Redirect to forgot password
-    document.getElementById("forgot-password").addEventListener("click", function (event) {
-        event.preventDefault();
-        const IAM_URL = baseApiUrl.includes('dev') ? "https://ime.finloge.com/forgot-password/" : "https://ime.dubaicustoms.network/forgot-password/";
-        window.open(IAM_URL, "_blank", "noopener,noreferrer");
+    document.addEventListener('DOMContentLoaded', function() {
+        document.getElementById("forgot-password").addEventListener("click", async function (event) {
+            event.preventDefault();
+    
+            // Define the API URL based on the environment
+            const apiUrl = baseApiUrl.includes('dev')
+                ? 'https://dev-wallet-api.dubaicustoms.network/api/forgot-password'
+                : 'https://wallet-api.dubaicustoms.network/api/forgot-password';  // Assuming you have a production URL
+    
+            try {
+                // Fetch the forgot password URL from the API
+                const response = await fetch(apiUrl);
+                if (!response.ok) throw new Error('Network response was not ok.');
+    
+                const data = await response.json();
+                const IAM_URL = data.forgotPassword;
+    
+                // Open the URL in a new tab
+                window.open(IAM_URL, "_blank", "noopener,noreferrer");
+            } catch (error) {
+                console.error('There was a problem with the fetch operation:', error);
+            }
+        });
     });
+    
 });
+
+async function getKey() {
+    const keyMaterial = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"));
+    return crypto.subtle.importKey(
+        "raw",
+        keyMaterial,
+        { name: "AES-GCM" },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function encryptText(password) {
+    const key = await getKey(); // Generate a valid 256-bit key
+    const encoder = new TextEncoder();
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // Generate a random IV
+
+    const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        encoder.encode(password)
+    );
+
+    return {
+        iv: btoa(String.fromCharCode(...iv)), // Convert IV to Base64
+        encryptedPassword: btoa(String.fromCharCode(...new Uint8Array(encrypted))) // Convert encrypted data to Base64
+    };
+}

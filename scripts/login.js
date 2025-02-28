@@ -5,6 +5,7 @@ document.getElementById('login-btn').addEventListener('click', async function lo
 
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
+    const encryptedPassword = await encryptText(password);
     const errorMessage = document.getElementById('error-message');
     const loginButton = document.getElementById('login-btn');
     const loader = document.getElementById('loader');
@@ -34,9 +35,13 @@ document.getElementById('login-btn').addEventListener('click', async function lo
         const data = await response.json();
 
         if (response.ok && data.token) {
+            encryptedData = await encryptText(data.token)
+            encryptedToken = encryptedData.encryptedText;
+            iv = encryptedData.iv;
             // Store the token in chrome.storage.sync
             chrome.storage.sync.set({
-                authToken: data.token,
+                authToken: encryptedToken,
+                authIV: iv,
                 connectedSites: data.connected_sites,
                 email:data.email
             }, function () {
@@ -96,16 +101,55 @@ window.onload = function () {
     }
   });
 
-document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById("forgot-password").addEventListener("click", function (event) {
+  document.addEventListener('DOMContentLoaded', () => {
+    document.getElementById("forgot-password").addEventListener("click", async function (event) {
         event.preventDefault();
-        let IAM_URL = "";
-        if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://ime.finloge.com/forgot-password/";
+        
+        // Define the API URL based on the environment
+        const apiUrl = baseApiUrl.includes('dev')
+            ? 'https://dev-wallet-api.dubaicustoms.network/api/forgot-password'
+            : 'https://wallet-api.dubaicustoms.network/api/forgot-password';  // Assuming you have a production URL
+
+        try {
+            // Fetch the forgot password URL from the API
+            const response = await fetch(apiUrl);
+            if (!response.ok) throw new Error('Network response was not ok.');
+
+            const data = await response.json();
+            const IAM_URL = data.forgotPassword;
+
+            // Open the URL in a new tab
+            window.open(IAM_URL, "_blank", "noopener,noreferrer");
+        } catch (error) {
+            console.error('There was a problem with the fetch operation:', error);
         }
-        else{
-            IAM_URL = "https://ime.dubaicustoms.network/forgot-password/";
-        }
-        window.open(IAM_URL, "_blank", "noopener,noreferrer");
     });
 });
+
+async function getKey() {
+    const keyMaterial = await crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"));
+    return crypto.subtle.importKey(
+        "raw",
+        keyMaterial,
+        { name: "AES-GCM" },
+        false,
+        ["encrypt", "decrypt"]
+    );
+}
+
+async function encryptText(password) {
+    const key = await getKey(); // Generate a valid 256-bit key
+    const encoder = new TextEncoder();
+    const iv = crypto.getRandomValues(new Uint8Array(12)); // Generate a random IV
+
+    const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv },
+        key,
+        encoder.encode(password)
+    );
+
+    return {
+        iv: btoa(String.fromCharCode(...iv)), // Convert IV to Base64
+        encryptedText: btoa(String.fromCharCode(...new Uint8Array(encrypted))) // Convert encrypted data to Base64
+    };
+}

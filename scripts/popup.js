@@ -2,17 +2,19 @@
 
 const baseApiUrl = 'https://dev-wallet-api.dubaicustoms.network';
 
-chrome.storage.sync.get(['authToken'], async function(result) {
+chrome.storage.sync.get(['authToken', 'authIV'], async function(result) {
     const authToken = result.authToken;
 
     if (!authToken) {
         window.location.href = 'popup-login.html';
     } else {
         try {
+            const authIV = result.authIV;
+            const decryptedAuthToken = await decryptText(authToken, authIV);
             // Fetch User Profile Information
             const userInfoResponse = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
                 method: 'GET',
-                headers: { 'Authorization': `Bearer ${authToken}` }
+                headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
             });
 
             const userInfoData = await userInfoResponse.json();
@@ -28,7 +30,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
                     // Fetch Balance Information
                     const balanceInfoResponse = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
                         method: 'GET',
-                        headers: { 'Authorization': `Bearer ${authToken}` }
+                        headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
                     });
 
                     const balanceInfoData = await balanceInfoResponse.json();
@@ -120,11 +122,13 @@ async function lockWallet() {
         console.error('No authToken found. Cannot log out.');
         return;
     }
+    const { authIV } = await chrome.storage.sync.get('authIV');
+    const decryptedAuthToken = await decryptText(authToken, authIV);
 
     try {
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-logout?email=${encodeURIComponent(email)}`, {
             method: 'GET',
-            headers: { 'Authorization': `Bearer ${authToken}` }
+            headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
         });
 
         if (response.ok) {
@@ -152,17 +156,29 @@ async function lockWallet() {
     }
 }
 
-document.getElementById('buy-aed-btn').addEventListener('click', function(event)  {
+document.getElementById('buy-aed-btn').addEventListener('click', async function(event) {
     event.preventDefault();
-        let IAM_URL = "";
-        if (baseApiUrl.includes('dev')){
-            IAM_URL = "https://ime.finloge.com/payment/";
-        }
-        else{
-            IAM_URL = "https://ime.dubaicustoms.network/payment/";
-        }
+
+    // Define the API URL based on the environment
+    const apiUrl = baseApiUrl.includes('dev')
+        ? 'https://dev-wallet-api.dubaicustoms.network/api/buy-aed'
+        : 'https://wallet-api.dubaicustoms.network/api/buy-aed'; // Assuming a production URL
+
+    try {
+        // Fetch the payment URL from the API
+        const response = await fetch(apiUrl);
+        if (!response.ok) throw new Error('Network response was not ok.');
+
+        const data = await response.json();
+        const IAM_URL = data.buyAED;
+
+        // Open the URL in a new window
         window.open(IAM_URL);
+    } catch (error) {
+        console.error('There was a problem with the fetch operation:', error);
+    }
 });
+
 
 const copyButton = document.getElementById('copy-button');
     if (copyButton) {
@@ -252,7 +268,7 @@ const copyButton = document.getElementById('copy-button');
     
     
     
-    function deleteSite(site, authToken, callback) {
+    function deleteSite(site, authToken, authIV, callback) {
         // Replace the URL with your API endpoint
         const apiUrl = `https://dev-wallet-api.dubaicustoms.network/api/ext-profile`;
     
@@ -260,12 +276,12 @@ const copyButton = document.getElementById('copy-button');
             domain: site,
             operation: "remove", // Example of passing the second variable
         };
-    
+        const decryptedAuthToken = decryptText(authToken, authIV);
         fetch(apiUrl, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',
-                "Authorization": `Bearer ${authToken}`,
+                "Authorization": `Bearer ${decryptedAuthToken}`,
             },
             body: JSON.stringify(requestBody),
         })
@@ -299,3 +315,81 @@ const copyButton = document.getElementById('copy-button');
             }
         });
     }
+
+    function getKey() {
+        return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+            .then(keyMaterial => {
+                return crypto.subtle.importKey(
+                    "raw",
+                    keyMaterial,
+                    { name: "AES-GCM" },
+                    false,
+                    ["encrypt", "decrypt"]
+                );
+            });
+    }
+    
+    function decryptText(encryptedData, iv) {
+        return getKey()  // Get the AES key asynchronously
+            .then(key => {
+                const decoder = new TextDecoder();
+        
+                // Convert Base64 IV and Encrypted Password back to Uint8Array
+                const ivBytes = new Uint8Array(atob(iv).split("").map(char => char.charCodeAt(0)));
+                const encryptedBytes = new Uint8Array(atob(encryptedData).split("").map(char => char.charCodeAt(0)));
+        
+                // Decrypt the data
+                return crypto.subtle.decrypt(
+                    { name: "AES-GCM", iv: ivBytes },
+                    key,
+                    encryptedBytes
+                ).then(decrypted => {
+                    return decoder.decode(decrypted);  // Convert back to string
+                });
+            });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        const userConsent = localStorage.getItem("userConsent");
+        const consentModalElement = document.getElementById("userConsentModal");
+        const consentModal = new bootstrap.Modal(consentModalElement, {
+            backdrop: 'static', // Prevent closing when clicking outside
+            keyboard: false     // Prevent closing with Escape key
+        });
+    
+        // Show the modal if consent is not given
+        if (!userConsent) {
+            consentModal.show();
+        }
+    
+        // Accept Consent
+        document.getElementById("acceptConsent").addEventListener("click", function () {
+            if (document.getElementById("consentCheckbox").checked) {
+                localStorage.setItem("userConsent", "accepted");
+                alert("Thank you for providing consent!");
+                consentModal.hide(); // Hide modal after acceptance
+            } else {
+                alert("Please check the box to give consent.");
+            }
+        });
+    
+        // Decline Consent (Keep the modal open)
+        document.getElementById("declineConsent").addEventListener("click", function (event) {
+            alert("Consent is mandatory to use the extension.");
+            
+            // Prevent modal from hiding
+            event.preventDefault();
+            event.stopImmediatePropagation();
+    
+            // Keep the modal open
+            consentModal.show();
+        });
+    
+        // Prevent modal from hiding on its own
+        consentModalElement.addEventListener("hidden.bs.modal", function (event) {
+            if (!localStorage.getItem("userConsent")) {
+                consentModal.show();
+            }
+        });
+    });
+    

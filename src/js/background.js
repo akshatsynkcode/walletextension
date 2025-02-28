@@ -62,25 +62,26 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
     }
     else if (message.action === 'check_auth') {
-        chrome.storage.sync.get(['authToken', 'email'], (result) => {
+        chrome.storage.sync.get(['authToken', 'email', 'authIV'], (result) => {
             let authTokenValue = result.authToken;
+            const decryptedAuthToken = decryptText(authTokenValue, result.authIV);
             fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-check-auth?email=${encodeURIComponent(result.email)}`, {
                 method: 'GET',
-                headers: { 'Authorization': `Bearer ${authTokenValue}` },
+                headers: { 'Authorization': `Bearer ${decryptedAuthToken}` },
             })
                 .then(response => {
                     if (!response.ok) {
                         console.log("Auth token invalid, logging out");
-                        chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                        chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV'], () => {
                             sendResponse({ success: false, authToken: null });
                         });
                     } else {
-                        sendResponse({ success: true, authToken: authTokenValue });
+                        sendResponse({ success: true, authToken: decryptedAuthToken });
                     }
                 })
                 .catch(error => {
                     console.log('Error in auth check, logging out:', error);
-                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV'], () => {
                         sendResponse({ success: false, authToken: null });
                     });
                 });
@@ -88,11 +89,12 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
             return true;
         });
     } else if (message.action === 'getbalance') {
-        chrome.storage.sync.get(['authToken'], (result) => {
+        chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
             if (result.authToken) {
+                const decryptedAuthToken = decryptText(result.authToken, result.authIV);
                 fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-balance', {
                     method: 'GET',
-                    headers: { 'Authorization': `Bearer ${result.authToken}` }
+                    headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
                 })
                     .then(response => {
                         if (response.ok) {
@@ -114,9 +116,10 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
     }
     else if (message.action === 'get_auth') {  // New case for getauth
-        chrome.storage.sync.get(['authToken'], (result) => {
+        chrome.storage.sync.get(['authToken', 'authIV'], (result) => {
             if (result.authToken) {
-                sendResponse({ success: true, authToken: result.authToken });
+                const decryptedAuthToken = decryptText(result.authToken, result.authIV);
+                sendResponse({ success: true, authToken: decryptedAuthToken });
             } else {
                 sendResponse({ success: false, error: 'Auth token not found' });
             }
@@ -179,18 +182,19 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 // Handle approving the transaction
 async function handleApproveTransaction(message, sendResponse) {
 
-    const { authToken, transaction_id, status } = message.transaction;
+    const { authToken, transaction_id, status, authIV } = message.transaction;
     console.log("transaction_id", transaction_id, "authToken", authToken, "status", status);
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: {
-            'Authorization': `Bearer ${authToken}`,
+            'Authorization': `Bearer ${decryptedAuthToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: status, transaction_id: transaction_id })
 
     });
-    console.log("id to body data", JSON.stringify({ status: status, transaction_id: transaction_id, authToken: authToken }));
+    console.log("id to body data", JSON.stringify({ status: status, transaction_id: transaction_id, authToken: decryptedAuthToken }));
     console.log(response.status, "response");
     console.log(response.message, "response");
     console.log(response.headers, "response");
@@ -206,12 +210,12 @@ async function handleApproveTransaction(message, sendResponse) {
 
 // Handle rejecting the transaction
 async function handleRejectTransaction(message, sendResponse) {
-    const { status, transaction_id, authToken } = message.transaction;
-
+    const { status, transaction_id, authToken, authIV } = message.transaction;
+    const decryptedAuthToken = await decryptText(authToken, authIV);
     const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-transaction', {
         method: 'PUT',
         headers: {
-            'Authorization': `Bearer ${authToken}`,
+            'Authorization': `Bearer ${decryptedAuthToken}`,
             'Content-Type': 'application/json'
         },
         body: JSON.stringify({ status: status, transaction_id: transaction_id })
@@ -285,17 +289,18 @@ function handleRequestConnection(sender, sendResponse) {
         responseCallback: sendResponse
     };
 
-    chrome.storage.sync.get(['authToken', 'connectedSites'], async function (result) {
+    chrome.storage.sync.get(['authToken', 'connectedSites', 'authIV'], async function (result) {
         if (chrome.runtime.lastError) {
             console.error("Error retrieving storage data:", chrome.runtime.lastError);
         }
 
         let isConnected = false;
+        const decryptedAuthToken = await decryptText(result.authToken, result.authIV);
         async function checkConnection() {
             try {
                 let response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-check-connected-site?domain=${sender.origin}`, {
                     method: 'GET',
-                    headers: { 'Authorization': `Bearer ${result.authToken}` }
+                    headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
                 });
                 console.log(response);
                 if (!response.ok) {
@@ -316,7 +321,7 @@ function handleRequestConnection(sender, sendResponse) {
 
         if (isConnected) {
             console.log("Connected Site found");
-            sendResponse({ success: true, authToken: result.authToken });
+            sendResponse({ success: true, authToken: decryptedAuthToken });
             return;
         }
 
@@ -325,11 +330,10 @@ function handleRequestConnection(sender, sendResponse) {
         if (!servicePopups[senderTabId]) {
             if (result.authToken) {
                 pendingRequests.push(request);
-                const authToken = result.authToken;
 
                 fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
                     method: 'GET',
-                    headers: { 'Authorization': `Bearer ${authToken}` }
+                    headers: { 'Authorization': `Bearer ${decryptedAuthToken}` }
                 })
                     .then(response => {
                         if (response.ok) {
@@ -401,10 +405,11 @@ function handleApproveConnection(message, sendResponse) {
     const { tabId } = message; // Use tabId from the message
     const approveRequest = pendingRequests.find((req) => req.tabId === tabId);
     if (approveRequest) {
-        chrome.storage.sync.get(['authToken', 'connectedSites'], function (result) {
+        chrome.storage.sync.get(['authToken', 'connectedSites', 'authIV'], function (result) {
             if (result.authToken) {
+                const decryptedAuthToken = decryptText(result.authToken, result.authIV);
                 // Send the address back to the original request
-                approveRequest.responseCallback({ success: true, authToken: result.authToken });
+                approveRequest.responseCallback({ success: true, authToken: decryptedAuthToken });
                 pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the approved request
                 chrome.storage.sync.remove(['fullName', 'walletAddress']);
 
@@ -421,7 +426,7 @@ function handleApproveConnection(message, sendResponse) {
                             fetch("https://dev-wallet-api.dubaicustoms.network/api/ext-profile", {
                                 method: "PUT",
                                 headers: {
-                                    "Authorization": `Bearer ${result.authToken}`,
+                                    "Authorization": `Bearer ${decryptedAuthToken}`,
                                     "Content-Type": "application/json"
                                 },
                                 body: JSON.stringify({ domain: approveRequest.origin, operation: "add" })
@@ -444,7 +449,7 @@ function handleApproveConnection(message, sendResponse) {
                     console.log("Domain already present in connectedSites:", approveRequest.origin);
                 }
 
-                sendResponse({ success: true, authToken: result.authToken });
+                sendResponse({ success: true, authToken: decryptedAuthToken });
             } else {
                 approveRequest.responseCallback({ success: false, message: "No user logged in." });
                 pendingRequests.splice(pendingRequests.indexOf(approveRequest), 1); // Remove the denied request
@@ -520,22 +525,24 @@ function startAuthCheck() {
     }
 
     authCheckIntervalId = setInterval(() => {
-        chrome.storage.sync.get('authToken', async ({ authToken }) => {
+        chrome.storage.sync.get(['authToken', 'authIV'], async (result) => {
+            const { authToken, authIV } = result;
             if (!authToken) {
                 console.log('No auth token found. Stopping auth check.');
                 stopAuthCheck(); // Stop if no token is found
                 return;
             }
 
+            const decryptedAuthToken = await decryptText(authToken, authIV);
             try {
                 const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/ext-profile', {
                     method: 'GET',
-                    headers: { 'Authorization': `Bearer ${authToken}` },
+                    headers: { 'Authorization': `Bearer ${decryptedAuthToken}` },
                 });
 
                 if (response.status === 401) {
                     console.log("Auth token invalid. Logging out.");
-                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email'], () => {
+                    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV'], () => {
                         stopAuthCheck(); // Stop the check
                         // chrome.runtime.sendMessage({ action: 'lock_wallet' });
                     });
@@ -586,3 +593,36 @@ chrome.runtime.onMessage.addListener(function (message, sender, sendResponse) {
         return true;
     }
 });
+
+function getKey() {
+    return crypto.subtle.digest("SHA-256", new TextEncoder().encode("your-strong-secret-key"))
+        .then(keyMaterial => {
+            return crypto.subtle.importKey(
+                "raw",
+                keyMaterial,
+                { name: "AES-GCM" },
+                false,
+                ["encrypt", "decrypt"]
+            );
+        });
+}
+
+function decryptText(encryptedData, iv) {
+    return getKey()  // Get the AES key asynchronously
+        .then(key => {
+            const decoder = new TextDecoder();
+    
+            // Convert Base64 IV and Encrypted Password back to Uint8Array
+            const ivBytes = new Uint8Array(atob(iv).split("").map(char => char.charCodeAt(0)));
+            const encryptedBytes = new Uint8Array(atob(encryptedData).split("").map(char => char.charCodeAt(0)));
+    
+            // Decrypt the data
+            return crypto.subtle.decrypt(
+                { name: "AES-GCM", iv: ivBytes },
+                key,
+                encryptedBytes
+            ).then(decrypted => {
+                return decoder.decode(decrypted);  // Convert back to string
+            });
+        });
+}
