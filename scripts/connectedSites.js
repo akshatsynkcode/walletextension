@@ -7,6 +7,7 @@ import {
     handleLogout,
     handleCopyWalletAddress,
     updateUserIcon,
+    attachSidebarClickPrevention,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -199,6 +200,7 @@ function removeSiteFromStorage(site) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     await loadLayoutComponents();
+    attachSidebarClickPrevention();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
 
     if (!authToken) {
@@ -233,6 +235,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             }
             await updateUserIcon();
         }
+        pageLoaded = true;
 
         // Fetch transaction history
         // await fetchAndUpdateTransactionHistory(currentPage);

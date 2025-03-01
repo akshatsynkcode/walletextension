@@ -7,6 +7,7 @@ import {
     handleLogout,
     handleCopyWalletAddress,
     updateUserIcon,
+    attachSidebarClickPrevention,
 } from './generic.js';
 
 function formatAmount(amount) {
@@ -49,6 +50,7 @@ async function fetchUpdatedUserProfile() {
             const data = await response.json();
             hideFullScreenLoader();
             console.log(data);
+            pageLoaded = true;
             return data;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -70,6 +72,7 @@ async function fetchUpdatedUserProfile() {
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
     await loadLayoutComponents();
+    attachSidebarClickPrevention();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
@@ -170,7 +173,7 @@ async function fetchUpdatedUserProfile() {
         // Fetch transaction history
         const pageSize = 5;
         await fetchAndUpdateTransactionHistory(pageSize);
-  
+        pageLoaded = true;
         // Periodic balance update
     }
     handleLogout();
@@ -227,10 +230,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchAndUpdateTransactionHistory(pageSize) {
     const { authToken } = await chrome.storage.sync.get('authToken');
-if (!authToken) {
-    console.error('No authToken found. Cannot log out.');
-    return;
-}
+    if (!authToken) {
+        console.error('No authToken found. Cannot log out.');
+        return;
+    }
     try {
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}`, {
             method: 'GET',
@@ -247,6 +250,7 @@ if (!authToken) {
         const data = await response.json();
         console.log("this is data.data", data);
         updateTransactionTable(data.data);
+        pageLoaded = true;
     } catch (error) {
         console.error('Error fetching transaction data:', error);
     }

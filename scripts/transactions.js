@@ -7,6 +7,7 @@ import {
   handleLogout,
   handleCopyWalletAddress,
   updateUserIcon,
+  attachSidebarClickPrevention,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -239,6 +240,7 @@ function updateTransactionTable(result) {
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
   await loadLayoutComponents();
+  attachSidebarClickPrevention();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
   await fetchAndUpdateTransactionHistory(defaultSelectedText);
   setupDateRangeListeners();
@@ -276,7 +278,7 @@ document.addEventListener("DOMContentLoaded", async () => {
       await updateUserIcon()
     }
 
-
+    pageLoaded = true;
     hideFullScreenLoader();
     // Periodic balance update
   }

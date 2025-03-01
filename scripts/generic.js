@@ -1,3 +1,6 @@
+// Global variable to indicate if the page is fully loaded
+window.pageLoaded = false;
+
 // // Redirect to login if no token or token is invalid
 export function redirectToLogin() {
     chrome.storage.sync.remove(['authToken', 'connectedSites', 'email']);
@@ -225,5 +228,19 @@ export async function updateUserIcon() {
             userIconElement.replaceWith(defaultIcon);
         }
     }
+}
+
+export function attachSidebarClickPrevention() {
+    // Find all links in your sidebar menu (assuming the container has class "siderbar-nav")
+    const sidebarLinks = document.querySelectorAll('.siderbar-nav a');
+    sidebarLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+            if (!pageLoaded) {
+                // Prevent navigation if page isn't fully loaded
+                e.preventDefault();
+                console.log("Page is still loading. Please wait.");
+            }
+        });
+    });
 }
 

@@ -238,7 +238,7 @@ async function fetchUpdatedUserProfile() {
             console.error("Failed to fetch user profile:", response.statusText);
         }
     } catch (error) {
-        console.error("Error fetching user profile dddd:", error);
+        console.error("Error fetching user profile:", error);
     } finally {
         hideFullScreenLoader();
     }
