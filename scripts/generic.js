@@ -216,9 +216,12 @@ export async function updateUserIcon() {
             userIconElement.replaceWith(userIconImg);
         } else {
             // If storedIcon is null or src is empty, replace with default icon
-            let defaultIcon = document.createElement("i");
-            defaultIcon.className = "fa-duotone fa-solid fa-user user-icon";
-
+            let defaultIcon = document.createElement("img");
+            defaultIcon.src = "./icons/logo-6.svg";
+            defaultIcon.alt = "User Icon";
+            defaultIcon.className = "rounded-circle"; // Style similar to the existing icon
+            defaultIcon.style.width = "40px";
+            defaultIcon.style.height = "40px";
             userIconElement.replaceWith(defaultIcon);
         }
     }
