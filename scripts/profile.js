@@ -273,7 +273,7 @@ function updateTransactionTable(transactions) {
                                     : truncateWalletAddress(
                                         transaction.from_wallet_address
                                       )}</p>
-                                    <span class="text-gray-600 font-12">From: ${new Date(
+                                    <span class="text-gray-600 font-12 text-gray-light-600">From: ${new Date(
                                         transaction.created_at
                                       ).toLocaleString()}</span>
                                 </div>
@@ -294,7 +294,7 @@ function updateTransactionTable(transactions) {
                             : "Wallet Transfer"
                         }</p>
                         <span
-                            class="text-truncate text-gray-600 font-12">${
+                            class="text-truncate text-gray-600 font-12 text-gray-light-600">${
                                 truncateWalletAddress(transaction.extrinsic_hash) ||
                                 "N/A"
                               }</span>

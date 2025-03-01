@@ -168,7 +168,7 @@ function updateTransactionTable(result) {
                                 ? truncateWalletAddress(transaction.to_wallet_address)
                                 : truncateWalletAddress(transaction.from_wallet_address)
                             }</p>
-                            <span class="text-gray-600 font-12">From: ${new Date(
+                            <span class="text-gray-600 font-12 text-gray-light-600">From: ${new Date(
                               transaction.created_at
                             ).toLocaleString()}</span>
                         </div>
@@ -188,7 +188,7 @@ function updateTransactionTable(result) {
                     <p class="mb-2">${
                       transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"
                     }</p>
-                    <span class="text-truncate text-gray-600 font-12">${
+                    <span class="text-truncate text-gray-600 font-12 text-gray-light-600">${
                       truncateWalletAddress(transaction.extrinsic_hash) || "N/A"
                     }</span>
                 </td>
