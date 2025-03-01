@@ -508,8 +508,8 @@ h1, h4 {
     color: #505152;
   }
   .page-link{
-    color: white;
-    background-color: #010507;
+    color: rgba(17, 52, 73, 1);
+    background-color: white;
   }
 
   .page-link:hover{
@@ -659,6 +659,7 @@ h1, h4 {
 .img-theme{
     filter: invert(1);
 }
+
 
 .input[type="password"] {
   padding-right: 30px;
@@ -915,10 +916,14 @@ h1, h2, h3, h4, h5, h6, p{
     border-width: 1px, 0px, 1px, 1px;
     border-style: solid;
     border-color: rgba(35, 105, 147, 0.15);
-    color: #828F98;
+    color: rgba(17, 52, 73, 1);
     background-color: rgba(35, 105, 147, 0.05);
 }
 
+.custom-btn:hover{
+  border: 1px solid rgba(17, 52, 73, 1) !important;
+  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
+}
 .text-color-cs{
   color: #828F98 !important;
 }
@@ -1082,3 +1087,13 @@ h1, h2, h3, h4, h5, h6, p{
   border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
   padding: 1rem 1.25rem;
 }
+
+#lock-wallet-btn:hover {
+  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
+  background-color: transparent;
+}
+
+
+
+
+
