@@ -6,6 +6,7 @@ import {
   truncateWalletAddress,
   handleLogout,
   handleCopyWalletAddress,
+  updateUserIcon,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -271,6 +272,8 @@ document.addEventListener("DOMContentLoaded", async () => {
         truncateWalletAddress(updatedUserInfo.walletAddress) || "Guest";
       usernameElement.textContent = updatedUserInfo.fullName || "N/A";
       emailElement.textContent = updatedUserInfo.email || 'N/A';
+
+      await updateUserIcon()
     }
 
 

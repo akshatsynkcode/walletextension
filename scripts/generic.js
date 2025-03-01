@@ -186,3 +186,41 @@ export function handleCopyWalletAddress() {
     }
 }
 
+function fetchStoredIcon() {
+    return new Promise((resolve) => {
+        chrome.runtime.sendMessage({ action: "getStoredIcon" }, (response) => {
+            if (response?.success && response.icon) {
+                resolve(response.icon);
+            } else {
+                resolve(null);
+            }
+        });
+    });
+}
+
+export async function updateUserIcon() {
+    const storedIcon = await fetchStoredIcon(); // Ensure awaiting the promise
+    let userIconElement = document.querySelector(".user-icon");
+
+    if (userIconElement) {
+        if (storedIcon && storedIcon.src) {
+            // Create a new image element
+            let userIconImg = document.createElement("img");
+            userIconImg.src = storedIcon.src;
+            userIconImg.alt = "User Icon";
+            userIconImg.className = "rounded-circle"; // Style similar to the existing icon
+            userIconImg.style.width = "40px";
+            userIconImg.style.height = "40px";
+
+            // Replace the existing icon with the new image
+            userIconElement.replaceWith(userIconImg);
+        } else {
+            // If storedIcon is null or src is empty, replace with default icon
+            let defaultIcon = document.createElement("i");
+            defaultIcon.className = "fa-duotone fa-solid fa-user user-icon";
+
+            userIconElement.replaceWith(defaultIcon);
+        }
+    }
+}
+

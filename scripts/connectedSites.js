@@ -6,6 +6,7 @@ import {
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
+    updateUserIcon,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -57,7 +58,7 @@ async function fetchUpdatedUserProfile() {
             redirectToLogin();  // Hide loader in case of error
         }
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching user profile :', error);
         hideFullScreenLoader();
         redirectToLogin(); // Hide loader on error
     }
@@ -230,7 +231,7 @@ document.addEventListener('DOMContentLoaded', async () => {
             if (emailElement) {
                 emailElement.textContent = updatedProfile.email || 'N/A';
             }
-
+            await updateUserIcon();
         }
 
         // Fetch transaction history

@@ -6,6 +6,7 @@ import {
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
+    updateUserIcon,
 } from './generic.js';
 
 function formatAmount(amount) {
@@ -107,6 +108,9 @@ async function fetchUpdatedUserProfile() {
             if (emailElement) {
                 emailElement.textContent = updatedUserInfo.email || 'N/A';
             }
+
+            await updateUserIcon();
+
             // **Services Section - Dynamically Generate Service Cards**
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 

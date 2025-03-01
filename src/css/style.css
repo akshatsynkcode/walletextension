@@ -114,7 +114,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   color: rgba(255, 255, 255, 0.5) !important;
 }
 .dark-black{
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(223, 27, 27, 0.7) !important;
 }
 .blue-gradient{
   background: linear-gradient(90deg, rgba(67, 106, 173, 1) 35%, rgba(67, 145, 178, 1) 100%);

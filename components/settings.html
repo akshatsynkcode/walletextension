@@ -11,20 +11,6 @@
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
         rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
-    <style>
-        /* Custom styling for the activity loader */
-        #activities-loader {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-            margin-top: 20px;
-        }
-
-        #activities-loader .spinner-border {
-            margin-bottom: 10px;
-        }
-    </style>
 </head>
 
 <body>
@@ -35,131 +21,9 @@
     </div>
     <div class="container-fluid p-0">
         <div class="row g-0">
-            <div class="col-lg-2 col-12">
-                <div class="sidebar sticky-lg-top min-vh-100 custom-border-color">
-                    <div class="row g-0">
-                        <div class="col-lg-12 col-12">
-                            <a class="navbar-brand m-0">
-                                <img src="./icons/logo-dark.svg" class="img-fluid logo img-theme" />
-                            </a>
-                            <hr class="border-0">
-                            <ul class="nav flex-column siderbar-nav">
-                                <li class="nav-item">
-                                    <a class="nav-link" aria-current="page" href="profile.html">
-                                        <div>
-                                            <img src="./icons/dashboard-icon.svg" alt=""
-                                                class="img-fluid me-2 img-theme">
-                                            Dashboard
-                                        </div>
-
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link active" href="transactions.html">
-                                        <div>
-                                            <img src="./icons/transitions-icon.svg" alt=""
-                                                class="img-fluid me-2 img-theme">
-                                            Transactions
-                                        </div>
-                                        <div>
-                                            <img src="./icons/menu-active-arrow.svg" alt="" class="img-fluid">
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="connectedSites.html">
-                                        <div>
-                                            <img src="./icons/connected-sites-icon.svg" alt=""
-                                                class="img-fluid me-2 img-theme">
-                                            Linked Sites
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="settings.html">
-                                        <div>
-                                            <img src="./icons/settings-icon.svg" alt=""
-                                                class="img-fluid me-2 img-theme">
-                                            Settings
-                                        </div>
-                                    </a>
-                                </li>
-                                <li class="nav-item">
-                                    <a class="nav-link" href="help.html">
-                                        <div>
-                                            <img src="./icons/help-icon.svg" alt="" class="img-fluid me-2 img-theme">
-                                            Help
-                                        </div>
-                                    </a>
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-            </div>
+            <div class="col-lg-2 col-12" id="sidebar-container"></div>
             <div class="col-lg-10 col-12">
-                <nav class="navbar navbar-expand-sm header custom-border-color">
-                    <div class="container-fluid z-2">
-                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent"
-                            aria-expanded="false" aria-label="Toggle navigation">
-                            <span class="navbar-toggler-icon"></span>
-                        </button>
-                        <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                            <ul class="navbar-nav me-auto me-auto mb-2 mb-sm-0">
-                                <li class="nav-item">
-
-                                </li>
-                            </ul>
-                            <div>
-                                <div
-                                    class="card border border-dashed rounded me-3 p-0 bg-transparent text-white text-white-light">
-                                    <div class="card-body p-2">
-                                        <div class="d-flex align-items-center">
-                                            <div class="ms-2">
-                                                <storng class="font-16">Wallet ID</storng>
-                                                <span id="wallet-address"
-                                                    class="ms-3 font-14 text-gray-600 text-truncate text-gray-light-600">stru23421fwewri554...</span>
-                                            </div>
-                                            <div class="ms-5">
-                                                <a href="#" id="copy-button">
-                                                    <img src="./icons/copy-icon.svg" alt="" class="img-fluid img-theme">
-                                                </a>
-                                                <span id="copy-message" style="display: none;"
-                                                    class="font-12 text-color-cs">Copied!</span>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                            <div class="d-flex align-items-center right-nav ps-4">
-                                <div class="dropdown">
-                                    <img src="./icons/user-icon.svg" alt="user-icon" class="me-2"></img>
-                                    <button class="btn text-white text-white-light ps-1 border-0" type="button"
-                                        id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        <div class="d-flex">
-                                            <div class="text-start">
-                                                <p id="username" class="f-14 mb-0">Username</p>
-                                                <span class="font-12 text-color-cs"
-                                                    id="email">ahmed.khan@gmail.com</span>
-                                            </div>
-                                            <i class="fas fa-chevron-down ms-2 mt-2" style="font-size: 10px;"></i>
-                                        </div>
-                                    </button>
-                                    <ul class="dropdown-menu ms-4" aria-labelledby="dropdownMenuButton1">
-                                        <li>
-                                            <button class="dropdown-item btn text-white text-white-light font-14"
-                                                data-bs-toggle="modal" data-bs-target="#exampleModal"
-                                                id="lock-wallet-btn">
-                                                <i class="fa-solid fa-lock ms-auto me-2"></i>Logout
-                                            </button>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </nav>
+                <div id="navbar-container"></div>
                 <div class="main-container p-4">
                     <!--begin::Row-->
                     <div class="row g-3">
@@ -228,20 +92,12 @@
                                 <div class="mt-4">
                                     <h1 class="font-16 fw-400 text-start mb-4">Choose your avatar</h1>
                                     <div class="parent d-flex align-items-center justify-content-around">
-                                        <img src="./icons/logo-1.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                        <img src="./icons/logo-2.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                        <img src="./icons/logo-3.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                        <img src="./icons/logo-4.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                        <img src="./icons/logo-5.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                        <img src="./icons/logo-6.svg" alt="emoji" class="img-fluid rounded-circle" />
-                                    </div>
-                                    <div class="font-16 fw-400 mt-5">
-                                        <label for="name" class="text-light text-white-light">Name</label>
-                                        <input type="text" id="name" name="name" placeholder="Enter your name"
-                                            class="bg-color text-light text-white-light custom-border-color px-2">
-                                        <label for="email" class="mt-3 text-light text-white-light">Email</label>
-                                        <input type="email" id="email" name="email" placeholder="Enter your email"
-                                            class="bg-color text-light text-white-light custom-border-color px-2">
+                                        <img src="./icons/logo-1.svg" alt="emoji" class="img-fluid rounded-circle" data-id="1" />
+                                        <img src="./icons/logo-2.svg" alt="emoji" class="img-fluid rounded-circle" data-id="2" />
+                                        <img src="./icons/logo-3.svg" alt="emoji" class="img-fluid rounded-circle" data-id="3" />
+                                        <img src="./icons/logo-4.svg" alt="emoji" class="img-fluid rounded-circle" data-id="4" />
+                                        <img src="./icons/logo-5.svg" alt="emoji" class="img-fluid rounded-circle" data-id="5" />
+                                        <img src="./icons/logo-6.svg" alt="emoji" class="img-fluid rounded-circle" data-id="6" />
                                     </div>
                                 </div>
                             </div>
@@ -270,29 +126,7 @@
             </div>
         </div>
     </div>
-    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-        <div class="modal-dialog modal-dialog-centered">
-            <div class="modal-content popup-modal p-4">
-                <div class="modal-body text-center text-white pb-0">
-                    <div class="font-24">Confirm Logout</div>
-                    <p class="dark-black pt-2 font-16">
-                        Are you sure you want to logout?
-                    </p>
-                </div>
-                <div class="modal-footer justify-content-between border-0">
-                    <div class="d-flex w-100">
-                        <button type="button" class="btn btn-dark no-btn w-50 f-14 border-color text-white"
-                            data-bs-dismiss="modal">
-                            No
-                        </button>
-                        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14">
-                            Yes
-                        </button>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </div>
+    <div id="logout-modal-container"></div>
     <script src="./js/bootstrap.bundle.min.js"></script>
     <script src="./js/theme-switcher.js"></script>
 </body>
