@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Settings</title>
+    <link href="./css/bootstrap.min.css" rel="stylesheet" />
+    <link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
+    <link
+        href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
+        rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
+</head>
+
+<body>
+    <div id="full-screen-loader" style="display: none;">
+        <div class="spinner-border text-light" role="status">
+            <span class="visually-hidden">Loading...</span>
+        </div>
+    </div>
+    <div class="container-fluid p-0">
+        <div class="row g-0">
+            <div class="col-lg-2 col-12" id="sidebar-container"></div>
+            <div class="col-lg-10 col-12">
+                <div id="navbar-container"></div>
+                <div class="main-container p-4">
+                    <!--begin::Row-->
+                    <div class="row g-3">
+                        <div class="col-12">
+                            <!-- Heading -->
+                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Settings</h1>
+                            <!-- Theme-container-start -->
+                            <div class="p-3 custom-border-color bg-dark-custom rounded-3">
+                                <h1 class="text-white text-white-light text-start font-20 font-regular">Theme</h1>
+                                <div class="mt-3">
+                                    <p class="font-16 fw-400">Switch between Light and Dark themes for a personalized
+                                        experience. The Light
+                                        theme keeps the interface bright and clear, while the Dark theme reduces eye
+                                        strain in low-light conditions.</p>
+                                </div>
+                                <div class="row d-flex mt-2">
+                                    <div class="card col-3 p-0 bg-color m-2 rounded-3">
+                                        <div class="bg-color text-center p-4 rounded-top-3">
+                                            <img class="card-img-top" src="./icons/Light-theme.svg">
+                                        </div>
+                                        <div class="radio-background p-2 card-body rounded-bottom-3 d-flex">
+                                            <input type="radio" name="theme" id="light-theme" value="light">
+                                            <label for="light-theme" class="text-light ms-3 font-16">Light Theme</label>
+                                        </div>
+                                    </div>
+                                    <div class="card col-3 p-0 bg-color m-2 rounded-3">
+                                        <div class="bg-color text-center p-4 rounded-top-3">
+                                            <img class="card-img-top" src="./icons/Dark-theme.svg">
+                                        </div>
+                                        <div class="radio-background card-body p-2 rounded-bottom-3 d-flex">
+                                            <input type="radio" name="theme" id="dark-theme" value="dark">
+                                            <label for="dark-theme" class="text-light font-16 ms-3">Dark Theme</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Theme-container-end -->
+                            <!-- Notification-Start -->
+                            <div class="p-3 custom-border-color bg-dark-custom rounded-3 mt-4">
+                                <h1 class="text-white text-white-light text-start font-20 font-regular">Notification
+                                </h1>
+                                <div class="mt-3">
+                                    <p class="font-16 fw-400">Stay in the loop on what’s happening in your wallet with
+                                        notifications. To use notifications, we use a profile to sync some settings
+                                        across your devices. Learn how we protect your privacy while using this feature.
+                                    </p>
+                                </div>
+                                <div class="mt-4 d-flex justify-content-between">
+                                    <h1 class="text-white text-white-light font-16 fw-400">Allow Notification</h1>
+                                    <div class="form-check form-switch font-20">
+                                        <input class="form-check-input" type="checkbox" id="toggleSwitch">
+                                        <label class="form-check-label" for="toggleSwitch" id="switchLabel"></label>
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Notification-Ends -->
+                            <!-- Profile-Starts -->
+                            <div class="p-3 custom-border-color bg-dark-custom rounded-3 mt-4">
+                                <h1 class="text-white text-white-light text-start font-20 font-regular">Profile</h1>
+                                <div class="mt-3">
+                                    <p class="font-16 fw-400">Manage profile settings to keep information up to date.
+                                        Update personal details, change the profile picture, and adjust preferences for
+                                        a more customized experience.
+                                    </p>
+                                </div>
+                                <div class="mt-4">
+                                    <h1 class="font-16 fw-400 text-start mb-4">Choose your avatar</h1>
+                                    <div class="parent d-flex align-items-center justify-content-around">
+                                        <img src="./icons/logo-1.svg" alt="emoji" class="img-fluid rounded-circle" data-id="1" />
+                                        <img src="./icons/logo-2.svg" alt="emoji" class="img-fluid rounded-circle" data-id="2" />
+                                        <img src="./icons/logo-3.svg" alt="emoji" class="img-fluid rounded-circle" data-id="3" />
+                                        <img src="./icons/logo-4.svg" alt="emoji" class="img-fluid rounded-circle" data-id="4" />
+                                        <img src="./icons/logo-5.svg" alt="emoji" class="img-fluid rounded-circle" data-id="5" />
+                                        <img src="./icons/logo-6.svg" alt="emoji" class="img-fluid rounded-circle" data-id="6" />
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Profile-Ends -->
+                            <!-- About-Starts -->
+                            <div class="p-3 custom-border-color bg-dark-custom rounded-3 mt-4">
+                                <h1 class="text-white text-white-light text-start font-20 font-regular">About</h1>
+                                <div class="mt-3">
+                                    <p class="font-16 fw-400">Dubai Customs Wallet Version<br>12.11.0</p>
+                                    <br>
+                                    <p class="font-16 fw-400">Dubai Customs Wallet is designed and built around the world.</p>
+                                    <br>
+                                    <ul class="list-unstyled d-flex flex-column align-items-start font-16 font-regular">
+                                        <li class="font-16 fw-400">Links</li>
+                                        <li><a href="https://privacy.dubaicustoms.network" target="_blank" class="btn text-color-link p-0">Privacy Policy</a></li>
+                                        <li><a href="#" class="btn text-color-link p-0">Terms of Use</a></li>
+                                        <li><a href="https://dubaicustoms.network" target="_blank" class="btn text-color-link p-0">Visit Our Website</a></li>
+                                        <li><a href="#" class="btn text-color-link p-0">Contact Us</a></li>
+                                    </ul>
+                                </div>
+                            </div>
+                            <!-- About-Ends -->
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="logout-modal-container"></div>
+    <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/theme-switcher.js"></script>
+</body>
+
+</html>

@@ -6,6 +6,8 @@ import {
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
+    updateUserIcon,
+    attachSidebarClickPrevention,
 } from './generic.js';
 
 function formatAmount(amount) {
@@ -48,6 +50,7 @@ async function fetchUpdatedUserProfile() {
             const data = await response.json();
             hideFullScreenLoader();
             console.log(data);
+            pageLoaded = true;
             return data;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -69,6 +72,7 @@ async function fetchUpdatedUserProfile() {
   document.addEventListener('DOMContentLoaded', async () => {
     showFullScreenLoader();
     await loadLayoutComponents();
+    attachSidebarClickPrevention();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
@@ -107,6 +111,9 @@ async function fetchUpdatedUserProfile() {
             if (emailElement) {
                 emailElement.textContent = updatedUserInfo.email || 'N/A';
             }
+
+            await updateUserIcon();
+
             // **Services Section - Dynamically Generate Service Cards**
             const servicesContainer = document.getElementById('services-container'); // Ensure you have a div with this ID
 
@@ -166,7 +173,7 @@ async function fetchUpdatedUserProfile() {
         // Fetch transaction history
         const pageSize = 5;
         await fetchAndUpdateTransactionHistory(pageSize);
-  
+        pageLoaded = true;
         // Periodic balance update
     }
     handleLogout();
@@ -223,10 +230,10 @@ document.addEventListener('DOMContentLoaded', async () => {
 
 async function fetchAndUpdateTransactionHistory(pageSize) {
     const { authToken } = await chrome.storage.sync.get('authToken');
-if (!authToken) {
-    console.error('No authToken found. Cannot log out.');
-    return;
-}
+    if (!authToken) {
+        console.error('No authToken found. Cannot log out.');
+        return;
+    }
     try {
         const response = await fetch(`https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}`, {
             method: 'GET',
@@ -243,6 +250,7 @@ if (!authToken) {
         const data = await response.json();
         console.log("this is data.data", data);
         updateTransactionTable(data.data);
+        pageLoaded = true;
     } catch (error) {
         console.error('Error fetching transaction data:', error);
     }
@@ -273,7 +281,7 @@ function updateTransactionTable(transactions) {
                                     : truncateWalletAddress(
                                         transaction.from_wallet_address
                                       )}</p>
-                                    <span class="text-gray-600 font-12">From: ${new Date(
+                                    <span class="text-gray-600 font-12 text-gray-light-600">From: ${new Date(
                                         transaction.created_at
                                       ).toLocaleString()}</span>
                                 </div>
@@ -294,7 +302,7 @@ function updateTransactionTable(transactions) {
                             : "Wallet Transfer"
                         }</p>
                         <span
-                            class="text-truncate text-gray-600 font-12">${
+                            class="text-truncate text-gray-600 font-12 text-gray-light-600">${
                                 truncateWalletAddress(transaction.extrinsic_hash) ||
                                 "N/A"
                               }</span>
