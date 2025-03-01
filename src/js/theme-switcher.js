@@ -40,20 +40,29 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (response?.success) {
                     console.log(`Icon ${iconId} stored successfully.`);
 
-                    // **Update the profile picture immediately**
                     let userIconElement = document.querySelector(".user-icon");
 
                     if (userIconElement) {
-                        let userIconImg = document.createElement("img");
-                        userIconImg.src = iconSrc;
-                        userIconImg.alt = "User Icon";
-                        userIconImg.className = "rounded-circle";
-                        userIconImg.style.width = "40px";
-                        userIconImg.style.height = "40px";
+                        if (userIconElement.tagName === "IMG") {
+                            userIconElement.src = iconSrc;
+                        } else {
+                            let userIconImg = document.createElement("img");
+                            userIconImg.src = iconSrc;
+                            userIconImg.alt = "User Icon";
+                            userIconImg.className = "user-icon rounded-circle";
+                            userIconImg.style.width = "40px";
+                            userIconImg.style.height = "40px";
 
-                        // Replace the existing icon with the new image
-                        userIconElement.replaceWith(userIconImg);
+                            userIconElement.replaceWith(userIconImg);
+                        }
+                    } else {
+                        console.error("User icon element not found!");
                     }
+
+                    // **Reload the page after a short delay**
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500); // Adjust delay if needed
                 }
             });
         });
