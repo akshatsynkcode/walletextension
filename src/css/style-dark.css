@@ -530,7 +530,8 @@ h1, h4 {
   border: none;
 }
 .dropdown-item:hover, .dropdown-item:active{
-  background-color: black;
+  background-color: #236993;
+  color: white !important;
 }
 .navbar-toggler{
   background-color: white;
@@ -893,7 +894,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .text-color-cs{
-  color: #828F98 !important;
+  color: #828F98;
 }
 
 .radio-background{
