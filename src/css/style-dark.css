@@ -1024,3 +1024,7 @@ h1, h2, h3, h4, h5, h6, p{
 .accordion-button::after {
   filter: brightness(0) invert(1);
 }
+
+.dropdown-toggle i {
+  color: #828F98 !important;
+}
