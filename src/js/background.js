@@ -184,6 +184,45 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Keep the response asynchronous
         return true;
+    } else if (message.action === "storeClickedIcon") {
+        const { icon } = message;
+
+        // Retrieve userEmail (instead of authToken)
+        chrome.storage.sync.get("email", function (data) {
+            if (data.email) {
+                const userEmail = data.email;
+
+                // Store icon using userEmail as key (more persistent)
+                chrome.storage.sync.set({
+                    [userEmail]: { clickedIcon: icon }
+                }, () => {
+                    console.log(`Stored ${icon.id} for user: ${userEmail}`);
+                    sendResponse({ success: true });
+                });
+            } else {
+                console.log("No userEmail found.");
+                sendResponse({ success: false, error: "No authenticated user." });
+            }
+        });
+
+        return true;
+    } else if (message.action === "getStoredIcon") {
+        chrome.storage.sync.get("email", function (data) {
+            const userEmail = data.email;
+            if (!userEmail) {
+                sendResponse({ success: false, error: "No authenticated user." });
+                return; // Exit early
+            }
+
+            // Fetch the stored icon for this user
+            chrome.storage.sync.get(userEmail, function (result) {
+                const clickedIcon = result[userEmail]?.clickedIcon || null;
+
+                sendResponse({ success: true, icon: clickedIcon });
+            });
+        });
+
+        return true; // Keep response async
     }
     else {
         switch (message.action) {
