@@ -27,6 +27,7 @@ module.exports = (env, argv) => {
       connectedSites: './scripts/connectedSites.js',
       transactions: './scripts/transactions.js',
       generic: './scripts/generic.js',
+      settings: './scripts/settings.js',
     },
     output: {
       path: path.resolve(__dirname, 'dist'),
@@ -164,12 +165,12 @@ module.exports = (env, argv) => {
       new HtmlWebpackPlugin({
         template: './components/settings.html',
         filename: 'settings.html',
-        chunks: ['settings', 'vendors'] // Include vendor chunk
+        chunks: ['settings', 'generic', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
         template: './components/help.html',
         filename: 'help.html',
-        chunks: ['help', 'vendors'] // Include vendor chunk
+        chunks: ['settings', 'generic', 'vendors'] // Include vendor chunk
       }),
       new CopyWebpackPlugin({
         patterns: [

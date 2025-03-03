@@ -48,9 +48,6 @@ async function fetchUpdatedUserProfile() {
 
         if (response.ok) {
             const data = await response.json();
-            hideFullScreenLoader();
-            console.log(data);
-            pageLoaded = true;
             return data;
         } else if (response.status === 401) {
             console.error('Token expired or invalid, redirecting to login.');
@@ -73,6 +70,8 @@ async function fetchUpdatedUserProfile() {
     showFullScreenLoader();
     await loadLayoutComponents();
     attachSidebarClickPrevention();
+    const pageSize = 5;
+    await fetchAndUpdateTransactionHistory(pageSize);
     const { authToken } = await chrome.storage.sync.get(['authToken']);
     console.log(authToken, "authToken");
     if (!authToken) {
@@ -85,7 +84,7 @@ async function fetchUpdatedUserProfile() {
     const balanceElement = document.getElementById('balance');
     const emailElement = document.getElementById('email');
 
-    handleCopyWalletAddress()
+    handleCopyWalletAddress();
   
     if (usernameElement && walletAddressElement) {
         // Fetch updated profile
@@ -119,61 +118,60 @@ async function fetchUpdatedUserProfile() {
 
             // Clear previous content
             if (servicesContainer) {
-            servicesContainer.innerHTML = '';
+                servicesContainer.innerHTML = '';
 
-            let row = null; // Declare row outside loop
+                let row = null; // Declare row outside loop
 
-            //Ensure only the first 9 services are displayed
-            const limitedServices = updatedUserInfo.services.slice(0, 9);
-            limitedServices.forEach((service, index) => {
-                if (index % 3 === 0) {
-                    // Create a new row after every 3 items
-                    row = document.createElement('div');
-                    row.className = 'row g-3 mt-1';
-                    servicesContainer.appendChild(row); // Append row to container
-                }
+                //Ensure only the first 9 services are displayed
+                const limitedServices = updatedUserInfo.services.slice(0, 9);
+                limitedServices.forEach((service, index) => {
+                    if (index % 3 === 0) {
+                        // Create a new row after every 3 items
+                        row = document.createElement('div');
+                        row.className = 'row g-3 mt-1';
+                        servicesContainer.appendChild(row); // Append row to container
+                    }
 
-                if (row) { // Ensure row exists before appending
-                    // Create service column
-                    const col = document.createElement('div');
-                    col.className = 'col-md-4 col-4';
+                    if (row) { // Ensure row exists before appending
+                        // Create service column
+                        const col = document.createElement('div');
+                        col.className = 'col-md-4 col-4';
 
-                    // Create anchor element (clickable link)
-                    const link = document.createElement('a');
-                    link.href = service.url;
-                    link.target = '_blank'; // Open in a new tab
-                    link.className = 'text-decoration-none text-white quicklink_button';
+                        // Create anchor element (clickable link)
+                        const link = document.createElement('a');
+                        link.href = service.url;
+                        link.target = '_blank'; // Open in a new tab
+                        link.className = 'text-decoration-none text-white quicklink_button';
 
-                    // Create image element
-                    const img = document.createElement('img');
-                    img.src = service.image;
-                    img.alt = service.name;
-                    img.className = 'img-fluid mx-auto d-block project-icons';
+                        // Create image element
+                        const img = document.createElement('img');
+                        img.src = service.image;
+                        img.alt = service.name;
+                        img.className = 'img-fluid mx-auto d-block project-icons';
 
-                    // Create text description
-                    const p = document.createElement('p');
-                    p.className = 'text-center font-12 mt-2';
-                    p.innerHTML = `${service.name} <br> Management`;
+                        // Create text description
+                        const p = document.createElement('p');
+                        p.className = 'text-center font-12 mt-2';
+                        p.innerHTML = `${service.name} <br> Management`;
 
-                    // Append image and text inside anchor
-                    link.appendChild(img);
-                    link.appendChild(p);
+                        // Append image and text inside anchor
+                        link.appendChild(img);
+                        link.appendChild(p);
 
-                    // Append anchor inside column
-                    col.appendChild(link);
+                        // Append anchor inside column
+                        col.appendChild(link);
 
-                    // Append column to the row
-                    row.appendChild(col);
-                }
-            });
+                        // Append column to the row
+                        row.appendChild(col);
+                    }
+                });
+            }
         }
-    }
         fetchQuickLinks();
         fetchRecentServices();
         // Fetch transaction history
-        const pageSize = 5;
-        await fetchAndUpdateTransactionHistory(pageSize);
         pageLoaded = true;
+        hideFullScreenLoader();
         // Periodic balance update
     }
     handleLogout();
@@ -250,7 +248,7 @@ async function fetchAndUpdateTransactionHistory(pageSize) {
         const data = await response.json();
         console.log("this is data.data", data);
         updateTransactionTable(data.data);
-        pageLoaded = true;
+        // pageLoaded = true;
     } catch (error) {
         console.error('Error fetching transaction data:', error);
     }

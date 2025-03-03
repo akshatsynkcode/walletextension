@@ -203,7 +203,7 @@ function fetchStoredIcon() {
 
 export async function updateUserIcon() {
     const storedIcon = await fetchStoredIcon(); // Ensure awaiting the promise
-    let userIconElement = document.querySelector(".user-icon");
+    let userIconElement = document.querySelector(".user-icon-img");
 
     if (userIconElement) {
         if (storedIcon && storedIcon.src) {
@@ -222,7 +222,7 @@ export async function updateUserIcon() {
             let defaultIcon = document.createElement("img");
             defaultIcon.src = "./icons/logo-6.svg";
             defaultIcon.alt = "User Icon";
-            defaultIcon.className = "rounded-circle"; // Style similar to the existing icon
+            defaultIcon.className = "user-icon-img rounded-circle"; // Style similar to the existing icon
             defaultIcon.style.width = "40px";
             defaultIcon.style.height = "40px";
             userIconElement.replaceWith(defaultIcon);
