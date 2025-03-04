@@ -537,8 +537,10 @@ h1, h4 {
     color: #fff;
 }
 .popup-modal{
-  background-color: rgba(20, 20, 20, 1);
+  background-color: #FFFFFF;
   border-radius: 20px;
+  box-shadow: 0px 0px 8px 0px #C0C0C0;
+  border: 1px solid #23699326;
 }
 
 .btn-check:checked+.btn, .btn.active, .btn.show, .btn:first-child:active, :not(.btn-check)+.btn:active{
@@ -1099,7 +1101,31 @@ h1, h2, h3, h4, h5, h6, p{
   color: #828F98 !important;
 }
 
+.no-yes{
+  background-color: #236993;
+  color: white;
+}
 
+.no-yes:hover{
+  border: 1px solid #236993;
+  background-color: #FFFFFF;
+  color:#333333;
+}
+
+.close{
+  background-color: #236993;
+  color: white;
+}
+
+.close:hover{
+  border: 1px solid #236993;
+  background-color: #FFFFFF;
+  color:#333333;
+}
+
+.text-color-modal{
+  color: #113449;
+}
 
 
 

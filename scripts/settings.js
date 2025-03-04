@@ -92,15 +92,3 @@ async function fetchUpdatedUserProfile() {
         hideFullScreenLoader();
     }
 }
-
-document.addEventListener("DOMContentLoaded", function () {
-    let button = document.getElementById("submitBtn");
-
-    if (!button) {
-        return;
-    }
-
-    button.addEventListener("click", function () {
-        alert("Your query has been submitted successfully.");
-    });
-});
