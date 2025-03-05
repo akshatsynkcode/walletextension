@@ -34,7 +34,6 @@ const servicePopups = {};
 // });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("abcd");
     console.log('External message received:', message); // Log the received message
     if (message.action === 'request_connection') {
         console.log('Handling request connection...');
@@ -47,7 +46,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Extract transaction details
         const { toAddress, amount, fromAddress, transaction_id, username, url } = message;
         // Optionally, you could validate the data here
-        console.log("url is this", url);
         if (!toAddress || !amount || !fromAddress || !transaction_id || !username || !url) {
             sendResponse({ success: false, message: 'Invalid transaction data' });
             return;
@@ -383,7 +381,6 @@ function handleRequestConnection(sender, sendResponse) {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${result.authToken}` }
                 });
-                console.log(response);
                 if (!response.ok) {
                     return false; // Return false if request fails
                 }
@@ -572,7 +569,6 @@ function handleRejectConnection(message, sendResponse) {
 // Listener for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed:', details);
-    console.log('Reason:');
     if (details.reason === 'install') {
         chrome.tabs.create({
             url: chrome.runtime.getURL('welcome.html'),

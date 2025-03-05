@@ -20,8 +20,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     );
     const authToken = data.authToken;
 
-    console.log(authToken, "authToken");
-
     if (!authToken) {
         redirectToLogin();
         return;
@@ -78,7 +76,6 @@ async function fetchUpdatedUserProfile() {
         if (response.ok) {
             const data = await response.json();
             hideFullScreenLoader();
-            console.log(data);
             return data;
         } else if (response.status === 401) {
             console.error("Token expired or invalid, redirecting to login.");

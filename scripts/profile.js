@@ -246,7 +246,6 @@ async function fetchAndUpdateTransactionHistory(pageSize) {
         }
         
         const data = await response.json();
-        console.log("this is data.data", data);
         updateTransactionTable(data.data);
     } catch (error) {
         console.error('Error fetching transaction data:', error);
