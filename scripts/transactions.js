@@ -42,6 +42,7 @@ async function fetchUpdatedUserProfile() {
 }
 
 async function fetchAndUpdateTransactionHistory(selectedText = "All Time", selectedFilter="", page=1) {
+  showFullScreenLoader();
   const pageSize = 7
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
@@ -110,6 +111,8 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", selec
 
   } catch (error) {
       console.error("Error fetching transaction history:", error);
+  } finally {
+    hideFullScreenLoader();
   }
 }
 
