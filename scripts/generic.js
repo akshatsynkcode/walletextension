@@ -244,3 +244,8 @@ export function attachSidebarClickPrevention() {
     });
 }
 
+document.addEventListener("hidden.bs.modal", function () {
+    document.body.classList.remove("modal-open");
+    document.querySelectorAll(".modal-backdrop").forEach(backdrop => backdrop.remove());
+});
+
