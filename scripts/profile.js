@@ -141,7 +141,7 @@ async function fetchUpdatedUserProfile() {
                         const link = document.createElement('a');
                         link.href = service.url;
                         link.target = '_blank'; // Open in a new tab
-                        link.className = 'text-decoration-none text-white quicklink_button';
+                        link.className = 'text-decoration-none text-white text-white-light quicklink_button';
 
                         // Create image element
                         const img = document.createElement('img');
@@ -353,7 +353,7 @@ async function fetchRecentServices() {
                             const link = document.createElement('a');
                             link.href = service.url;
                             link.target = '_blank';
-                            link.className = 'text-decoration-none text-white quicklink_button';
+                            link.className = 'text-decoration-none text-white text-white-light quicklink_button';
 
                             const img = document.createElement('img');
                             img.src = service.imgSrc;
