@@ -11,6 +11,20 @@ document.addEventListener('DOMContentLoaded', function() {
     });
 })
 
+const copyButton = document.getElementById('copy-button');
+    if (copyButton) {
+        copyButton.addEventListener('click', () => {
+            const walletAddressElement = document.getElementById('address');
+            const copyMessageElement = document.getElementById('copy-message');
+  
+            if (walletAddressElement && walletAddressElement.textContent !== 'N/A') {
+                navigator.clipboard.writeText(walletAddressElement.textContent).then(() => {
+                    copyMessageElement.style.display = 'inline';
+                    setTimeout(() => (copyMessageElement.style.display = 'none'), 1000);
+                });
+            }
+        });
+    }
 document.getElementById('approve-btn').addEventListener('click', function() {
     if (tabId) {
         chrome.runtime.sendMessage({ 
