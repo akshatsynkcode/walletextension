@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Transactions</title>
     <link href="./css/bootstrap.min.css" rel="stylesheet" />
-    <link href="./css/style.css" rel="stylesheet" />
+    <link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
     <link
         href="https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900&display=swap"
         rel="stylesheet" />
@@ -30,7 +30,8 @@
                     <div class="row g-3">
                         <div class="col-12">
                             <!-- Heading -->
-                            <h1 class="text-white mb-3 text-start font-24 font-regular">Transactions</h1>
+                            <h1 class="text-white text-white-light mb-3 text-start font-24 font-regular">Transactions
+                            </h1>
                             <div class="d-flex justify-content-start align-items-center mb-3">
                                 <div class="input-group">
                                     <div class="dropdown">
@@ -39,11 +40,15 @@
                                             aria-expanded="false">
                                             All Time
                                         </button>
-                                        <ul class="dropdown-menu" id="dateRangeMenu">
-                                            <li><a class="dropdown-item text-white" href="#" data-value="All Time">All Time</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 7 Days">Last 7 Days</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 15 Days">Last 15 Days</a></li>
-                                            <li><a class="dropdown-item text-white" href="#" data-value="Last 30 Days">Last 30 Days</a></li>
+                                        <ul class="dropdown-menu custom-btn" id="dateRangeMenu">
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="All Time">All Time</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 7 Days">Last 7 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 15 Days">Last 15 Days</a></li>
+                                            <li><a class="dropdown-item text-color-cs" href="#"
+                                                    data-value="Last 30 Days">Last 30 Days</a></li>
                                         </ul>
                                     </div>
                                     <div class="d-flex align-items-center ms-4">
@@ -64,18 +69,28 @@
                                 <div class="dropdown">
                                     <a href="#"
                                         class="btn btn-dark ms-auto d-flex align-items-center bg-transparent font-14 custom-btn dropdown-toggle"
-                                        data-bs-toggle="dropdown" aria-expanded="false">
-                                        <img src="./icons/download.png" alt="" class="img-fluid me-1"> Export Statements
+                                        data-bs-toggle="modal" data-bs-target="#exampleModal1" aria-expanded="false">
+                                        <img src="./icons/download.png" alt="" class="img-fluid me-1 img-theme"> Export
+                                        Statements
                                         <i class="fas fa-chevron-down ms-2 me-3 text-color-cs"></i>
                                     </a>
                                     <ul class="dropdown-menu font-14 custom-btn">
-                                        <li><a id="dropdown-export-current-month" class="dropdown-item text-color-cs my-2" data-range="current-month" href="#">Current Month</a></li>
-                                        <li><a id="dropdown-export-last-3-months" class="dropdown-item text-color-cs my-2" data-range="last-3-months" href="#">Last 3 Months</a></li>
-                                        <li><a id="dropdown-export-last-6-months" class="dropdown-item text-color-cs my-2" data-range="last-6-months" href="#">Last 6 Months</a></li>
-                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2" data-range="this-year" href="#">Current Year</a></li>
-                                        <li><a id="dropdown-export-previous-year" class="dropdown-item text-color-cs my-2" data-range="previous-year" href="#">Previous Year</a></li>
-                                    </ul>                                    
-                                                              
+                                        <li><a id="dropdown-export-current-month"
+                                                class="dropdown-item text-color-cs my-2" data-range="current-month"
+                                                href="#">Current Month</a></li>
+                                        <li><a id="dropdown-export-last-3-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-3-months"
+                                                href="#">Last 3 Months</a></li>
+                                        <li><a id="dropdown-export-last-6-months"
+                                                class="dropdown-item text-color-cs my-2" data-range="last-6-months"
+                                                href="#">Last 6 Months</a></li>
+                                        <li><a id="dropdown-export-this-year" class="dropdown-item text-color-cs my-2"
+                                                data-range="this-year" href="#">Current Year</a></li>
+                                        <li><a id="dropdown-export-previous-year"
+                                                class="dropdown-item text-color-cs my-2" data-range="previous-year"
+                                                href="#">Previous Year</a></li>
+                                    </ul>
+
                                 </div>
                             </div>
                             <div class="table-responsive">
@@ -85,7 +100,7 @@
                                         <tr>
                                             <th class="px-3 font-14 text-white">TYPE</th>
                                             <th class="px-3 font-14 text-white">AMOUNT</th>
-                                            
+
                                             <th class="px-3 font-14 text-white">STATUS</th>
                                             <th class="px-3 font-14 text-white">METHOD</th>
                                             <th class="px-3 font-14 text-white">DEPARTMENT</th>
@@ -93,14 +108,14 @@
                                         </tr>
                                     </thead>
                                     <tbody>
-                                    
+
                                     </tbody>
                                 </table>
                             </div>
                             <!--begin::Pagination-->
                             <nav class="d-flex justify-content-end">
                                 <ul class="pagination d-inline-flex custom-border-color rounded p-2">
-                                    
+
                                 </ul>
                             </nav>
                             <!--end:: Pagination-->
@@ -115,8 +130,43 @@
         <div class="container-fluid p-0">
         </div>
         <div id="logout-modal-container"></div>
+
+        <!-- Export-modal-starts -->
+        <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content popup-modal p-1">
+                    <div class="modal-body pb-0">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <img src="./icons/dubai-logo-small.svg" class="text-start img-theme" />
+                            <button type="button" class="btn p-0" data-bs-dismiss="modal" aria-label="Close" >
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" class="img-theme"
+                                    xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M18 6L6 18M6 6l12 12" stroke="#FFFFFF" stroke-width="2"
+                                        stroke-linecap="round" stroke-linejoin="round" />
+                                </svg>
+                            </button>
+                        </div>
+                        <div class="text-center" style="margin-top: -15px">
+                            <img src="./icons/export-and-query.svg" alt="logo">
+                            <p class="text-color-modal pt-2 font-14 my-2">
+                                The PDF has been successfully delivered to your email address.
+                            </p>
+                        </div>
+                    </div>
+                    <div class="modal-footer border-0 my-2">
+                        <div class="d-flex justify-content-center w-100">
+                            <button type="button" class="btn close w-50 f-14" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Export-modal-ends -->
         <!-- <script src="profile.bundle.js"></script> -->
         <script src="./js/bootstrap.bundle.min.js"></script>
+        <script src="./js/theme-switcher.js"></script>
 </body>
 
 </html>

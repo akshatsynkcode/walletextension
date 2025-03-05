@@ -6,6 +6,8 @@ import {
   truncateWalletAddress,
   handleLogout,
   handleCopyWalletAddress,
+  updateUserIcon,
+  attachSidebarClickPrevention,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -170,7 +172,7 @@ function updateTransactionTable(result, updateCounts = false) {
                                 ? truncateWalletAddress(transaction.to_wallet_address)
                                 : truncateWalletAddress(transaction.from_wallet_address)
                             }</p>
-                            <span class="text-gray-600 font-12">From: ${new Date(
+                            <span class="text-gray-600 font-12 text-gray-light-600">From: ${new Date(
                               transaction.created_at
                             ).toLocaleString()}</span>
                         </div>
@@ -190,7 +192,7 @@ function updateTransactionTable(result, updateCounts = false) {
                     <p class="mb-2">${
                       transaction.module_id === "Top up wallet" ? "Bank Transfer" : "Wallet Transfer"
                     }</p>
-                    <span class="text-truncate text-gray-600 font-12">${
+                    <span class="text-truncate text-gray-600 font-12 text-gray-light-600">${
                       truncateWalletAddress(transaction.extrinsic_hash) || "N/A"
                     }</span>
                 </td>
@@ -232,6 +234,7 @@ function updateTransactionTable(result, updateCounts = false) {
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
   await loadLayoutComponents();
+  attachSidebarClickPrevention();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
   let selectedFilter = '';
   const buttons = document.querySelectorAll('.transaction-btn');
@@ -272,9 +275,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         truncateWalletAddress(updatedUserInfo.walletAddress) || "Guest";
       usernameElement.textContent = updatedUserInfo.fullName || "N/A";
       emailElement.textContent = updatedUserInfo.email || 'N/A';
+
+      await updateUserIcon()
     }
 
-
+    pageLoaded = true;
     hideFullScreenLoader();
     // Periodic balance update
   }
