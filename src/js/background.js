@@ -34,7 +34,6 @@ const servicePopups = {};
 // });
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("abcd");
     console.log('External message received:', message); // Log the received message
     if (message.action === 'request_connection') {
         console.log('Handling request connection...');
@@ -47,7 +46,6 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Extract transaction details
         const { toAddress, amount, fromAddress, transaction_id, username, url } = message;
         // Optionally, you could validate the data here
-        console.log("url is this", url);
         if (!toAddress || !amount || !fromAddress || !transaction_id || !username || !url) {
             sendResponse({ success: false, message: 'Invalid transaction data' });
             return;
@@ -184,6 +182,45 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
         // Keep the response asynchronous
         return true;
+    } else if (message.action === "storeClickedIcon") {
+        const { icon } = message;
+
+        // Retrieve userEmail (instead of authToken)
+        chrome.storage.sync.get("email", function (data) {
+            if (data.email) {
+                const userEmail = data.email;
+
+                // Store icon using userEmail as key (more persistent)
+                chrome.storage.sync.set({
+                    [userEmail]: { clickedIcon: icon }
+                }, () => {
+                    console.log(`Stored ${icon.id} for user: ${userEmail}`);
+                    sendResponse({ success: true });
+                });
+            } else {
+                console.log("No userEmail found.");
+                sendResponse({ success: false, error: "No authenticated user." });
+            }
+        });
+
+        return true;
+    } else if (message.action === "getStoredIcon") {
+        chrome.storage.sync.get("email", function (data) {
+            const userEmail = data.email;
+            if (!userEmail) {
+                sendResponse({ success: false, error: "No authenticated user." });
+                return; // Exit early
+            }
+
+            // Fetch the stored icon for this user
+            chrome.storage.sync.get(userEmail, function (result) {
+                const clickedIcon = result[userEmail]?.clickedIcon || null;
+
+                sendResponse({ success: true, icon: clickedIcon });
+            });
+        });
+
+        return true; // Keep response async
     }
     else {
         switch (message.action) {
@@ -344,7 +381,6 @@ function handleRequestConnection(sender, sendResponse) {
                     method: 'GET',
                     headers: { 'Authorization': `Bearer ${result.authToken}` }
                 });
-                console.log(response);
                 if (!response.ok) {
                     return false; // Return false if request fails
                 }
@@ -533,7 +569,6 @@ function handleRejectConnection(message, sendResponse) {
 // Listener for extension installation
 chrome.runtime.onInstalled.addListener((details) => {
     console.log('Extension installed:', details);
-    console.log('Reason:');
     if (details.reason === 'install') {
         chrome.tabs.create({
             url: chrome.runtime.getURL('welcome.html'),

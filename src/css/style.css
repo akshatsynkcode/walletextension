@@ -114,7 +114,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   color: rgba(255, 255, 255, 0.5) !important;
 }
 .dark-black{
-  color: rgba(255, 255, 255, 0.7) !important;
+  color: rgba(223, 27, 27, 0.7) !important;
 }
 .blue-gradient{
   background: linear-gradient(90deg, rgba(67, 106, 173, 1) 35%, rgba(67, 145, 178, 1) 100%);
@@ -547,7 +547,8 @@ h1, h4 {
   border: none;
 }
 .dropdown-item:hover, .dropdown-item:active{
-  background-color: black;
+  background-color: #236993;
+  color: white;
 }
 .navbar-toggler{
   background-color: white;
@@ -927,7 +928,7 @@ h1, h2, h3, h4, h5, h6, p{
   box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
 }
 .text-color-cs{
-  color: #828F98 !important;
+  color: #828F98;
 }
 
 .text-color-ls{
@@ -1092,7 +1093,12 @@ h1, h2, h3, h4, h5, h6, p{
 
 #lock-wallet-btn:hover {
   box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
-  background-color: transparent;
+  background-color: #236993;
+  color: white !important;
+}
+
+.dropdown-toggle i {
+  color: #828F98 !important;
 }
 
 .no-yes{

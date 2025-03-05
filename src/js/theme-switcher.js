@@ -24,4 +24,38 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     setTheme(savedTheme);
+
+    const icons = document.querySelectorAll(".parent img");
+    
+    icons.forEach(icon => {
+        icon.addEventListener("click", function () {
+            const iconId = this.getAttribute("data-id"); // Get clicked icon ID
+            const iconSrc = this.getAttribute("src"); // Get icon src
+
+            // Send message to background.js to store clicked icon
+            chrome.runtime.sendMessage({
+                action: "storeClickedIcon",
+                icon: { id: iconId, src: iconSrc }
+            }, (response) => {
+                if (response?.success) {
+                    console.log(`Icon ${iconId} stored successfully.`);
+
+                    // Select the user icon <img>
+                    let userIconImg = document.querySelector(".user-icon-img");
+
+                    if (userIconImg) {
+                        userIconImg.src = iconSrc;
+                    } else {
+                        console.error("User icon <img> not found!");
+                    }
+
+                    // **Reload the page after a short delay**
+                    setTimeout(() => {
+                        location.reload();
+                    }, 500); // Adjust delay if needed
+                }
+            });
+        });
+    });
+    
 });

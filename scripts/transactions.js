@@ -6,6 +6,8 @@ import {
   truncateWalletAddress,
   handleLogout,
   handleCopyWalletAddress,
+  updateUserIcon,
+  attachSidebarClickPrevention,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -39,7 +41,8 @@ async function fetchUpdatedUserProfile() {
   }
 }
 
-async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=1) {
+async function fetchAndUpdateTransactionHistory(selectedText = "All Time", selectedFilter="", page=1) {
+  showFullScreenLoader();
   const pageSize = 7
 
   let dropdownButton = document.getElementById("dateRangeDropdown");
@@ -68,6 +71,7 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
 
   console.log(`Fetching transactions from ${new Date(startDate * 1000).toLocaleDateString()} to ${new Date(endDate * 1000).toLocaleDateString()}`);
 
+  const updateCounts = selectedFilter === "" || selectedText !== "All Time";
   // Fetch auth token and make API request
   try {
       const { authToken } = await chrome.storage.sync.get("authToken");
@@ -78,7 +82,7 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
       }
 
       const response = await fetch(
-          `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?start_date=${startDate}&end_date=${endDate}&page_size=${pageSize}&page=${page}`,
+          `https://dev-wallet-api.dubaicustoms.network/api/ext-transaction?page_size=${pageSize}&start_date=${startDate}&end_date=${endDate}&page=${page}&status_filter=${selectedFilter}`,
           {
               method: "GET",
               headers: {
@@ -100,13 +104,15 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", page=
       }
 
       const result = await response.json();
-      updateTransactionTable(result);
+      updateTransactionTable(result, updateCounts);
 
       // Update pagination
       updatePagination(result.page_count, page);
 
   } catch (error) {
       console.error("Error fetching transaction history:", error);
+  } finally {
+    hideFullScreenLoader();
   }
 }
 
@@ -119,7 +125,7 @@ function setupDateRangeListeners() {
         });
     });
 }
-function updateTransactionTable(result) {
+function updateTransactionTable(result, updateCounts = false) {
   if (result.status === "success") {
     const transactions = result.data;
     const total_count = result.stats.data_count;
@@ -130,13 +136,14 @@ function updateTransactionTable(result) {
     const allTransactionbtn = document.getElementById("allTransactionbtn");
     const successfulTransactionbtn = document.getElementById("successfulTransactionbtn");
     const failedTransactionbtn = document.getElementById("failedTransactionbtn");
-
     // Format count with leading zero if less than 10
     const formatCount = (count) => count < 10 ? `0${count}` : count;
 
-    allTransactionbtn.textContent = `All ${formatCount(total_count)}`;
-    successfulTransactionbtn.textContent = `Completed ${formatCount(completedCount)}`;
-    failedTransactionbtn.textContent = `Failed ${formatCount(failedCount)}`;
+    if (updateCounts) {
+      allTransactionbtn.textContent = `All ${formatCount(total_count)}`;
+      successfulTransactionbtn.textContent = `Completed ${formatCount(completedCount)}`;
+      failedTransactionbtn.textContent = `Failed ${formatCount(failedCount)}`;
+    }
 
     const tableBody = document.querySelector(".custom-table tbody");
 
@@ -212,14 +219,6 @@ function updateTransactionTable(result) {
     // Function to handle button clicks and apply active state
     function handleButtonClick(button, filterType) {
         displayTransactions(filterType);
-
-        // Remove "bg-color-button" class from all buttons
-        allTransactionbtn.classList.remove("bg-color-button");
-        successfulTransactionbtn.classList.remove("bg-color-button");
-        failedTransactionbtn.classList.remove("bg-color-button");
-
-        // Add "bg-color-button" class to the active button
-        button.classList.add("bg-color-button");
     }
 
     // Initial load with all transactions and set active button
@@ -238,8 +237,16 @@ function updateTransactionTable(result) {
 document.addEventListener("DOMContentLoaded", async () => {
   showFullScreenLoader();
   await loadLayoutComponents();
+  attachSidebarClickPrevention();
   let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
-  await fetchAndUpdateTransactionHistory(defaultSelectedText);
+  let selectedFilter = '';
+  const buttons = document.querySelectorAll('.transaction-btn');
+  buttons.forEach(button => {
+    button.addEventListener('click', function (event) {
+      selectedFilter = handleButtonClicks(event); // Update global variable
+    });
+  });
+  await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
   setupDateRangeListeners();
   const { authToken } = await chrome.storage.sync.get(["authToken"]);
 
@@ -271,9 +278,11 @@ document.addEventListener("DOMContentLoaded", async () => {
         truncateWalletAddress(updatedUserInfo.walletAddress) || "Guest";
       usernameElement.textContent = updatedUserInfo.fullName || "N/A";
       emailElement.textContent = updatedUserInfo.email || 'N/A';
+
+      await updateUserIcon()
     }
 
-
+    pageLoaded = true;
     hideFullScreenLoader();
     // Periodic balance update
   }
@@ -304,7 +313,12 @@ function updatePagination(totalPages, currentPage = 1) {
       if (!isDisabled) {
           a.addEventListener("click", (e) => {
               e.preventDefault();
-              fetchAndUpdateTransactionHistory(document.getElementById("dateRangeDropdown").textContent, page);
+              let activeButton = document.querySelector(".transaction-btn.bg-color-button");
+              let selectedFilter = activeButton ? activeButton.getAttribute("data-filter") : "";
+              if(selectedFilter == 'all' || selectedFilter == '') {
+                selectedFilter = '';
+              }
+              fetchAndUpdateTransactionHistory(document.getElementById("dateRangeDropdown").textContent, selectedFilter, page);
           });
       }
       li.appendChild(a);
@@ -449,4 +463,39 @@ function getDateRange(range) {
   return { startDate, endDate };
 }
 
+// Function to handle button click
+function handleButtonClicks(event) {
+  const buttons = document.querySelectorAll('.transaction-btn');
+  // Remove 'active' class from all buttons
+  buttons.forEach(button => button.classList.remove('active'));
+  // Add 'active' class to the clicked button
+  event.target.classList.add('active');
+  // Get status from the data-filter attribute
+  let status = event.target.dataset.filter || '';
 
+  // Get all buttons
+  const allTransactionbtn = document.getElementById("allTransactionbtn");
+  const successfulTransactionbtn = document.getElementById("successfulTransactionbtn");
+  const failedTransactionbtn = document.getElementById("failedTransactionbtn");
+
+  // Remove the background color class from all buttons
+  allTransactionbtn.classList.remove("bg-color-button");
+  successfulTransactionbtn.classList.remove("bg-color-button");
+  failedTransactionbtn.classList.remove("bg-color-button");
+
+  // Add the background color class to the clicked button
+  if (status === 'all' || status == '') {
+    status = '';
+    allTransactionbtn.classList.add("bg-color-button");
+  } else if (status === "completed") {
+    successfulTransactionbtn.classList.add("bg-color-button");
+  } else if (status === "failed") {
+    failedTransactionbtn.classList.add("bg-color-button");
+  }
+
+  let defaultSelectedText = document.getElementById("dateRangeDropdown")?.textContent.trim() || "Last 7 Days";
+
+  fetchAndUpdateTransactionHistory(defaultSelectedText, status);
+
+  return status; // Returning the status
+}

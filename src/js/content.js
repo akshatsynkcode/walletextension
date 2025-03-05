@@ -30,8 +30,6 @@ function connectWallet(sendResponse) {
 }
 
 window.addEventListener("message", (event) => {
-    console.log("mesg");
-    console.log(event);
     if (
       event.source !== window ||
       !event.data ||
@@ -40,11 +38,7 @@ window.addEventListener("message", (event) => {
       return;
     }
 
-    console.log("mesg1");
-
     const { action, payload, requestId } = event.data;
-    console.log(action);
-    console.log(payload);
     chrome.runtime.sendMessage(
       { action, ...payload },
       (response) => {

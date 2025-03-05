@@ -6,6 +6,8 @@ import {
     truncateWalletAddress,
     handleLogout,
     handleCopyWalletAddress,
+    updateUserIcon,
+    attachSidebarClickPrevention,
 } from './generic.js';
 
 async function fetchUpdatedUserProfile() {
@@ -57,7 +59,7 @@ async function fetchUpdatedUserProfile() {
             redirectToLogin();  // Hide loader in case of error
         }
     } catch (error) {
-        console.error('Error fetching user profile:', error);
+        console.error('Error fetching user profile :', error);
         hideFullScreenLoader();
         redirectToLogin(); // Hide loader on error
     }
@@ -108,6 +110,7 @@ function renderConnectedSites(sites) {
 
 
 //     sites.forEach(site => {
+    
 //         const siteDiv = document.createElement('div');
 //         siteDiv.className = 'col-lg-3 col-md-4 mb-1';
 //         siteDiv.innerHTML = `
@@ -195,8 +198,9 @@ function removeSiteFromStorage(site) {
 
 
 
-  document.addEventListener('DOMContentLoaded', async () => {
+document.addEventListener('DOMContentLoaded', async () => {
     await loadLayoutComponents();
+    attachSidebarClickPrevention();
     const { authToken } = await chrome.storage.sync.get(['authToken']);
 
     if (!authToken) {
@@ -229,8 +233,9 @@ function removeSiteFromStorage(site) {
             if (emailElement) {
                 emailElement.textContent = updatedProfile.email || 'N/A';
             }
-
+            await updateUserIcon();
         }
+        pageLoaded = true;
 
         // Fetch transaction history
         // await fetchAndUpdateTransactionHistory(currentPage);
@@ -258,4 +263,4 @@ function removeSiteFromStorage(site) {
         });
     }
     
-  });
+});
