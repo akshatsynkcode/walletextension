@@ -1003,7 +1003,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .text-color-ls{
-  color: rgba(17, 52, 73, 1);
+  color: #fff;
 
 }
 
@@ -1057,4 +1057,9 @@ h1, h2, h3, h4, h5, h6, p{
 
 .text-color-modal{
   color: #FFFFFF;
+}
+
+.custom-btn:hover{
+  border: 1px solid rgba(250, 250, 250, 0.938) !important;
+  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
 }
