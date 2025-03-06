@@ -247,8 +247,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       selectedFilter = handleButtonClicks(event); // Update global variable
     });
   });
-  await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
-  setupDateRangeListeners();
   const { authToken } = await chrome.storage.sync.get(["authToken"]);
 
   if (!authToken) {
@@ -287,6 +285,8 @@ document.addEventListener("DOMContentLoaded", async () => {
     hideFullScreenLoader();
     // Periodic balance update
   }
+  await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
+  setupDateRangeListeners();
   handleLogout();
 });
 
