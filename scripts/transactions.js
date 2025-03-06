@@ -282,11 +282,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     pageLoaded = true;
-    hideFullScreenLoader();
     // Periodic balance update
   }
   await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
   setupDateRangeListeners();
+  hideFullScreenLoader();
   handleLogout();
 });
 
