@@ -1,3 +1,7 @@
+import {
+    updateUserIcon,
+} from './generic.js';
+
 // Fetch user info and update UI
 
 import { handleLogout } from "./generic";
@@ -86,7 +90,7 @@ chrome.storage.sync.get(['authToken'], async function(result) {
 
 document.addEventListener('DOMContentLoaded', async () => {
     handleLogout('popup-login.html');
-
+    await updateUserIcon();
     const expandButton = document.getElementById('expand-btn');
     if (expandButton) {
         expandButton.addEventListener('click', function(event) {
