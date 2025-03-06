@@ -12,7 +12,10 @@ import {
 
 async function fetchUpdatedUserProfile() {
     showFullScreenLoader();  // Show loader before making the API call
-    const { authToken } = await chrome.storage.sync.get('authToken');
+    const data = await new Promise((resolve) =>
+        chrome.storage.sync.get("authToken", resolve)
+    );
+    const authToken = data.authToken;
     if (!authToken) {
         console.error('Authorization token is missing');
         redirectToLogin();
@@ -60,8 +63,8 @@ async function fetchUpdatedUserProfile() {
         }
     } catch (error) {
         console.error('Error fetching user profile :', error);
-        hideFullScreenLoader();
-        redirectToLogin(); // Hide loader on error
+        // hideFullScreenLoader();
+        // redirectToLogin(); // Hide loader on error
     }
 }
 function renderConnectedSites(sites) {
@@ -201,8 +204,10 @@ function removeSiteFromStorage(site) {
 document.addEventListener('DOMContentLoaded', async () => {
     await loadLayoutComponents();
     attachSidebarClickPrevention();
-    const { authToken } = await chrome.storage.sync.get(['authToken']);
-
+    const data = await new Promise((resolve) =>
+        chrome.storage.sync.get("authToken", resolve)
+    );
+    const authToken = data.authToken;
     if (!authToken) {
         redirectToLogin();
         return;
