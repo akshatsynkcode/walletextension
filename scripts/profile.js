@@ -60,8 +60,8 @@ async function fetchUpdatedUserProfile() {
         }
     } catch (error) {
         console.error('Error fetching user profile:', error);
-        hideFullScreenLoader();
-        redirectToLogin();
+        // hideFullScreenLoader();
+        // redirectToLogin();
     }
 }
 
