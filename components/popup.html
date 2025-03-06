@@ -5,23 +5,23 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Profile Popup</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
-  <link href="./css/style-dark.css" rel="stylesheet" />
+  <link id="theme-stylesheet" href="./css/style.css" rel="stylesheet" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
 </head>
 <body>
-    <div class="popup-container p-4 bg-color border-0">
+    <div class="popup-container p-4 bg-color border-0 bg-color-light">
       <nav class="navbar navbar-expand-lg">
           <div>
             <i class="fa-duotone fa-solid fa-user user-icon"></i>
-            <span id="username" class="f-14 fw-600">Username</span>
+            <span id="username" class="f-14 fw-600 text-color-ls">Username</span>
           </div>
           <div class="dropdown">
             <button class="btn  ps-1 border-0" type="button" id="dropdownMenuButton" data-bs-toggle="dropdown" aria-expanded="false">
               <i class="fas fa-ellipsis-v" style="color: rgba(162, 162, 163, 1);"></i>
             </button>
             <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton">
-              <li><button id="expand-btn" class="dropdown-item btn font-12 text-white"><i class="fa-solid fa-up-right-and-down-left-from-center me-2"></i>Expand Screen</button></li>
-              <li><button class="dropdown-item btn font-12 text-white" data-bs-toggle="modal" data-bs-target="#exampleModal" id="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
+              <li><button id="expand-btn" class="dropdown-item btn font-12 text-white text-white-light"><i class="fa-solid fa-up-right-and-down-left-from-center me-2"></i>Expand Screen</button></li>
+              <li><button class="dropdown-item btn font-12 text-white text-white-light" data-bs-toggle="modal" data-bs-target="#exampleModal" id="lock-wallet-btn"><i class="fa-solid fa-lock ms-auto me-2"></i>Logout</button></li>
             </ul>
           </div>
       </nav>
@@ -31,7 +31,7 @@
           <p>
             <span id="address" class="wallet-address light-black font-14">N/A</span>
             <button id="copy-button" class="copy-button" aria-label="Copy Address">
-              <img src="./icons/copy.svg" class="pb-3">
+              <img src="./icons/copy.svg" class="pb-3 img-theme">
             </button>
             <span id="copy-message" class="copy-message">Copied!</span>
           </p>
@@ -39,7 +39,7 @@
         <div class="text-center">
           <img src="./icons/login-vector.svg" style="width: 75%;">
           <p class="font-regular font-24 mb-0 mt-3">Get started</p>
-          <p class="f-14 dark-black">Get started with adding some AED<br>to your wallet</p>
+          <p class="f-14 dark-black dark-black-light">Get started with adding some AED<br>to your wallet</p>
         </div>
         <button id="buy-aed-btn" class="login-button mt-4 mb-3">Buy AED</button>
       </div> 
@@ -62,5 +62,6 @@
       </div>
     </div>
     <script src="./js/bootstrap.bundle.min.js"></script>
+    <script src="./js/theme-switcher.js"></script>
 </body>
 </html>

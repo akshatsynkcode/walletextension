@@ -20,6 +20,10 @@ body{
   background-color: rgba(20, 20, 20, 1);
 }
 
+.bg-color-light{
+  background-color: #FFFFFF;
+}
+
 .bg-color-header{
   border: 1px solid rgba(35, 105, 147, 1);
   background-color: rgba(35, 105, 147, 0.05);
@@ -114,8 +118,14 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   color: rgba(255, 255, 255, 0.5) !important;
 }
 .dark-black{
-  color: rgba(223, 27, 27, 0.7) !important;
+  color: rgba(223, 27, 27, 0.7);
 }
+
+.dark-black-light{
+  color: #828F98 !important;
+}
+
+
 .blue-gradient{
   background: linear-gradient(90deg, rgba(67, 106, 173, 1) 35%, rgba(67, 145, 178, 1) 100%);
    -webkit-background-clip: text;
@@ -152,6 +162,7 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   white-space: nowrap;
   position: relative;
   display: inline-block;
+  color: rgba(17, 52, 73, 1) !important;
 }
 .circular-img {
   height: 30px;
@@ -1091,32 +1102,16 @@ h1, h2, h3, h4, h5, h6, p{
   padding: 1rem 1.25rem;
 }
 
-#lock-wallet-btn:hover {
-  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
-  background-color: #236993;
-  color: white !important;
-}
-
 .dropdown-toggle i {
   color: #828F98 !important;
 }
 
-.no-yes{
+.no-yes , .close{
   background-color: #236993;
   color: white;
 }
 
-.no-yes:hover{
-  border: 1px solid #236993;
-  background-color: #FFFFFF;
-  color:#333333;
-}
-
-.close{
-  background-color: #236993;
-  color: white;
-}
-
+.no-yes:hover,
 .close:hover{
   border: 1px solid #236993;
   background-color: #FFFFFF;
@@ -1127,5 +1122,11 @@ h1, h2, h3, h4, h5, h6, p{
   color: #113449;
 }
 
+#lock-wallet-btn:hover, 
+#expand-btn:hover {
+  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
+  background-color: #236993;
+  color: white !important;
+}
 
 
