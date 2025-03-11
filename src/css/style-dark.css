@@ -583,7 +583,7 @@ h1, h4 {
 .top-left-img {
   position: absolute;
   top: 20%; 
-  left: 0;
+  left: -6%;
   width: 120px;
   height: auto;
 }
@@ -596,7 +596,7 @@ h1, h4 {
 }
 .bottom-middle-img {
   position: absolute;
-  bottom: -12%; 
+  bottom: -45%; 
   left: 50%; 
   transform: translateX(-50%);
   width: 80px;
@@ -607,7 +607,7 @@ h1, h4 {
   width: 80%;
   margin-left: 35px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50px;
+  border-radius: 25px;
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(18px); 
   padding: 20px; 
