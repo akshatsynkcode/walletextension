@@ -89,3 +89,62 @@ async function fetchUpdatedUserProfile() {
         hideFullScreenLoader();
     }
 }
+
+async function sendMessage() {
+    
+    try {
+        const authToken = await chrome.storage.sync.get('authToken');
+        if (!authToken || !authToken.authToken) {
+            console.error('Authorization token is missing');
+            redirectToLogin(); // Redirect or handle the missing token case
+            return;
+        }
+
+        const message = document.getElementById("queryInput").value;
+        if (!message) {
+            alert("Please enter a message.");
+            return;
+        }
+
+        const response = await fetch('https://dev-wallet-api.dubaicustoms.network/api/send-message-email/', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${authToken.authToken}`,
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ "message": message })
+        });
+
+        if (response.ok) {
+            const contentType = response.headers.get('Content-Type');
+            let data;
+            if (contentType && contentType.includes('application/json')) {
+                data = await response.json();
+            } else {
+                data = await response.text(); // handle non-JSON response
+            }
+
+            console.log("Message sent:", data);
+            document.getElementById("queryInput").value = ""; // Clear the message input after success.
+            document.getElementById("modalMessage").innerText = "Your query has been successfully submitted. Thank you for reaching out.";
+            const modalElement = document.getElementById('exampleModal2');
+            const modal = new bootstrap.Modal(modalElement);
+            modal.show();
+        } else {
+            const errorData = await response.json();
+            console.error("Error sending message:", errorData);
+            alert("Failed to send message. Please try again.");
+        }
+    } catch (error) {
+        console.error("Error during message send:", error);
+        alert("An error occurred while sending the message. Please try again later.");
+    }
+}
+
+// Attach event listener to the Submit button after DOM is loaded
+document.addEventListener("DOMContentLoaded", () => {
+    const submitBtn = document.getElementById("submitBtn");
+    if (submitBtn) {
+        submitBtn.addEventListener("click", sendMessage);  // Trigger the sendMessage function when clicked
+    }
+});

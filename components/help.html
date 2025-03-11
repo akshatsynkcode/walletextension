@@ -40,7 +40,7 @@
                                 <div class="position-relative mt-3">
                                     <textarea
                                         class="form-control custom-border-color bg-dark-custom rounded-3 text-white text-white-light text-wrap p-4"
-                                        rows="1"></textarea>
+                                        rows="1" id="queryInput"></textarea>
                                     <button id="submitBtn"
                                         class="btn btn-primary position-absolute end-0 top-50 translate-middle-y me-4"
                                         style="background-color: #4485B7;" data-bs-toggle="modal"
@@ -61,15 +61,15 @@
                                             <button
                                                 class="accordion-button bg-dark-custom text-light text-white-light rounded-0 border-0 collapsed"
                                                 type="button" data-bs-toggle="collapse" data-bs-target="#collapseOne"
-                                                aria-expanded="false" aria-controls="collapseOne">
-                                                1. How can I do Transaction?
+                                                aria-expanded="true" aria-controls="collapseOne">
+                                                1. Is my wallet secure.?
                                             </button>
 
                                         </h2>
                                         <div id="collapseOne"
                                             class="accordion-collapse collapse bg-dark-custom text-light text-white-light">
                                             <div class="accordion-body">
-
+                                               Dubai Customs Wallet extensions use advanced encryption to secure your private keys locally on your device. Always use a strong password.
                                             </div>
                                         </div>
                                     </div>
@@ -78,18 +78,14 @@
                                             <button
                                                 class="accordion-button bg-dark-custom text-light text-white-light collapsed rounded-0 border-0"
                                                 type="button" data-bs-toggle="collapse" data-bs-target="#collapsetwo"
-                                                aria-expanded="false" aria-controls="collapsetwo">
-                                                2. How can I do Transaction?
+                                                aria-expanded="true" aria-controls="collapsetwo">
+                                                2. What should I do if I lose my password?
                                             </button>
                                         </h2>
                                         <div id="collapsetwo"
                                             class="accordion-collapse collapse bg-dark-custom text-light text-white-light rounded-0">
                                             <div class="accordion-body font-16 fw-400">
-                                                Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod
-                                                tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim
-                                                veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea
-                                                commodo consequat. Duis aute irure dolor in reprehenderit in voluptate
-                                                velit esse cillum dolore eu fugiat nulla pariatur.
+                                               You can click on the forgot password button on the login section and safely reset your password.
                                             </div>
                                         </div>
                                     </div>
@@ -120,7 +116,7 @@
                     </div>
                     <div class="text-center" style="margin-top: -15px">
                         <img src="./icons/export-and-query.svg" alt="logo">
-                        <p class="text-color-modal pt-2 font-14 my-2">
+                        <p class="text-color-modal pt-2 font-14 my-2" id="modalMessage">
                             Your query has been successfully submitted. Thank you for reaching out.
                         </p>
                     </div>
