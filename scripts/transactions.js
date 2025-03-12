@@ -411,22 +411,31 @@ async function sendTransactionPDF(range) {
           }
       });
 
+      let message = "";
       if (response.status === 200) {
           const result = await response.json();
           
           // Check if the response contains "No data available"
           if (result && result.mssg && result.mssg === "No data available") {
-              alert("No transactions found for the current time frame.");
+              message = "No transactions found for the current time frame.";
           } else {
               // Alert success when the API confirms the PDF has been emailed
-              alert("PDF has been emailed successfully.");
+              message = "PDF has been emailed successfully.";
           }
       } else if (response.status === 400) {
-          alert("No transactions found.");
+          message = "No transactions found.";
       } else {
           console.error("Failed to send PDF via email:", response.statusText);
-          alert("Failed to send PDF. Please try again.");
+          message = "Failed to send PDF. Please try again.";
       }
+
+      // Update modal message
+      document.querySelector("#exampleModal1 .modal-body p").textContent = message;
+
+      // Show the modal
+      let modal = new bootstrap.Modal(document.getElementById("exampleModal1"));
+      modal.show();
+
   } catch (error) {
       console.error("Error during PDF email sending:", error);
       alert("An error occurred while sending the PDF. Please try again.");
