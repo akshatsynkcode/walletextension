@@ -412,25 +412,31 @@ async function sendTransactionPDF(range) {
       });
 
       let message = "";
+      let imageSrc = "";  // Image source variable
+
       if (response.status === 200) {
           const result = await response.json();
           
           // Check if the response contains "No data available"
           if (result && result.mssg && result.mssg === "No data available") {
               message = "No transactions found for the current time frame.";
+              imageSrc = "./icons/no-record.svg";  // Image for no data found
           } else {
-              // Alert success when the API confirms the PDF has been emailed
-              message = "PDF has been emailed successfully.";
+              message = "The PDF has been successfully delivered to your email address.";
+              imageSrc = "./icons/export-and-query.svg";  // Success image
           }
       } else if (response.status === 400) {
-          message = "No transactions found.";
+          message = "No transaction available for selected date range.";
+          imageSrc = "./icons/no-record.svg";  // Image for no transactions
       } else {
           console.error("Failed to send PDF via email:", response.statusText);
           message = "Failed to send PDF. Please try again.";
+          imageSrc = "./icons/no-record.svg";  // Image for error
       }
 
-      // Update modal message
-      document.querySelector("#exampleModal1 .modal-body p").textContent = message;
+      // Update modal content dynamically
+      document.getElementById("modal-message").textContent = message;
+      document.getElementById("modal-image").src = imageSrc;
 
       // Show the modal
       let modal = new bootstrap.Modal(document.getElementById("exampleModal1"));
