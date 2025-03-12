@@ -1,64 +1,66 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Connect Wallet Request</title>
   <link href="./css/bootstrap.min.css" rel="stylesheet">
   <link href="./css/style-dark.css" rel="stylesheet" />
-  <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css"
-    />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" />
 </head>
+
 <body style="overflow: hidden;">
-    <div class="bg-color border-0" style="height: 100vh;">
-      <nav class="navbar navbar-expand-lg  p-4">
-        <div>
-          <img src="./icons/white-logo.svg" class="approve-icon">
-        </div>
-      </nav>
+  <div class="bg-color border-0" style="height: 100vh;">
+    <nav class="navbar navbar-expand-lg  p-4">
+      <div>
+        <img src="./icons/white-logo.svg" class="approve-icon">
+      </div>
+    </nav>
     <div class="wallet-info mt-3">
       <img class="top-left-img" src="./icons/Ellipse2.svg" alt="Icon">
       <img class="top-right-img" src="./icons/Ellipse1.svg" alt="Icon">
       <img class="bottom-middle-img" src="./icons/Ellipse3.svg" alt="Icon">
-     <div class="text-center user-detail mt-5">
-      <i class="fa-duotone fa-solid fa-user user-icon"></i>
-      <p id="username" class="f-20 fw-500">Username</p>
-      <p class="font-12 fw-400 light-black mb-0">Address</p>
-      <p>
-        <span id="address" class="wallet-address light-black font-14">N/A</span>
-        <button id="copy-button" class="copy-button" aria-label="Copy Address">
-          <img src="./icons/copy.svg" class="pb-3">
-        </button>
-        <span id="copy-message" class="copy-message">Copied!</span>
-      </p>
-     </div>
-    </div> 
-    <div class="d-flex w-100 mt-5 p-4 buttons">
-      <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button" id="reject-btn">Reject</button>
-      <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button" id="approve-btn">Connect</button>
+      <div class="text-center user-detail mt-5">
+        <i class="fa-duotone fa-solid fa-user user-icon my-3"></i>
+        <p id="username" class="f-20 fw-500">Username</p>
+          <p class="font-12 fw-400 light-black mt-4 mb-1">Address</p>
+          <p>
+            <span id="address" class="wallet-address font-12 fw-400 light-black">N/A</span>
+            <button id="copy-button" class="copy-button" aria-label="Copy Address">
+              <img src="./icons/copy.svg" class="pb-2">
+            </button>
+            <span id="copy-message" class="copy-message">Copied!<span>
+          </p>
+      </div>
+      <div class="d-flex w-100 mt-5 p-4 buttons">
+        <button type="button" class="btn btn-dark w-50 f-14 border-color text-white reject-button"
+          id="reject-btn">Reject</button>
+        <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient text-white border-0 f-14 login-button"
+          id="approve-btn">Connect</button>
+      </div>
     </div>
-    </div>
-  <!-- Modal -->
-  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog modal-dialog-centered">
-      <div class="modal-content popup-modal p-4">
-        <div class="modal-body text-center  pb-0">
-          <div class="font-24">Confirm Logout</div>
-           <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
-        </div>
-        <div class="modal-footer justify-content-between border-0">
-          <div class="d-flex w-100">
-            <button type="button" class="btn btn-dark w-50 f-14 border-color " data-bs-dismiss="modal">No</button>
-            <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient  border-0 f-14">Yes</button>
+    <!-- Modal -->
+    <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content popup-modal p-4">
+          <div class="modal-body text-center  pb-0">
+            <div class="font-24">Confirm Logout</div>
+            <p class="dark-black pt-3 font-16">Are you sure you want to logout?</p>
+          </div>
+          <div class="modal-footer justify-content-between border-0">
+            <div class="d-flex w-100">
+              <button type="button" class="btn btn-dark w-50 f-14 border-color " data-bs-dismiss="modal">No</button>
+              <button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient  border-0 f-14">Yes</button>
+            </div>
           </div>
         </div>
       </div>
     </div>
-  </div>
 
-  <!-- Include the popup script -->
-  <script src="./js/bootstrap.bundle.min.js"></script>
+    <!-- Include the popup script -->
+    <script src="./js/bootstrap.bundle.min.js"></script>
 </body>
+
 </html>
+
