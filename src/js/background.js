@@ -315,15 +315,16 @@ function handleLockWallet(sendResponse) {
     if (fullscreenTabId !== null) {
         chrome.tabs.get(fullscreenTabId, function (tab) {
             if (chrome.runtime.lastError || !tab) {
-                // If tab doesn't exist, reset the fullscreenTabId
+                // If tab doesn't exist, reset fullscreenTabId and update popup
                 fullscreenTabId = null;
                 isLoggedIn = false;
                 chrome.action.setPopup({ popup: "popup-login.html" });
                 sendResponse({ success: true });
             } else {
-                chrome.tabs.remove(fullscreenTabId, () => {
+                // Redirect to login page instead of closing
+                chrome.tabs.update(fullscreenTabId, { url: "login.html" }, function () {
                     if (chrome.runtime.lastError) {
-                        console.log('Error closing tab:', chrome.runtime.lastError);
+                        console.log('Error updating tab:', chrome.runtime.lastError);
                         sendResponse({ success: false });
                     } else {
                         fullscreenTabId = null;
@@ -338,6 +339,7 @@ function handleLockWallet(sendResponse) {
         sendResponse({ success: true });
     }
 }
+
 
 function handleUnlockWallet(sendResponse) {
     isLoggedIn = true;
