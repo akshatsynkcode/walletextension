@@ -71,7 +71,7 @@ async function fetchAndUpdateTransactionHistory(selectedText = "All Time", selec
 
   console.log(`Fetching transactions from ${new Date(startDate * 1000).toLocaleDateString()} to ${new Date(endDate * 1000).toLocaleDateString()}`);
 
-  const updateCounts = selectedFilter === "" || selectedText !== "All Time";
+  const updateCounts = (selectedFilter === "") || (selectedFilter === "" && selectedText !== "All Time");
   // Fetch auth token and make API request
   try {
       const { authToken } = await chrome.storage.sync.get("authToken");
@@ -121,6 +121,7 @@ function setupDateRangeListeners() {
     document.querySelectorAll("#dateRangeMenu .dropdown-item").forEach(item => {
         item.addEventListener("click", async function () {
             let selectedText = this.getAttribute("data-value");
+            resetFilter();
             await fetchAndUpdateTransactionHistory(selectedText);
         });
     });
@@ -217,7 +218,7 @@ function updateTransactionTable(result, updateCounts = false) {
     }
 
     // Function to handle button clicks and apply active state
-    function handleButtonClick(button, filterType) {
+    function handleButtonClick(filterType) {
         displayTransactions(filterType);
     }
 
@@ -225,9 +226,9 @@ function updateTransactionTable(result, updateCounts = false) {
     handleButtonClick(allTransactionbtn, "all");
 
     // Add event listeners for filtering and button highlighting
-    allTransactionbtn.addEventListener("click", () => handleButtonClick(allTransactionbtn, "all"));
-    successfulTransactionbtn.addEventListener("click", () => handleButtonClick(successfulTransactionbtn, "completed"));
-    failedTransactionbtn.addEventListener("click", () => handleButtonClick(failedTransactionbtn, "failed"));
+    allTransactionbtn.addEventListener("click", () => handleButtonClick("all"));
+    successfulTransactionbtn.addEventListener("click", () => handleButtonClick("completed"));
+    failedTransactionbtn.addEventListener("click", () => handleButtonClick("failed"));
 } else {
     console.error("Transaction fetch failed:", result);
 }
@@ -246,8 +247,6 @@ document.addEventListener("DOMContentLoaded", async () => {
       selectedFilter = handleButtonClicks(event); // Update global variable
     });
   });
-  await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
-  setupDateRangeListeners();
   const { authToken } = await chrome.storage.sync.get(["authToken"]);
 
   if (!authToken) {
@@ -283,9 +282,11 @@ document.addEventListener("DOMContentLoaded", async () => {
     }
 
     pageLoaded = true;
-    hideFullScreenLoader();
     // Periodic balance update
   }
+  await fetchAndUpdateTransactionHistory(defaultSelectedText, selectedFilter);
+  setupDateRangeListeners();
+  hideFullScreenLoader();
   handleLogout();
 });
 
@@ -498,4 +499,24 @@ function handleButtonClicks(event) {
   fetchAndUpdateTransactionHistory(defaultSelectedText, status);
 
   return status; // Returning the status
+}
+
+//Function for resetting the filter to all
+function resetFilter() {
+  // Get all buttons
+  const allTransactionbtn = document.getElementById("allTransactionbtn");
+  const successfulTransactionbtn = document.getElementById("successfulTransactionbtn");
+  const failedTransactionbtn = document.getElementById("failedTransactionbtn");
+
+  // Remove the background color class from all buttons
+  allTransactionbtn.classList.remove("bg-color-button");
+  successfulTransactionbtn.classList.remove("bg-color-button");
+  failedTransactionbtn.classList.remove("bg-color-button");
+
+  allTransactionbtn.classList.remove("active");
+  successfulTransactionbtn.classList.remove("active");
+  failedTransactionbtn.classList.remove("active");
+
+  allTransactionbtn.classList.add("bg-color-button");
+  allTransactionbtn.classList.add("active");
 }

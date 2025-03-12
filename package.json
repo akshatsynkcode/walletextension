@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "node build-manifest.js chrome && cross-env TARGET=chrome SERVER=dev webpack --config webpack.config.js",
+    "build": "node build-manifest.js chrome && TARGET=chrome SERVER=dev webpack --config webpack.config.js",
     "build:firefox": "node build-manifest.js firefox && TARGET=firefox SERVER=dev webpack --config webpack.config.js",
     "build-stg": "node build-manifest.js chrome && TARGET=chrome SERVER=stg webpack --config webpack.config.js",
     "build-stg:firefox": "node build-manifest.js firefox && TARGET=firefox SERVER=stg webpack --config webpack.config.js",
