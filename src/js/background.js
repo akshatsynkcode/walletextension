@@ -221,6 +221,9 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         });
 
         return true; // Keep response async
+    } else if (message.action === "reset_popup") {
+        chrome.action.setPopup({ popup: "popup.html" });
+        sendResponse({ success: true });
     }
     else {
         switch (message.action) {
