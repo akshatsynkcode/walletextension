@@ -31,6 +31,7 @@ body{
   background-position: center;
   background-repeat: no-repeat;
 }
+
 .img-container {
   position: relative;
   overflow: hidden;
@@ -107,10 +108,14 @@ background: linear-gradient(270deg, rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.1));
   color: rgba(255, 255, 255, 0.5) !important;
 }
 
-#lock-wallet-btn:hover, 
-#expand-btn:hover {
+#lock-wallet-btn:hover{
   box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
   background-color: black;
+  color: white !important;
+}
+
+#expand-btn {
+  box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
   color: white !important;
 }
 
@@ -583,7 +588,7 @@ h1, h4 {
 .top-left-img {
   position: absolute;
   top: 20%; 
-  left: 0;
+  left: -6%;
   width: 120px;
   height: auto;
 }
@@ -596,7 +601,7 @@ h1, h4 {
 }
 .bottom-middle-img {
   position: absolute;
-  bottom: -12%; 
+  bottom: 35%; 
   left: 50%; 
   transform: translateX(-50%);
   width: 80px;
@@ -607,7 +612,7 @@ h1, h4 {
   width: 80%;
   margin-left: 35px;
   border: 1px solid rgba(255, 255, 255, 0.2);
-  border-radius: 50px;
+  border-radius: 20px;
   background: rgba(255, 255, 255, 0.3);
   backdrop-filter: blur(18px); 
   padding: 20px; 
@@ -631,6 +636,7 @@ h1, h4 {
   width: 35px;
   height: 35px;
   text-align: center;
+  margin-top: 25px;
 }
 .user-badge{
   background: linear-gradient(108deg, #000046 -0.79%, #008bb2 100%);
@@ -905,7 +911,7 @@ h1, h2, h3, h4, h5, h6, p{
 }
 
 .text-color-cs{
-  color: #828F98;
+  color: #828F98 !important;
 }
 
 .radio-background{
@@ -1070,4 +1076,8 @@ h1, h2, h3, h4, h5, h6, p{
 .custom-btn:hover{
   border: 1px solid rgba(250, 250, 250, 0.938) !important;
   box-shadow: 0px 4px 10px rgba(17, 52, 73, 0.3);
+}
+
+.btn-expand-dark:hover {
+  background-color: black !important;
 }
