@@ -57,6 +57,7 @@ document.addEventListener("DOMContentLoaded", function () {
                             console.error('Error setting authToken:', chrome.runtime.lastError);
                             errorMessage.textContent = 'Failed to store auth token.';
                         } else {
+                            chrome.runtime.sendMessage({ action: "reset_popup" });
                             if(isPopup) {
                                 window.location.href = 'popup.html';
                             } else {
