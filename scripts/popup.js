@@ -95,7 +95,13 @@ document.addEventListener('DOMContentLoaded', async () => {
     if (expandButton) {
         expandButton.addEventListener('click', function(event) {
             event.preventDefault();
-            window.open('profile.html', '_blank');
+            chrome.runtime.sendMessage({ action: "unlock_wallet" }, (response) => {
+                if (response && response.success) {
+                    console.log("Expanded to fullscreen successfully!");
+                } else {
+                    console.error("Failed to expand fullscreen.");
+                }
+            });
         });
     }
 });
