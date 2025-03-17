@@ -106,6 +106,11 @@ module.exports = (env, argv) => {
         chunks: ['welcome', 'vendors'] // Include vendor chunk
       }),
       new HtmlWebpackPlugin({
+        template: './components/privacy_policy.html',
+        filename: 'privacy_policy.html',
+        chunks: ['welcome', 'vendors'] // Include vendor chunk
+      }),
+      new HtmlWebpackPlugin({
         template: './components/login.html',
         filename: 'login.html',
         chunks: ['login', 'vendors'] // Include vendor chunk

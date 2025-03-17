@@ -8,7 +8,7 @@
 
 // // Redirect to login if no token or token is invalid
 function redirectToLogin() {
-    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV']);
+    chrome.storage.sync.remove(['authToken', 'connectedSites', 'email', 'authIV', 'userConsentGiven']);
     window.location.href = 'login.html';
 }
 function formatAmount(amount) {
@@ -711,46 +711,146 @@ async function decryptText(encryptedData, iv) {
     return decoder.decode(decrypted); // Convert back to string
 }
 
-document.addEventListener("DOMContentLoaded", function () {
-    const userConsent = localStorage.getItem("userConsent");
-    const consentModalElement = document.getElementById("userConsentModal");
-    const consentModal = new bootstrap.Modal(consentModalElement, {
-        backdrop: 'static', // Prevent closing when clicking outside
-        keyboard: false     // Prevent closing with Escape key
-    });
+// document.addEventListener("DOMContentLoaded", function () {
+//     const userConsent = localStorage.getItem("userConsent");
+//     const consentModalElement = document.getElementById("userConsentModal");
+//     const consentModal = new bootstrap.Modal(consentModalElement, {
+//         backdrop: 'static', // Prevent closing when clicking outside
+//         keyboard: false     // Prevent closing with Escape key
+//     });
 
-    // Show the modal if consent is not given
-    if (!userConsent) {
-        consentModal.show();
+//     // Show the modal if consent is not given
+//     if (!userConsent) {
+//         consentModal.show();
+//     }
+
+//     // Accept Consent
+//     document.getElementById("acceptConsent").addEventListener("click", function () {
+//         if (document.getElementById("consentCheckbox").checked) {
+//             localStorage.setItem("userConsent", "accepted");
+//             alert("Thank you for providing consent!");
+//             consentModal.hide(); // Hide modal after acceptance
+//         } else {
+//             alert("Please check the box to give consent.");
+//         }
+//     });
+
+//     // Decline Consent (Keep the modal open)
+//     document.getElementById("declineConsent").addEventListener("click", function (event) {
+//         alert("Consent is mandatory to use the extension.");
+
+//         // Prevent modal from hiding
+//         event.preventDefault();
+//         event.stopImmediatePropagation();
+
+//         // Keep the modal open
+//         consentModal.show();
+//     });
+
+//     // Prevent modal from hiding on its own
+//     consentModalElement.addEventListener("hidden.bs.modal", function (event) {
+//         if (!localStorage.getItem("userConsent")) {
+//             consentModal.show();
+//         }
+//     });
+// });
+
+// document.addEventListener("DOMContentLoaded", function () {
+//     const modal = new bootstrap.Modal(document.getElementById("userConsentModal"));
+//     const agreeButton = document.getElementById("agreeDataCollection");
+//     const personalDataCheckbox = document.getElementById("personalDataConsent");
+//     const anonymousDataCheckbox = document.getElementById("anonymousDataConsent");
+
+//     // Initially disable the button
+//     agreeButton.disabled = true;
+
+//     // Enable the button only if personal data is accepted (anonymous is optional)
+//     function checkConsent() {
+//         if (personalDataCheckbox.checked) {
+//             agreeButton.disabled = false;
+//         } else {
+//             agreeButton.disabled = true;
+//         }
+//     }
+
+//     // Attach event listeners to checkboxes
+//     personalDataCheckbox.addEventListener("change", checkConsent);
+//     anonymousDataCheckbox.addEventListener("change", checkConsent);
+
+//     // Show modal only if consent has not been given
+//     const hasConsented = localStorage.getItem("userConsentGiven");
+//     if (!hasConsented) {
+//         modal.show();
+//     }
+
+//     // Handle "Agree to Data Collection"
+//     agreeButton.addEventListener("click", function () {
+//         localStorage.setItem("userConsentGiven", "true");
+//         localStorage.setItem("personalDataAllowed", personalDataCheckbox.checked);
+//         localStorage.setItem("anonymousDataAllowed", anonymousDataCheckbox.checked);
+//         modal.hide();
+//     });
+
+//     // Handle "Decline and Uninstall"
+//     document.getElementById("declineAndUninstall").addEventListener("click", function () {
+//         alert("You have declined data collection. If you wish to uninstall this extension, please go to your browser's extensions page and remove it manually.");
+
+//         // Optionally, disable extension functionality
+//         localStorage.setItem("userConsentGiven", "false");
+//         window.close(); // Close the popup if applicable
+//     });
+
+//     // Privacy Policy Link
+//     document.getElementById("privacyPolicyLink").addEventListener("click", function () {
+//         chrome.tabs.create({ url: "https://your-privacy-policy-url.com" });
+//     });
+// });
+
+document.addEventListener("DOMContentLoaded", function () {
+    // const modal = new bootstrap.Modal(document.getElementById("userConsentModal"));
+    const modal = new bootstrap.Modal(document.getElementById("userConsentModal"), { backdrop: 'static', keyboard: false });
+    const agreeButton = document.getElementById("agreeDataCollection");
+    const personalDataCheckbox = document.getElementById("personalDataConsent");
+    const anonymousDataCheckbox = document.getElementById("anonymousDataConsent");
+    const declineButton = document.getElementById("declineAndUninstall");
+
+    // Initially disable the button
+    agreeButton.disabled = true;
+
+    // Enable the button only if personal data is accepted (anonymous is optional)
+    function checkConsent() {
+        agreeButton.disabled = !personalDataCheckbox.checked;
     }
 
-    // Accept Consent
-    document.getElementById("acceptConsent").addEventListener("click", function () {
-        if (document.getElementById("consentCheckbox").checked) {
-            localStorage.setItem("userConsent", "accepted");
-            alert("Thank you for providing consent!");
-            consentModal.hide(); // Hide modal after acceptance
-        } else {
-            alert("Please check the box to give consent.");
+    // Attach event listeners to checkboxes
+    personalDataCheckbox.addEventListener("change", checkConsent);
+    anonymousDataCheckbox.addEventListener("change", checkConsent);
+
+    chrome.storage.sync.get("userConsentGiven", function (data) {
+        if (!data.userConsentGiven) {
+            modal.show();
         }
     });
 
-    // Decline Consent (Keep the modal open)
-    document.getElementById("declineConsent").addEventListener("click", function (event) {
-        alert("Consent is mandatory to use the extension.");
-        
-        // Prevent modal from hiding
-        event.preventDefault();
-        event.stopImmediatePropagation();
-
-        // Keep the modal open
-        consentModal.show();
+    // Handle "Agree to Data Collection"
+    agreeButton.addEventListener("click", function () {
+        chrome.storage.sync.set({
+            userConsentGiven: true,
+            personalDataAllowed: personalDataCheckbox.checked,
+            anonymousDataAllowed: anonymousDataCheckbox.checked
+        }, function () {
+            console.log("User consent preferences saved.");
+            modal.hide(); // Close the modal after saving
+        });
     });
 
-    // Prevent modal from hiding on its own
-    consentModalElement.addEventListener("hidden.bs.modal", function (event) {
-        if (!localStorage.getItem("userConsent")) {
-            consentModal.show();
-        }
+    // Handle "Decline and Redirect to Login"
+    declineButton.addEventListener("click", function () {
+        redirectToLogin();
+    });
+
+    // Privacy Policy Link
+    document.getElementById("privacyPolicyLink").addEventListener("click", function () {
+        chrome.tabs.create({ url: "https://your-privacy-policy-url.com" });
     });
 });

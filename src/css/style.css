@@ -928,3 +928,31 @@ h1, h2, h3, h4, h5, h6, p{
   width: 3rem;
   height: 3rem;
 }
+
+.dark-theme {
+  background-color: #121212;
+  color: #ffffff;
+  border-radius: 10px;
+  border: none;
+}
+
+.modal-header {
+  background-color: #1e1e1e;
+}
+
+.modal-footer button {
+  border-radius: 5px;
+  font-weight: bold;
+}
+
+.text-light {
+  color: #e0e0e0 !important;
+}
+
+.border-light {
+  border-color: #333 !important;
+}
+
+.text-info {
+  color: #50bfff !important;
+}

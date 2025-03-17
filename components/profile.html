@@ -347,25 +347,45 @@
 			</div>
 		</div>
 	</div>
-	<!-- User Consent Modal -->
-    <div class="modal fade" id="userConsentModal" tabindex="-1" aria-labelledby="userConsentLabel" aria-hidden="true">
+	<!-- User Consent Modal (Mozilla-Compliant) -->
+	<div class="modal fade" id="userConsentModal" tabindex="-1" aria-labelledby="userConsentLabel" aria-hidden="true">
 		<div class="modal-dialog modal-dialog-centered">
-		  	<div class="modal-content popup-modal p-1 m-3">
-				<div class="modal-body text-center pb-0">
-					<div class="font-20">User Consent Required</div>
-					<p class="dark-black font-14">We need your consent to collect your full name for better personalization.</p>
-					<div class="form-check d-flex justify-content-center">
-						<input type="checkbox" class="form-check-input me-2" id="consentCheckbox">
-						<label for="consentCheckbox" class="form-check-label text-white">I agree to share my full name.</label>
-					</div>
+			<div class="modal-content dark-theme p-3">
+				<div class="modal-header border-0">
+					<h5 class="modal-title text-white">Privacy</h5>
 				</div>
-				<div class="modal-footer justify-content-between border-0 p-1 mb-3">
-					<div class="d-flex w-100">
-						<button type="button" class="btn btn-dark w-50 f-14 border-color" data-bs-dismiss="modal" id="declineConsent">Decline</button>
-						<button type="button" class="btn w-50 ms-2 yes-btn dark-blue-gradient border-0 f-14 text-white" id="acceptConsent">Accept</button>
-					</div>
+				<div class="modal-body">
+					<p class="text-light"><strong>Can we collect the following <u>data that personally identifies you</u>?</strong></p>
+					<ul class="text-light">
+						<li>Your full name, which we collect to personalize your experience.</li>
+						<li>Other personal details (as described in our privacy policy).</li>
+					</ul>
+					<label class="text-light">
+						<input type="checkbox" id="personalDataConsent" class="me-2"> Allow collection of personal data
+					</label>
+
+					<hr class="border-light">
+
+					<p class="text-light"><strong>Can we collect <u>anonymous data</u> about your use of the extension?</strong></p>
+					<ul class="text-light">
+						<li>Usage statistics, which help us improve the extension.</li>
+						<li>Other anonymous analytics (as described in our privacy policy).</li>
+					</ul>
+					<label class="text-light">
+						<input type="checkbox" id="anonymousDataConsent" class="me-2"> Allow collection of anonymous data
+					</label>
+
+					<hr class="border-light">
+
+					<p class="text-light">Full details about the data we collect and what we do with it are provided in our 
+						<a href="#" id="privacyPolicyLink" class="text-info">Privacy Policy</a>.
+					</p>
 				</div>
-		  	</div>
+				<div class="modal-footer border-0">
+					<button class="btn btn-success w-50" id="agreeDataCollection">Agree to data collection</button>
+					<button class="btn btn-danger w-50" id="declineAndUninstall">Decline and uninstall</button>
+				</div>
+			</div>
 		</div>
 	</div>
 	<!-- <script src="profile.bundle.js"></script> -->
