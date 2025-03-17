@@ -309,7 +309,7 @@ async function handleRejectTransaction(message, sendResponse) {
     }
 }
 
-
+/* Already Existing code
 // // Listener for extension installation
 // function handleLockWallet(sendResponse) {
 //     if (fullscreenTabId !== null) {
@@ -360,6 +360,8 @@ async function handleRejectTransaction(message, sendResponse) {
 //         sendResponse({ success: true });
 //     }
 // }
+
+*/
 
 function handleRequestConnection(sender, sendResponse) {
     let senderTabId = sender.tab.id;
@@ -638,6 +640,7 @@ function stopAuthCheck() {
     }
 }
 
+/* handle lock wallet function for removing the tab after logout from popup and fullscreen */
 // Listener for extension installation
 function handleLockWallet(sendResponse) {
     chrome.storage.local.get('fullscreenTabId', function (data) {
@@ -674,7 +677,7 @@ function handleLockWallet(sendResponse) {
 
 
 
-
+/* handle lock wallet function for redirecting login page the tab after logout from popup and fullscreen
 // // Listener for extension installation
 // function handleLockWallet(sendResponse) {
 //     chrome.storage.local.get('fullscreenTabId', function (data) {
@@ -700,8 +703,10 @@ function handleLockWallet(sendResponse) {
 //         }
 //     });
 // }
+*/
 
 
+//Listener for unlockwallet with removing tab after logout from popup and fullscreen
 function handleUnlockWallet(sendResponse, sender) {
     isLoggedIn = true;
     chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
@@ -754,7 +759,7 @@ function createProfileTab(sendResponse, sender) {
     });
 }
 
-
+/** Function for updating/redirecting the login page after logout from popup and fullscreen
 // function handleUnlockWallet(sendResponse, sender) {
 //     isLoggedIn = true;
 //     chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
@@ -813,3 +818,5 @@ function createProfileTab(sendResponse, sender) {
 //         }
 //     });
 // }
+
+*/
