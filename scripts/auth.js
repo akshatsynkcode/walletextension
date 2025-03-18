@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (expandButton) {
         expandButton.addEventListener("click", function () {
-            window.open("login.html", "_blank");
+            // window.open("login.html", "_blank");
+            chrome.runtime.sendMessage({ action: "reset_popup" });
+            chrome.runtime.sendMessage({ action: "unlock_wallet" }, (response) => {
+                if (response && response.success) {
+                    console.log("Expanded to fullscreen successfully!");
+                } else {
+                    console.error("Failed to expand fullscreen.");
+                }
+            });
         });
     }
 
@@ -57,10 +65,18 @@ document.addEventListener("DOMContentLoaded", function () {
                             console.error('Error setting authToken:', chrome.runtime.lastError);
                             errorMessage.textContent = 'Failed to store auth token.';
                         } else {
+                            chrome.runtime.sendMessage({ action: "reset_popup" });
                             if(isPopup) {
                                 window.location.href = 'popup.html';
                             } else {
-                                window.location.href = 'profile.html';
+                                chrome.runtime.sendMessage({ action: "unlock_wallet" }, (response) => {
+                                    if (response && response.success) {
+                                        console.log("Expanded to fullscreen successfully!");
+                                    } else {
+                                        console.error("Failed to expand fullscreen.");
+                                    }
+                                });
+                                // window.location.href = 'profile.html';
                             }
                         }
                     });
@@ -78,6 +94,7 @@ document.addEventListener("DOMContentLoaded", function () {
                 loginButton.disabled = false;
             }
         });
+
     } else {
         console.warn("login-btn not found!");
     }
