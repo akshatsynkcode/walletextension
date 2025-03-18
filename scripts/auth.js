@@ -12,7 +12,15 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (expandButton) {
         expandButton.addEventListener("click", function () {
-            window.open("login.html", "_blank");
+            // window.open("login.html", "_blank");
+            chrome.runtime.sendMessage({ action: "reset_popup" });
+            chrome.runtime.sendMessage({ action: "unlock_wallet" }, (response) => {
+                if (response && response.success) {
+                    console.log("Expanded to fullscreen successfully!");
+                } else {
+                    console.error("Failed to expand fullscreen.");
+                }
+            });
         });
     }
 

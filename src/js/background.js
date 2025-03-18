@@ -706,7 +706,60 @@ function handleLockWallet(sendResponse) {
 */
 
 
-//Listener for unlockwallet with removing tab after logout from popup and fullscreen
+// // //Listener for unlockwallet with removing tab after logout from popup and fullscreen
+// // function handleUnlockWallet(sendResponse, sender) {
+// //     isLoggedIn = true;
+// //     chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
+
+// //     // Check if the profile tab is already open
+// //     chrome.storage.local.get("fullscreenTabId", (data) => {
+// //         if (data.fullscreenTabId) {
+// //             // Ensure the tab still exists before reusing it
+// //             chrome.tabs.get(data.fullscreenTabId, (existingTab) => {
+// //                 if (chrome.runtime.lastError || !existingTab) {
+// //                     // Tab doesn't exist, create a new one
+// //                     createProfileTab(sendResponse, sender);
+// //                 } else {
+// //                     // Tab already exists, just activate it
+// //                     chrome.tabs.update(data.fullscreenTabId, { active: true });
+// //                     sendResponse({ success: true });
+// //                 }
+// //             });
+// //         } else {
+// //             // No stored tab, create a new one
+// //             createProfileTab(sendResponse, sender);
+// //         }
+// //     });
+
+// //     return true; // Required for async sendResponse
+// // }
+
+// // Helper function to create a new tab
+// function createProfileTab(sendResponse, sender) {
+//     chrome.tabs.create({
+//         url: chrome.runtime.getURL('profile.html'),
+//         active: true
+//     }, (tab) => {
+//         if (tab && tab.id) {
+//             chrome.storage.local.set({ fullscreenTabId: tab.id }, () => {
+//                 console.log("Profile page opened in new tab:", tab.id);
+//             });
+
+//             // Close the login tab after opening the profile tab
+//             if (sender && sender.tab && sender.tab.id) {
+//                 chrome.tabs.remove(sender.tab.id, () => {
+//                     console.log("Login tab closed successfully.");
+//                 });
+//             }
+//             sendResponse({ success: true });
+//         } else {
+//             sendResponse({ success: false });
+//             console.error("Failed to create the profile tab");
+//         }
+//     });
+// }
+
+/** Function for updating/redirecting the login page after logout from popup and fullscreen  */
 function handleUnlockWallet(sendResponse, sender) {
     isLoggedIn = true;
     chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
@@ -720,8 +773,13 @@ function handleUnlockWallet(sendResponse, sender) {
                     // Tab doesn't exist, create a new one
                     createProfileTab(sendResponse, sender);
                 } else {
-                    // Tab already exists, just activate it
-                    chrome.tabs.update(data.fullscreenTabId, { active: true });
+                    // Ensure existingTab.url is defined before checking
+                    if (existingTab.url && !existingTab.url.includes("profile.html")) {
+                        chrome.tabs.update(data.fullscreenTabId, { url: chrome.runtime.getURL("profile.html"), active: true });
+                    } else {
+                        chrome.tabs.update(data.fullscreenTabId, { active: true });
+                        chrome.tabs.reload(existingTab.id);
+                    }
                     sendResponse({ success: true });
                 }
             });
@@ -758,65 +816,3 @@ function createProfileTab(sendResponse, sender) {
         }
     });
 }
-
-/** Function for updating/redirecting the login page after logout from popup and fullscreen
-// function handleUnlockWallet(sendResponse, sender) {
-//     isLoggedIn = true;
-//     chrome.action.setPopup({ popup: "popup.html" }); // Enable popup after unlocking
-
-//     // Check if the profile tab is already open
-//     chrome.storage.local.get("fullscreenTabId", (data) => {
-//         if (data.fullscreenTabId) {
-//             // Ensure the tab still exists before reusing it
-//             chrome.tabs.get(data.fullscreenTabId, (existingTab) => {
-//                 if (chrome.runtime.lastError || !existingTab) {
-//                     // Tab doesn't exist, create a new one
-//                     createProfileTab(sendResponse, sender);
-//                 } else {
-
-//                     // Ensure existingTab.url is defined before checking
-//                     if (existingTab.url && !existingTab.url.includes("profile.html")) {
-//                         chrome.tabs.update(data.fullscreenTabId, { url: chrome.runtime.getURL("profile.html"), active: true });
-//                     } else {
-//                         chrome.tabs.update(data.fullscreenTabId, { active: true });
-//                         chrome.tabs.reload(existingTab.id);
-//                     }
-//                     sendResponse({ success: true });
-//                 }
-//             });
-//         } else {
-//             // No stored tab, create a new one
-//             createProfileTab(sendResponse, sender);
-//         }
-//     });
-
-//     return true; // Required for async sendResponse
-// }
-
-
-// // Helper function to create a new tab
-// function createProfileTab(sendResponse, sender) {
-//     chrome.tabs.create({
-//         url: chrome.runtime.getURL('profile.html'),
-//         active: true
-//     }, (tab) => {
-//         if (tab && tab.id) {
-//             chrome.storage.local.set({ fullscreenTabId: tab.id }, () => {
-//                 console.log("Profile page opened in new tab:", tab.id);
-//             });
-
-//             // Close the login tab after opening the profile tab
-//             if (sender && sender.tab && sender.tab.id) {
-//                 chrome.tabs.remove(sender.tab.id, () => {
-//                     console.log("Login tab closed successfully.");
-//                 });
-//             }
-//             sendResponse({ success: true });
-//         } else {
-//             sendResponse({ success: false });
-//             console.error("Failed to create the profile tab");
-//         }
-//     });
-// }
-
-*/
